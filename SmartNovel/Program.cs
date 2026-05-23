@@ -1,8 +1,13 @@
+using Microsoft.EntityFrameworkCore;
+using SmartNovel.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
+var conString = builder.Configuration.GetConnectionString("SmartNovel");
+builder.Services.AddDbContext<SmartTruyenDbContext>(options =>
+    options.UseSqlServer(conString));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
