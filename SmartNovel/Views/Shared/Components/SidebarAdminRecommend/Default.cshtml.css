@@ -1,0 +1,33 @@
+﻿.admin-recommend-sidebar {
+    border-radius: 0.5rem;
+}
+
+.sidebar-item {
+    border-bottom: 1px solid #f1f1f1; 
+    transition: background-color 0.2s ease;
+}
+
+    .sidebar-item:last-child {
+        border-bottom: none;
+    }
+
+    .sidebar-item:hover {
+        background-color: #f8f9fa; 
+    }
+
+
+.novel-title-sidebar {
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-style: italic; 
+    max-width: 85%;
+}
+
+.sidebar-item:hover .novel-title-sidebar {
+    color: #b02a37 !important;
+}
+
+
+.novel-chapter-sidebar {
+    font-size: 0.75rem;
+}

@@ -1,0 +1,52 @@
+﻿.top-authors-widget {
+    border: 1px solid #e0e2e5;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.author-item {
+    background-color: #ffffff;
+}
+
+.fs-7 {
+    font-size: 0.85rem !important;
+}
+
+.author-name-link {
+    color: #212529;
+}
+
+    .author-name-link:hover {
+        color: #0d6efd !important;
+        text-decoration: underline !important;
+    }
+
+.rank-label {
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+.rank-1 {
+    color: #dc3545;
+}
+/* Hạng 1 chữ Đỏ */
+.rank-2 {
+    color: #fd7e14;
+}
+/* Hạng 2 chữ Cam */
+.rank-3 {
+    color: #198754;
+}
+/* Hạng 3 chữ Xanh lá */
+.rank-text-1 {
+    color: #dc3545 !important;
+    font-weight: bold;
+}
+
+.rank-text-2 {
+    color: #fd7e14 !important;
+}
+
+.rank-text-3 {
+    color: #198754 !important;
+}

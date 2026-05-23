@@ -4,9 +4,15 @@
 @{
     Layout = "_authLayout";
 }
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger" style="color: red; font-weight: bold;">
+        @ViewBag.ErrorMessage
+    </div>
+}
 <h1>Login nè</h1>
-<form action="/" method="post">
-    <input type="text" name="txtUsername" value="Enter username..." />    
-    <input type="password" name="txtPassword" value="Enter password..." />
+<form action="/auth/login" method="post">
+    <input type="text" name="txtUsername" placeholder="Enter username..." />
+    <input type="password" name="txtPassword" placeholder="Enter password..." />
     <input type="submit" value="Login!" />
 </form>
