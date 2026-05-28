@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmartNovel.Models;
+using SmartNovel.Models.ViewModel;
 using System.Security.Claims;
 namespace SmartNovel.Controllers
 {
@@ -74,6 +75,64 @@ namespace SmartNovel.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
+        }
+        public async Task<IActionResult> Regist()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Regist(RegisterViewModel newUser)
+        {
+            if(ModelState.IsValid)
+            {
+                var user = new User();
+                Guid uid = new Guid();
+                var passHash = new PasswordHasher<object>();
+                user.Uid = uid.ToString();
+                user.Username = newUser.txtUsername;
+                user.Password = passHash.HashPassword(null, newUser.txtPassword);
+                user.Status = "Active";
+                user.RoleId = "4";
+                user.Email = newUser.txtEmail;
+                user.Phone = newUser.txtPhone;
+                user.DisplayName = newUser.txtDisplayName;
+
+                try
+                {
+                    _context.Users.Add(user);
+                    await _context.SaveChangesAsync();
+                    // báo thành công
+                    ViewBag.Status = true;
+                    ViewBag.Msg = "Đăng ký thành công!";
+                    return RedirectToAction("Login", "Auth");
+                }
+                catch
+                {
+                    ViewBag.Status = false;
+                    var checkUsername = await _context.Users.FirstOrDefaultAsync(x => x.Username == user.Username);
+                    var checkEmail = await _context.Users.FirstOrDefaultAsync(x => x.Email == user.Email);
+                    var checkPhone = await _context.Users.FirstOrDefaultAsync(x => x.Phone == user.Phone);
+                    string errorContent = "";
+                    if(checkUsername != null)
+                    {
+                        errorContent += "Username đã tồn tại!\n";
+                    }
+                    if(checkEmail != null)
+                    {
+                        errorContent += "Email đã tồn tại!\n";
+                    }
+                    if (checkPhone != null)
+                    {
+                        errorContent += "Phone đã tồn tại!\n";
+                    }
+                    ViewBag.Msg = errorContent;
+                    return View();
+
+                }
+                
+            }
+            return View();
+
         }
     }
 }
