@@ -2,7 +2,7 @@
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
-namespace SmartNovelBE.Services
+namespace SmartNovel.Services
 {
     public class MailServices
     {

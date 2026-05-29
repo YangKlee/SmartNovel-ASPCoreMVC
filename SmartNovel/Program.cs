@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using SmartNovel.Models;
-using SmartNovelBE.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +21,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddTransient<MailServices>();
+builder.Services.AddTransient<SmartNovel.Services.MailServices>();
 builder.Services.AddMemoryCache();
 var app = builder.Build();
 
