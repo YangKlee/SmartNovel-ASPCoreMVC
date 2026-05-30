@@ -182,7 +182,7 @@ namespace SmartNovel.Controllers
             if(ModelState.IsValid)
             {
                 var user = new User();
-                Guid uid = new Guid();
+                Guid  uid = Guid.NewGuid();
                 var passHash = new PasswordHasher<object>();
                 user.Uid = uid.ToString();
                 user.Username = newUser.txtUsername;
