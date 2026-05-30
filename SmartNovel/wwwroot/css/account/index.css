@@ -1,0 +1,127 @@
+/* Khai báo biến màu để dễ quản lý */
+:root {
+    --primary-dark: #2d3142;
+    --primary-hover: #1a1d28;
+    --accent-red: #e63946; /* Màu đỏ hiện đại hơn */
+    --border-color: #fde2e2;
+    --text-muted: #6c757d;
+}
+
+.account-container {
+    margin: 50px auto;
+}
+
+.page-title {
+    text-align: center;
+    font-size: 28px;
+    color: var(--primary-dark);
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-bottom: 40px;
+}
+
+.profile-wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 15px;
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap; /* Hỗ trợ responsive */
+    align-items: flex-start;
+}
+
+/* --- CỘT TRÁI (SIDEBAR) --- */
+.sidebar {
+    flex: 1;
+    min-width: 280px;
+}
+
+.profile-card {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 40px 20px;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(45, 49, 66, 0.08); /* Đổ bóng mềm mại */
+    border-top: 4px solid var(--accent-red); /* Điểm nhấn viền trên */
+}
+
+.avatar-wrap {
+    display: inline-block;
+    padding: 5px;
+    border: 2px dashed var(--border-color);
+    border-radius: 50%;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+}
+
+    .avatar-wrap:hover {
+        transform: scale(1.05); /* Hiệu ứng phóng to nhẹ khi di chuột */
+    }
+
+    .avatar-wrap img {
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        object-fit: cover;
+        display: block;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+.username {
+    color: var(--accent-red);
+    font-size: 22px;
+    margin: 0 0 5px 0;
+    font-weight: 700;
+}
+
+.role {
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+/* Nút bấm (Custom dựa trên Bootstrap) */
+.btn-dark-custom {
+    background-color: var(--primary-dark);
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    text-align: left; /* Căn trái text cho các nút xếp dọc */
+    transition: all 0.3s ease;
+}
+
+    .btn-dark-custom:hover {
+        background-color: var(--primary-hover);
+        color: #fff;
+        transform: translateY(-2px); /* Hiệu ứng nổi nhẹ */
+        box-shadow: 0 6px 15px rgba(45, 49, 66, 0.2);
+    }
+
+/* --- CỘT PHẢI (CONTENT) --- */
+.content {
+    flex: 2;
+    min-width: 320px;
+}
+
+.bg-dark-custom {
+    background-color: var(--primary-dark) !important;
+}
+
+/* Ghi đè padding của Bootstrap Table cho thoáng hơn */
+.table td {
+    padding: 18px 24px;
+    vertical-align: middle;
+}
+
+.col-label {
+    width: 35%;
+    font-weight: 600;
+    color: var(--primary-dark);
+}
