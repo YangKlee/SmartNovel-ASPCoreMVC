@@ -2,6 +2,23 @@
 @section Styles {
     <link rel="stylesheet" href="~/css/account/form-layout.css" asp-append-version="true" />
 }
+@if (ViewBag.Msg != null)
+{
+    if (ViewBag.Success == true)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Thành công!</strong> @ViewBag.Msg
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Lỗi!</strong> @ViewBag.Msg
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+}
 <div class="account-container">
     <h1 class="page-title fs-1">CẬP NHẬT THÔNG TIN</h1>
 

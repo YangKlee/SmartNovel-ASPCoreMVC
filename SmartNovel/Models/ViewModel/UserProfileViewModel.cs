@@ -15,8 +15,6 @@ namespace SmartNovel.Models.ViewModel
             public DateOnly? Birthday { get; set; }
 
             [Required(ErrorMessage = "Số di động không được để trống")]
-            [Phone(ErrorMessage = "Số điện thoại không hợp lệ")]
-            [RegularExpression(@"^(0[3|5|7|8|9])+([0-8]{8})\b$", ErrorMessage = "Số điện thoại không đúng định dạng Việt Nam")]
             [Display(Name = "Di động")]
             public string Phone { get; set; }
 

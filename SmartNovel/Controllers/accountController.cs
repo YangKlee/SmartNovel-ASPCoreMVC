@@ -46,5 +46,41 @@ namespace SmartNovel.Controllers
             model.DisplayName = user.DisplayName;
             return View("ChangeInfo", model);
         }
+        [HttpPost]
+        public async Task<IActionResult> updateInfo(UserProfileViewModel req)
+        {
+            var uid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (uid == null)
+            {
+                return Redirect("auth/Login");
+            }
+           
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Uid == uid);
+            user.DisplayName = req.DisplayName;
+            user.Birthday = req.Birthday;
+            user.Phone = req.Phone;
+            try
+            {
+                await _context.SaveChangesAsync();
+                ViewBag.Success = true;
+                ViewBag.Msg = "Thành công!";
+                return View("ChangeInfo", req);
+            }
+            catch
+            {
+                var phoneExists = await _context.Users.AnyAsync(x =>
+                    x.Phone == req.Phone&&
+                    x.Uid != uid
+                );
+                if(phoneExists)
+                {
+                    ViewBag.Success = false;
+                    ViewBag.Msg = "Số điện thoại đã tồn tại";
+                }
+            }
+
+
+            return View("ChangeInfo", req);
+        }
     }
 }
