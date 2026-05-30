@@ -12,6 +12,7 @@ public partial class HistoryReader
     public string NovelId { get; set; } = null!;
 
     public string ChapterId { get; set; } = null!;
+    public int? ScrollPosition { get; set; }
 
     public DateTime? TimeReader { get; set; }
 
