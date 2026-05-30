@@ -21,7 +21,16 @@
                     }
                 </div>
                 <h2 class="username">@Model.Username</h2>
-                <p class="role">@Model.RoleId</p>
+                <p class="role">
+                    @(Model.RoleId switch
+                    {
+                        "1" => "Admin",
+                        "2" => "Moderator",
+                        "3" => "Author",
+                        "4" => "Reader",
+                        _ => "Unknown Role"
+                    })
+                </p>
             </div>
 
             <div class="d-flex flex-column gap-2 mt-3">
