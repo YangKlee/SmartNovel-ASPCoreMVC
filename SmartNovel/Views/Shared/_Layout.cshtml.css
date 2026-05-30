@@ -115,3 +115,7 @@
     .user-info i {
         color: white !important;
     }
+
+.container{
+    height: 100vh;
+}
