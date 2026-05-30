@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using SmartNovel.Models;
 using SmartNovel.Models.ViewModel;
 using SmartNovel.Services;
+using System.Diagnostics;
 using System.Security.Claims;
 
 namespace SmartNovel.Controllers
@@ -45,6 +47,46 @@ namespace SmartNovel.Controllers
             model.Birthday = user.Birthday;
             model.DisplayName = user.DisplayName;
             return View("ChangeInfo", model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> changePassword(ChangePassword req)
+        {
+            var uid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (uid == null)
+            {
+                return Redirect("auth/Login");
+            }
+
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Uid == uid);
+
+            var hashPassword = new PasswordHasher<object>();
+            var resultCheckPassword = hashPassword.VerifyHashedPassword(null, user.Password, req.OldPassword);
+            if(resultCheckPassword == PasswordVerificationResult.Failed)
+            {
+                ViewBag.Success = false;
+                ViewBag.Msg = "Mật khẩu cũ không đúng";
+                return View("ChangePassword");
+            }
+            user.Password = hashPassword.HashPassword(null, req.NewPassword);
+            try
+            {
+                await _context.SaveChangesAsync();
+                ViewBag.Success = true;
+                ViewBag.Msg = "Cập nhật mật khẩu thành công!";
+                return View("ChangePassword");
+            }
+            catch
+            {
+                ViewBag.Success = false;
+                ViewBag.Msg = "Something went wrong bro:)";
+                return View("ChangePassword");
+            }
+
+        }
+        [HttpGet]
+        public async Task<IActionResult> changePassword()
+        {
+            return View("ChangePassword");
         }
         [HttpPost]
         public async Task<IActionResult> updateInfo(UserProfileViewModel req)
