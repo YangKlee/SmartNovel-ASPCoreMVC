@@ -14,13 +14,12 @@ namespace SmartNovel.ViewComponents.NewFolder
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            // Lấy ngẫu nhiên 1 bộ truyện đang hoạt động
             var featuredNovel = await _context.Novels
                 .Include(n => n.Categories)
                 .Include(n => n.Chapters)
-                .Include(n => n.UidNavigation) // Lấy thông tin tác giả/người đăng
+                .Include(n => n.UidNavigation) 
                 .Where(n => n.Status != "Deleted")
-                .OrderBy(x => Guid.NewGuid()) // Tuyệt chiêu lấy ngẫu nhiên trong SQL
+                .OrderBy(x => Guid.NewGuid()) 
                 .FirstOrDefaultAsync();
 
             return View(featuredNovel);

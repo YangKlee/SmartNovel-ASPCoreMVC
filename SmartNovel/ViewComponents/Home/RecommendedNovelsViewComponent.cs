@@ -5,6 +5,7 @@ using SmartNovel.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace SmartNovel.ViewComponents.NewFolder
@@ -16,9 +17,8 @@ namespace SmartNovel.ViewComponents.NewFolder
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            string currentUserId = "USER-0001"; // ID người dùng giả định đang test
+            var currentUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-      
             var currentUser = await _context.Users
                 .Include(u => u.Categories)
                 .Include(u => u.Authors)

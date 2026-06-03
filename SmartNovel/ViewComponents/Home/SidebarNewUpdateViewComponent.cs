@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SmartNovel.Models;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace SmartNovel.ViewComponents.NewFolder
@@ -17,8 +18,7 @@ namespace SmartNovel.ViewComponents.NewFolder
 
         public async Task<IViewComponentResult> InvokeAsync(string viewName = "Default")
         {
-            //  User.Claims.FirstOrDefault(c => c.Type == "Uid")?.Value
-            string currentUserId = "USER-0004";
+            var currentUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var currentUser = await db.Users
                 .Include(u => u.Authors)

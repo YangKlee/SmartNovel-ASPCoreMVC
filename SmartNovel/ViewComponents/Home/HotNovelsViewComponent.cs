@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SmartNovel.Models;
 using SmartNovel.ViewModels;
+using System.Security.Claims;
 
 namespace SmartNovel.ViewComponents.NewFolder
 {
@@ -16,11 +17,11 @@ namespace SmartNovel.ViewComponents.NewFolder
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var CurrentUserId = "USER-0004";
-            var crruentUser = await _context.Users
+            var currentUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier); var crruentUser = await _context.Users
+
                 .Include(u => u.Authors)
                 .Include(u => u.Categories)
-                .FirstOrDefaultAsync(u => u.Uid == CurrentUserId);
+                .FirstOrDefaultAsync(u => u.Uid == currentUserId);
 
             var blockCategoryIds = crruentUser?.Categories.Select(c => c.CategoryId).ToList() ?? new List<string>();
             var blockAuthorIds = crruentUser?.Authors.Select(c => c.Uid).ToList() ?? new List<string>();
