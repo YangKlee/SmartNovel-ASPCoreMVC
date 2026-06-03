@@ -1,0 +1,96 @@
+﻿@model SmartNovel.ViewModels.AdminUser.CreateUserViewModel
+
+@{
+    ViewData["Title"] = "Thêm người dùng mới";
+    Layout = "_LayoutAdmin";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0 py-2"><i class="bi bi-person-plus"></i> Thêm người dùng mới</h4>
+                </div>
+                
+                <div class="card-body p-4">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <form asp-controller="AdminUser" asp-action="Create" method="post">
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Họ và tên <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" asp-for="Displayname">
+                                <span asp-validation-for="Displayname" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Tên đăng nhập <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" asp-for="Username">
+                                <span asp-validation-for="Username" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control" asp-for="Email">
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Số điện thoại</label>
+                                <input type="text" class="form-control" asp-for="PhoneNumber">
+                                <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Mật khẩu <span class="text-danger">*</span></label>
+                                <input type="password" class="form-control" asp-for="Password">
+                                <span asp-validation-for="Password" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Xác nhận mật khẩu <span class="text-danger">*</span></label>
+                                <input type="password" class="form-control" asp-for="ConfirmPassword">
+                                <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-semibold">Phân quyền <span class="text-danger">*</span></label>
+                                <select class="form-select" asp-for="RoleID">
+                                    <option value="ROLE-0003">Độc giả</option>
+                                    <option value="ROLE-0002">Tác giả</option>
+                                    <option value="ROLE-0001">Quản trị viên</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-semibold">Trạng thái <span class="text-danger">*</span></label>
+                                <select class="form-select" asp-for="Status">
+                                    <option value="Active">Hoạt động</option>
+                                    <option value="Banned">Bị khóa</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-semibold">Điểm ban đầu <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" asp-for="CreatorPoint">
+                                <span asp-validation-for="CreatorPoint" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-top text-end">
+                            <a asp-action="Index" class="btn btn-secondary me-2 px-4">Hủy</a>
+                            <button type="submit" class="btn btn-success px-4">Lưu tài khoản</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <partial name="_ValidationScriptsPartial" />
