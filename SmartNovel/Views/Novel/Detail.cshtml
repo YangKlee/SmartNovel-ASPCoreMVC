@@ -125,15 +125,31 @@
                 <!-- Button -->
                 <div class="action-buttons">
 
-                    <button class="btn-read">
-                        <i class="bi bi-book"></i>
-                        Đọc truyện
-                    </button>
+                    @if (Model.Chapters.Any())
+                    {
+                        <a class="btn-read"
+                               asp-controller="Novel"
+                               asp-action="Read"
+                               asp-route-novelId="@Model.Novel.NovelId"
+                               asp-route-chapterId="@Model.Chapters.First().ChapterId">
 
-                    <button class="btn-latest">
-                        <i class="bi bi-lightning-fill"></i>
-                        Chương mới nhất
-                    </button>
+                            <i class="bi bi-book"></i>
+                            Đọc truyện
+                        </a>
+                    }
+
+                    @if (Model.Chapters.Any())
+                    {
+                        <a class="btn-latest"
+                               asp-controller="Novel"
+                               asp-action="Read"
+                               asp-route-novelId="@Model.Novel.NovelId"
+                               asp-route-chapterId="@Model.Chapters.Last().ChapterId">
+
+                            <i class="bi bi-lightning-fill"></i>
+                            Chương mới nhất
+                        </a>
+                    }
 
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
@@ -207,9 +223,10 @@
 
                     @foreach (var chapter in Model.Chapters)
                     {
-                        <a asp-controller="Reading"
-                               asp-action="Chapter"
-                               asp-route-id="@chapter.ChapterId"
+                        <a asp-controller="Novel"
+                               asp-action="Read"
+                               asp-route-novelId="@chapter.NovelId"
+                               asp-route-chapterId="@chapter.ChapterId"
                                class="chapter-link">
 
                             <span>

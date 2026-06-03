@@ -1,19 +1,22 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmartNovel.Models;
 using SmartNovel.Models.ViewModels;
+using SmartNovel.Services;
+using System.Security.Claims;
 
 namespace SmartNovel.Controllers
 {
     public class NovelController : Controller
     {
         private readonly SmartTruyenDbContext _context;
+        private readonly ChapterContentService _chapterContentService;
 
-        public NovelController(SmartTruyenDbContext context)
+        public NovelController(SmartTruyenDbContext context, ChapterContentService chapterContentService)
         {
             _context = context;
+            _chapterContentService = chapterContentService;
         }
 
         [Route("truyen/{slug}")]
@@ -50,9 +53,11 @@ namespace SmartNovel.Controllers
                     .ToList(),
 
                 Chapters = _context.Chapters
-                    .Where(x => x.NovelId == novel.NovelId)
-                    .OrderBy(x => x.ChaperOrder)
-                    .ToList(),
+                .Where(x =>
+                    x.NovelId == novel.NovelId &&
+                    x.Status == "Public")
+                .OrderBy(x => x.ChaperOrder)
+                .ToList(),
 
                 IsFollowing = isFollowing,
 
@@ -138,6 +143,67 @@ namespace SmartNovel.Controllers
                 Novels = user.Novels
                     .OrderBy(x => x.Title)
                     .ToList()
+            };
+
+            return View(vm);
+        }
+
+        [Route("doc-truyen/{novelId}/{chapterId}")]
+        public async Task<IActionResult> Read(string novelId, string chapterId)
+        {
+            var chapter = await _context.Chapters
+                .Include(x => x.Novel)
+                .FirstOrDefaultAsync(x =>
+                    x.NovelId == novelId &&
+                    x.ChapterId == chapterId);
+
+            if (chapter == null)
+                return NotFound();
+
+            if (chapter.Status != "Public")
+                return NotFound();
+
+            string htmlContent =
+                await _chapterContentService.GetContentAsync(
+                    chapter.ChapterFileUrl);
+
+            var prevChapter = await _context.Chapters
+                .Where(x =>
+                    x.NovelId == novelId &&
+                    x.Status == "Public" &&
+                    x.ChaperOrder < chapter.ChaperOrder)
+                .OrderByDescending(x => x.ChaperOrder)
+                .FirstOrDefaultAsync();
+
+            var nextChapter = await _context.Chapters
+                .Where(x =>
+                    x.NovelId == novelId &&
+                    x.Status == "Public" &&
+                    x.ChaperOrder > chapter.ChaperOrder)
+                .OrderBy(x => x.ChaperOrder)
+                .FirstOrDefaultAsync();
+
+            var vm = new ReadNovelVM
+            {
+                NovelId = chapter.NovelId,
+
+                ChapterId = chapter.ChapterId,
+
+                NovelTitle = chapter.Novel.Title,
+
+                ChapterTitle = chapter.ChapterTitle,
+
+                ChapterOrder = chapter.ChaperOrder,
+
+                HtmlContent = htmlContent,
+
+                PrevChapterId = prevChapter?.ChapterId,
+
+                PrevChapterTitle = prevChapter?.ChapterTitle,
+
+                NextChapterId = nextChapter?.ChapterId,
+
+                NextChapterTitle = nextChapter?.ChapterTitle
             };
 
             return View(vm);
