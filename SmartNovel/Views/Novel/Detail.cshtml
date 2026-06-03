@@ -1,0 +1,244 @@
+﻿@model SmartNovel.Models.ViewModels.NovelDetailVM
+
+@{
+    ViewData["Title"] = Model.Novel.Title;
+}
+
+<link rel="stylesheet" href="~/css/novel-detail.css" />
+
+<div class="novel-detail-page">
+
+    <div class="container-custom">
+
+        <!-- Banner -->
+        <div class="novel-banner">
+            <img src="@(string.IsNullOrEmpty(Model.Novel.ImageBanerNovelUrl)
+                                                     ? Model.Novel.ImageNovelUrl
+                                                     : Model.Novel.ImageBanerNovelUrl)"
+                 alt="Banner">
+        </div>
+
+        <!-- Thông tin truyện -->
+        <div class="novel-header">
+
+            <div class="cover-wrapper">
+
+                <img src="@Model.Novel.ImageNovelUrl"
+                     class="novel-cover"
+                     alt="@Model.Novel.Title">
+
+                @if (Model.Novel.AgeRating == "18+")
+                {
+                    <div class="age-badge">
+                        18+
+                    </div>
+                }
+
+            </div>
+
+            <div class="novel-meta">
+
+                <h1>
+                    <i class="bi bi-book-fill"></i>
+                    @Model.Novel.Title
+                </h1>
+
+                <div class="meta-item">
+                    <i class="bi bi-person-fill"></i>
+                    <strong>Tác giả:</strong>
+                    @(Model.Author?.DisplayName ?? "Đang cập nhật")
+                </div>
+
+                <div class="meta-item">
+                    <i class="bi bi-calendar-plus"></i>
+                    <strong>Ngày đăng:</strong>
+                    @(Model.Novel.CreateTime?.ToString("dd/MM/yyyy"))
+                </div>
+
+                <div class="meta-item">
+                    <i class="bi bi-clock-history"></i>
+                    <strong>Cập nhật:</strong>
+                    @(Model.Novel.UpdateTime?.ToString("dd/MM/yyyy"))
+                </div>
+
+                <div class="meta-item">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <strong>Trạng thái:</strong>
+                    @Model.Novel.Status
+                </div>
+
+                <div class="meta-item">
+                    <i class="bi bi-shield-fill"></i>
+                    <strong>Độ tuổi:</strong>
+                    @Model.Novel.AgeRating
+                </div>
+
+                <!-- Thể loại -->
+                <div class="category-list">
+
+                    @if (Model.Categories.Any())
+                    {
+                        @foreach (var category in Model.Categories)
+                        {
+                            <span class="badge">
+                                @category
+                            </span>
+                        }
+                    }
+
+                </div>
+
+                <!-- Mô tả -->
+                <div class="description-box">
+                    @Model.Novel.Description
+                </div>
+
+                <!-- Thống kê -->
+                <div class="novel-stats">
+
+                    <div class="stat-card">
+                        <i class="bi bi-eye-fill"></i>
+                        <span>@(Model.Novel.ViewCount ?? 0)</span>
+                        <small>Lượt xem</small>
+                    </div>
+
+                    <div class="stat-card">
+                        <i class="bi bi-heart-fill"></i>
+                        <span>@(Model.Novel.LikeCount ?? 0)</span>
+                        <small>Yêu thích</small>
+                    </div>
+
+                    <div class="stat-card">
+                        <i class="bi bi-bookmark-heart-fill"></i>
+                        <span>@Model.FollowCount</span>
+                        <small>Theo dõi</small>
+                    </div>
+
+                    <div class="stat-card">
+                        <i class="bi bi-book-half"></i>
+                        <span>@Model.Chapters.Count</span>
+                        <small>Chương</small>
+                    </div>
+
+                </div>
+
+                <!-- Button -->
+                <div class="action-buttons">
+
+                    <button class="btn-read">
+                        <i class="bi bi-book"></i>
+                        Đọc truyện
+                    </button>
+
+                    <button class="btn-latest">
+                        <i class="bi bi-lightning-fill"></i>
+                        Chương mới nhất
+                    </button>
+
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        if (Model.IsFollowing)
+                        {
+                            <form asp-action="UnFollow"
+                                  asp-controller="Novel"
+                                  method="post">
+
+                                <input type="hidden"
+                                       name="novelId"
+                                       value="@Model.Novel.NovelId" />
+
+                                <button type="submit" class="btn-follow">
+                                    <i class="bi bi-bookmark-check-fill"></i>
+                                    Đã theo dõi
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-action="Follow"
+                                  asp-controller="Novel"
+                                  method="post">
+
+                                <input type="hidden"
+                                       name="novelId"
+                                       value="@Model.Novel.NovelId" />
+
+                                <button type="submit" class="btn-follow">
+                                    <i class="bi bi-bookmark-heart-fill"></i>
+                                    Theo dõi
+                                </button>
+                            </form>
+                        }
+                    }
+                    else
+                    {
+                        <a asp-controller="Auth"
+                               asp-action="Login"
+                               class="btn-follow">
+
+                            <i class="bi bi-bookmark-heart-fill"></i>
+                            Theo dõi
+
+                        </a>
+                    }
+
+                    <button class="btn-report">
+                        <i class="bi bi-flag-fill"></i>
+                        Báo cáo
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Danh sách chương -->
+        <div class="chapter-section">
+
+            <div class="section-title">
+                <i class="bi bi-list-ul"></i>
+                Danh sách chương
+            </div>
+
+            @if (Model.Chapters.Any())
+            {
+                <div class="chapter-grid">
+
+                    @foreach (var chapter in Model.Chapters)
+                    {
+                        <a asp-controller="Reading"
+                               asp-action="Chapter"
+                               asp-route-id="@chapter.ChapterId"
+                               class="chapter-link">
+
+                            <span>
+                                <i class="bi bi-bookmark"></i>
+
+                                Chương @chapter.ChaperOrder
+                                -
+                                @chapter.ChapterTitle
+                            </span>
+
+                            <small class="chapter-date">
+                                @(chapter.CreateTime?.ToString("dd/MM/yyyy"))
+                            </small>
+
+                        </a>
+                    }
+
+                </div>
+            }
+            else
+            {
+                <div class="p-4 text-center">
+                    <i class="bi bi-info-circle"></i>
+                    Truyện hiện chưa được cập nhật chương nào.
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>
