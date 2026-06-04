@@ -312,5 +312,59 @@ namespace SmartNovel.Controllers
                 return View("Add", req);
             }
         }
+        [HttpPost]
+        [Authorize(Roles = "3")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var uid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (uid == null)
+                return Redirect("/auth/Login");
+
+            var deleteNovel = await _context.Novels.Include(x => x.Chapters).FirstOrDefaultAsync(x => x.NovelId == id && x.Uid == uid);
+            if (deleteNovel == null)
+            {
+                TempData["Success"] = false;
+                TempData["Msg"] = "Truyện không tồn tại hoặc bạn không có quyền xóa.";
+                return RedirectToAction("Index");
+            }
+
+            string publicLinkImage = "https://pub-20056e4912f440f08b3d40eea545f95f.r2.dev/smart-novel/novel-image/";
+            string publicChapterFile = "https://pub-20056e4912f440f08b3d40eea545f95f.r2.dev/smart-novel/novel-file/";
+            try
+            {
+                if (deleteNovel.ImageNovelUrl != null)
+                {
+                    string fileOldName = deleteNovel.ImageNovelUrl.Replace(publicLinkImage, "");
+                    await _fileServicesUpload.DeleteFile("smart-novel/novel-image/", fileOldName);
+                }
+                if (deleteNovel.ImageBanerNovelUrl != null)
+                {
+                    string fileOldName = deleteNovel.ImageBanerNovelUrl.Replace(publicLinkImage, "");
+                    await _fileServicesUpload.DeleteFile("smart-novel/novel-image/", fileOldName);
+                }
+
+                foreach (var c in deleteNovel.Chapters)
+                {
+                    if (c.ChapterFileUrl != null)
+                    {
+                        string fileOldName = c.ChapterFileUrl.Replace(publicChapterFile, "");
+                        await _fileServicesUpload.DeleteFile("smart-novel/novel-file/", fileOldName);
+                    }
+                }
+                
+                _context.Novels.Remove(deleteNovel);
+                await _context.SaveChangesAsync();
+                
+                TempData["Success"] = true;
+                TempData["Msg"] = "Đã xóa truyện thành công!";
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                TempData["Success"] = false;
+                TempData["Msg"] = "Lỗi khi xóa truyện.";
+                return RedirectToAction("Index");
+            }
+        }
     }
 }

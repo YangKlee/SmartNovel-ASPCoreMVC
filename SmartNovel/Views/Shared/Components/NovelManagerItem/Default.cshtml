@@ -1,4 +1,4 @@
-﻿@model SmartNovel.Models.ViewModel.NovelViewModel
+@model SmartNovel.Models.ViewModel.NovelViewModel
 <div class="novel-card card-outlined">
     <div class="novel-content-wrapper">
         <div class="cover-section">
@@ -76,9 +76,11 @@
             <a asp-controller="NovelManagerment" asp-action="Modify" asp-route-id="@Model.NovelId" class="btn btn-flat btn-blue">
                 <i class="bi bi-pencil-square"></i> Chỉnh sửa
             </a>
-            <button type="button" onclick="confirmDelete('@Model.NovelId')" class="btn btn-flat btn-warn">
-                <i class="bi bi-trash"></i> Xóa
-            </button>
+            <form asp-controller="NovelManagerment" asp-action="Delete" asp-route-id="@Model.NovelId" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa truyện này? Hành động này không thể hoàn tác.');">
+                <button type="submit" class="btn btn-flat btn-warn">
+                    <i class="bi bi-trash"></i> Xóa
+                </button>
+            </form>
         </div>
 
         <div class="social-metrics">
