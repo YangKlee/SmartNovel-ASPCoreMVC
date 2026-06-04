@@ -121,6 +121,41 @@
                     </div>
 
                 </div>
+                <div class="rating-wrapper">
+
+                    <div class="rating-display">
+                        <i class="bi bi-star-fill"></i>
+                        @Model.AverageRating.ToString("0.0")
+                        <span>(@Model.TotalRatings)</span>
+                    </div>
+
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <form asp-action="Rate"
+                              asp-controller="Novel"
+                              method="post"
+                              class="rating-form">
+
+                            <input type="hidden"
+                                   name="novelId"
+                                   value="@Model.Novel.NovelId" />
+
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <button type="submit"
+                                        name="rating"
+                                        value="@i"
+                                        class="star-btn">
+
+                                    @(Model.UserRating >= i ? "★" : "☆")
+
+                                </button>
+                            }
+
+                        </form>
+                    }
+
+                </div>
 
                 <!-- Button -->
                 <div class="action-buttons">
@@ -203,6 +238,45 @@
                         Báo cáo
                     </button>
 
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        if (Model.IsAuthorBlocked)
+                        {
+                            <form asp-action="UnBlockAuthor"
+                                  asp-controller="Novel"
+                                  method="post">
+
+                                <input type="hidden"
+                                       name="authorId"
+                                       value="@Model.Author?.Uid" />
+
+                                <button type="submit" class="btn-block-author blocked">
+
+                                    <i class="bi bi-person-slash-fill"></i>
+                                    Đã chặn
+
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-action="BlockAuthor"
+                                  asp-controller="Novel"
+                                  method="post">
+
+                                <input type="hidden"
+                                       name="authorId"
+                                       value="@Model.Author?.Uid" />
+
+                                <button type="submit" class="btn-block-author">
+
+                                    <i class="bi bi-person-slash-fill"></i>
+                                    Chặn tác giả
+
+                                </button>
+                            </form>
+                        }
+                    }
                 </div>
 
             </div>
@@ -249,7 +323,7 @@
             else
             {
                 <div class="p-4 text-center">
-                    <i class="bi bi-info-circle"></i>
+                    <i class="bi bi-info-circle"></i>   
                     Truyện hiện chưa được cập nhật chương nào.
                 </div>
             }

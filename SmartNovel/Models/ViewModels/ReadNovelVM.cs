@@ -21,5 +21,7 @@
         public string? PrevChapterTitle { get; set; }
 
         public string? NextChapterTitle { get; set; }
+
+        public List<Chapter> AllChapters { get; set; } = new();
     }
 }

@@ -15,5 +15,15 @@ namespace SmartNovel.Models.ViewModels
         public bool IsFollowing { get; set; }
 
         public int FollowCount { get; set; }
+
+        public double AverageRating { get; set; }
+
+        public double? UserRating { get; set; }
+
+        public int TotalRatings { get; set; }
+
+        public bool IsBlockedAuthor { get; set; }
+
+        public bool IsAuthorBlocked { get; set; } // Added to match controller usage (IsAuthorBlocked)
     }
 }

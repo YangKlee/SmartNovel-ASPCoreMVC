@@ -1,6 +1,6 @@
 ﻿.reading-background {
     background-color: #f3f4f6;
-    /* Màu nền xám nhạt dịu mắt */
+    /* Màu nền xám nhạt */
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -30,12 +30,66 @@
 
 .title-container {
     text-align: center;
-    margin-bottom: 24px;
+    margin-bottom: 0px;
     width: 100%;
     padding: 0 40px;
     /* Tránh đè lên toolbar nếu màn hình nhỏ */
 }
+/* control title */
+.chapter-top-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #6b7280;
+    font-size: 18px;
+}
 
+.chapter-breadcrumb {
+    color: #6b7280;
+    text-decoration: none;
+    max-width: 300px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+    .chapter-breadcrumb:hover {
+        color: #111827;
+    }
+
+.chapter-separator {
+    color: #9ca3af;
+}
+
+.chapter-current-title {
+    color: #374151;
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.chapter-actions {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.chapter-link {
+    border: none;
+    background: none;
+    color: #6b7280;
+    text-decoration: none;
+    cursor: pointer;
+    transition: .2s;
+}
+
+    .chapter-link:hover {
+        color: #111827;
+    }
+/* title */
 .novel-title {
     margin: 0;
     font-size: 1.25rem;
@@ -60,7 +114,7 @@
     gap: 4px;
 }
 
-    /* Chỉnh icon mượt và đẹp hơn */
+    /* Chỉnh icon */
     .toolbar-actions button {
         color: #4b5563;
         transition: all 0.2s ease;
@@ -174,4 +228,51 @@
     position: sticky;
     top: 10px;
     z-index: 100;
+}
+
+/*Mục lục chương*/
+
+#tocContainer {
+    margin-top: 24px;
+}
+
+.toc-card {
+    background: #2f313d;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0,0,0,.12);
+}
+
+.toc-header {
+    background: #292b36;
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+    padding: 18px 24px;
+}
+
+.toc-list {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.toc-item {
+    display: block;
+    padding: 14px 24px;
+    color: #e5e7eb;
+    text-decoration: none;
+    border-top: 1px solid rgba(255,255,255,.08);
+    transition: all .2s ease;
+}
+
+    .toc-item:hover {
+        background: #3a3d4a;
+        color: white;
+        text-decoration: none;
+    }
+
+.active-chapter {
+    background: #111827;
+    color: #60a5fa !important;
+    font-weight: 700;
 }

@@ -3,13 +3,14 @@
 @{
     ViewData["Title"] = Model.ChapterTitle;
 }
-<link rel="stylesheet" href="~/css/readnovel.css" asp-append-version="true" />
-<div class="reading-background">
 
+<link rel="stylesheet" href="~/css/readnovel.css" asp-append-version="true" />
+
+<div class="reading-background">
     <div class="reading-paper">
 
+        <!-- HEADER -->
         <div class="reading-header">
-
             <div class="title-container">
 
                 <h1 class="novel-title">
@@ -17,15 +18,14 @@
                 </h1>
 
                 <h2 class="chapter-title">
-                    Chương @Model.ChapterOrder:
-                    @Model.ChapterTitle
+                    Chương @Model.ChapterOrder: @Model.ChapterTitle
                 </h2>
 
             </div>
-
         </div>
-        <div class="d-flex justify-content-center gap-2 mb-3">
 
+        <!-- CONTROL BUTTONS  AUDIO-->
+        <div class="d-flex justify-content-center gap-2 mb-3">
             <button id="btnRead" class="btn btn-dark btn-sm">
                 <i class="bi bi-volume-up"></i> Đọc
             </button>
@@ -41,16 +41,57 @@
             <button id="btnStop" class="btn btn-danger btn-sm">
                 <i class="bi bi-stop-fill"></i> Dừng
             </button>
+        </div>
+        <!-- CONTROL TITLE-->
+        <div class="chapter-top-nav">
+
+            <a asp-action="Detail"
+                   asp-route-novelId="@Model.NovelId"
+                   class="chapter-breadcrumb">
+
+                @Model.NovelTitle
+            </a>
+
+            <span class="chapter-separator">
+                <i class="bi bi-chevron-right"></i>
+            </span>
+
+            <span class="chapter-current-title">
+                Chương @Model.ChapterOrder. @Model.ChapterTitle
+            </span>
+
+            <div class="chapter-actions">
+
+                <button class="chapter-link"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#tocContainer">
+                    Mục lục
+                </button>
+
+                @if (Model.NextChapterId != null)
+                {
+                    <a asp-action="Read"
+                           asp-route-novelId="@Model.NovelId"
+                           asp-route-chapterId="@Model.NextChapterId"
+                           class="chapter-link">
+
+                        Chương sau
+                        <i class="bi bi-chevron-right"></i>
+
+                    </a>
+                }
+
+            </div>
 
         </div>
-        <hr />
 
+        <!-- CONTENT -->
         <div class="reading-content">
-
             @Html.Raw(Model.HtmlContent)
-
         </div>
 
+        <!-- NAVIGATION -->
         <div class="chapter-navigation">
 
             @if (Model.PrevChapterId != null)
@@ -59,10 +100,18 @@
                        asp-action="Read"
                        asp-route-novelId="@Model.NovelId"
                        asp-route-chapterId="@Model.PrevChapterId">
-
                     ← Chương trước
                 </a>
             }
+
+            <button class="nav-btn"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#tocContainer"
+                    aria-expanded="false"
+                    aria-controls="tocContainer">
+                📖 Mục lục
+            </button>
 
             @if (Model.NextChapterId != null)
             {
@@ -70,23 +119,56 @@
                        asp-action="Read"
                        asp-route-novelId="@Model.NovelId"
                        asp-route-chapterId="@Model.NextChapterId">
-
                     Chương sau →
                 </a>
             }
-         
+
         </div>
-        </div>
+
+    </div>
 </div>
+
+<!-- DANH SÁCH CHƯƠNG -->
+<div class="collapse mt-3" id="tocContainer">
+
+    <div class="toc-card">
+
+        <div class="toc-header">
+            <i class="bi bi-list-ul"></i>
+            Danh sách chương
+        </div>
+
+        <div class="toc-list">
+
+            @foreach (var chapter in Model.AllChapters)
+            {
+                var active = chapter.ChapterId == Model.ChapterId
+                    ? "active-chapter"
+                    : "";
+
+                <a asp-action="Read"
+                       asp-route-novelId="@Model.NovelId"
+                       asp-route-chapterId="@chapter.ChapterId"
+                       class="toc-item @active">
+
+                    Chương @chapter.ChaperOrder:
+                    @chapter.ChapterTitle
+
+                </a>
+            }
+
+        </div>
+
+    </div>
+
+</div>
+
 @section Scripts {
     <script>
 
         let speech = null;
         let voices = [];
-
-        /* =========================
-           LOAD VOICES (QUAN TRỌNG)
-        ========================= */
+        // LOAD VOICES 
         function loadVoices() {
             voices = speechSynthesis.getVoices();
         }
@@ -94,88 +176,85 @@
         loadVoices();
         speechSynthesis.onvoiceschanged = loadVoices;
 
-        /* =========================
-           LẤY GIỌNG VIỆT
-        ========================= */
+        // ƯU TIÊN GIỌNG GOOGLE VIỆT NAM
         function getVietnameseVoice() {
             if (!voices || voices.length === 0) return null;
 
-            // 1. Ưu tiên số 1: Giọng tự nhiên/AI (Neural, Natural) của Microsoft hoặc Google xịn
+            // 1. Google voice (ưu tiên cao nhất)
+            let googleVoice = voices.find(v =>
+                v.lang.includes("vi") &&
+                v.name.toLowerCase().includes("google")
+            );
+            if (googleVoice) return googleVoice;
+
+            // 2. Giọng natural / neural
             let premiumVoice = voices.find(v =>
-                (v.lang === "vi-VN" || v.lang.includes("vi")) &&
-                (v.name.toLowerCase().includes("natural") || v.name.toLowerCase().includes("neural") || v.name.toLowerCase().includes("google"))
+                v.lang.includes("vi") &&
+                (
+                    v.name.toLowerCase().includes("natural") ||
+                    v.name.toLowerCase().includes("neural")
+                )
             );
             if (premiumVoice) return premiumVoice;
 
-            // 2. Ưu tiên số 2: Giọng Tiếng Việt bất kỳ chuẩn mã vi-VN
+            // 3. chuẩn vi-VN
             let standardVoice = voices.find(v => v.lang === "vi-VN");
             if (standardVoice) return standardVoice;
 
-            // 3. Fallback: Có chữ "vi" là hốt đại
+            // 4. fallback
             return voices.find(v => v.lang.toLowerCase().includes("vi")) || null;
         }
 
-        /* =========================
-           LẤY NỘI DUNG
-        ========================= */
+        // LẤY NỘI DUNG TEXT
         function getContent() {
-            let text = document.querySelector('.reading-content')?.innerText || '';
+            const el = document.querySelector('.reading-content');
+            if (!el) return "";
 
-            // làm sạch text cho dễ đọc hơn
-            return text
+            return el.innerText
                 .replace(/\s+/g, ' ')
                 .replace(/\n/g, ' ')
                 .trim();
         }
 
-        /* =========================
-           ĐỌC TRUYỆN
-        ========================= */
+        // ĐỌC
         document.getElementById('btnRead').addEventListener('click', () => {
 
             speechSynthesis.cancel();
 
             const text = getContent();
 
+            if (!text) return;
+
             speech = new SpeechSynthesisUtterance(text);
 
             speech.lang = 'vi-VN';
 
-            // lấy voice tiếng Việt nếu có
             const voice = getVietnameseVoice();
             if (voice) {
                 speech.voice = voice;
             }
 
-            // chỉnh để rõ hơn
-            speech.rate = 0.95;   // chậm lại cho rõ chữ
+            speech.rate = 0.95;
             speech.pitch = 1;
             speech.volume = 1;
 
             speechSynthesis.speak(speech);
         });
 
-        /* =========================
-           TẠM DỪNG
-        ========================= */
+        // TẠM DỪNG
         document.getElementById('btnPause').addEventListener('click', () => {
             speechSynthesis.pause();
         });
 
-        /* =========================
-           TIẾP TỤC
-        ========================= */
+        // TIẾP TỤC
         document.getElementById('btnResume').addEventListener('click', () => {
             speechSynthesis.resume();
         });
 
-        /* =========================
-           DỪNG HẲN
-        ========================= */
+        // DỪNG HẲN
         document.getElementById('btnStop').addEventListener('click', () => {
             speechSynthesis.cancel();
         });
 
     </script>
-}
 }

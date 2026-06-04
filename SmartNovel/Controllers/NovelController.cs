@@ -19,17 +19,17 @@ namespace SmartNovel.Controllers
             _chapterContentService = chapterContentService;
         }
 
-        [Route("truyen/{slug}")]
-        public IActionResult Detail(string slug)
+        [Route("truyen/{novelId}")]
+        public IActionResult Detail(string novelId)
         {
-            if (string.IsNullOrEmpty(slug))
+            if (string.IsNullOrEmpty(novelId))
                 return NotFound();
 
             var novel = _context.Novels
                 .Include(x => x.UidNavigation)
                 .Include(x => x.Categories)
                 .Include(x => x.Uids)
-                .FirstOrDefault(x => x.Slug == slug);
+                .FirstOrDefault(x => x.NovelId == novelId);
 
             if (novel == null)
                 return NotFound();
@@ -37,7 +37,28 @@ namespace SmartNovel.Controllers
             var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             bool isFollowing = false;
+            bool isAuthorBlocked = false;
+            // Đanh giá trung bình và đánh giá của người dùng
+            var ratings = _context.Ratings
+            .Where(x => x.NovelId == novelId)
+            .ToList();
 
+            double avgRating = ratings.Any()
+                ? ratings.Average(x => x.RatingPoint)
+                : 0;
+
+            double? userRating = null;
+
+            if (!string.IsNullOrEmpty(uid))
+            {
+                userRating = ratings
+                    .FirstOrDefault(x => x.Uid == uid)
+                    ?.RatingPoint;
+            }
+            if (!string.IsNullOrEmpty(uid))
+            {
+                isAuthorBlocked = novel.Uids.Any(x => x.Uid == uid);
+            }
             if (!string.IsNullOrEmpty(uid))
             {
                 isFollowing = novel.Uids.Any(x => x.Uid == uid);
@@ -46,22 +67,31 @@ namespace SmartNovel.Controllers
             var vm = new NovelDetailVM
             {
                 Novel = novel,
+
                 Author = novel.UidNavigation,
 
                 Categories = novel.Categories
-                    .Select(x => x.Name)
-                    .ToList(),
+                .Select(x => x.Name)
+                .ToList(),
 
                 Chapters = _context.Chapters
-                .Where(x =>
-                    x.NovelId == novel.NovelId &&
-                    x.Status == "Public")
+            .Where(x =>
+                x.NovelId == novel.NovelId &&
+                x.Status == "Public")
                 .OrderBy(x => x.ChaperOrder)
                 .ToList(),
 
                 IsFollowing = isFollowing,
 
-                FollowCount = novel.Uids.Count
+                IsAuthorBlocked = isAuthorBlocked,
+
+                FollowCount = novel.Uids.Count,
+
+                AverageRating = avgRating,
+
+                UserRating = userRating,
+
+                TotalRatings = ratings.Count
             };
 
             return View(vm);
@@ -148,7 +178,7 @@ namespace SmartNovel.Controllers
             return View(vm);
         }
 
-        [Route("doc-truyen/{novelId}/{chapterId}")]
+        [Route("truyen/{novelId}/{chapterId}")]
         public async Task<IActionResult> Read(string novelId, string chapterId)
         {
             var chapter = await _context.Chapters
@@ -203,7 +233,124 @@ namespace SmartNovel.Controllers
 
                 NextChapterId = nextChapter?.ChapterId,
 
-                NextChapterTitle = nextChapter?.ChapterTitle
+                NextChapterTitle = nextChapter?.ChapterTitle,
+
+                AllChapters = await _context.Chapters
+                .Where(x =>
+                    x.NovelId == novelId &&
+                    x.Status == "Public")
+                .OrderBy(x => x.ChaperOrder)
+                .ToListAsync()
+                };
+
+            return View(vm);
+        }
+
+        // Đánh giá truyện
+        [Authorize]
+        [HttpPost]
+        public IActionResult Rate(string novelId, double rating)
+        {
+            var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (uid == null)
+                return Unauthorized();
+
+            var existing = _context.Ratings
+                .FirstOrDefault(x =>
+                    x.Uid == uid &&
+                    x.NovelId == novelId);
+
+            if (existing == null)
+            {
+                _context.Ratings.Add(new Rating
+                {
+                    Uid = uid,
+                    NovelId = novelId,
+                    RatingPoint = rating
+                });
+            }
+            else
+            {
+                existing.RatingPoint = rating;
+            }
+
+            _context.SaveChanges();
+
+            return RedirectToAction(
+                nameof(Detail),
+                new { novelId });
+        }
+        //Chặn tác giả
+        [Authorize]
+        [HttpPost]
+        public IActionResult BlockAuthor(string authorId)
+        {
+            var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var user = _context.Users
+                .Include(x => x.Authors)
+                .FirstOrDefault(x => x.Uid == uid);
+
+            var author = _context.Users
+                .FirstOrDefault(x => x.Uid == authorId);
+
+            if (user == null || author == null)
+                return NotFound();
+
+            if (!user.Authors.Any(x => x.Uid == authorId))
+            {
+                user.Authors.Add(author);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction(
+                nameof(BlockedAuthors));
+        }
+
+        // Bỏ chặn tác giả
+        [Authorize]
+        [HttpPost]
+        public IActionResult UnBlockAuthor(string authorId)
+        {
+            var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var user = _context.Users
+                .Include(x => x.Authors)
+                .FirstOrDefault(x => x.Uid == uid);
+
+            if (user == null)
+                return NotFound();
+
+            var author = user.Authors
+                .FirstOrDefault(x => x.Uid == authorId);
+
+            if (author != null)
+            {
+                user.Authors.Remove(author);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction(
+                nameof(BlockedAuthors));
+        }
+        [Authorize]
+        public IActionResult BlockedAuthors()
+        {
+            var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var user = _context.Users
+                .Include(x => x.Authors)
+                .FirstOrDefault(x => x.Uid == uid);
+
+            if (user == null)
+                return NotFound();
+
+            var vm = new BlockedAuthorVM
+            {
+                Authors = user.Authors
+                    .OrderBy(x => x.DisplayName)
+                    .ToList()
             };
 
             return View(vm);
