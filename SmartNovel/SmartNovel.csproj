@@ -30,4 +30,8 @@
     <PackageReference Include="X.PagedList.Mvc.Core" Version="10.5.9" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\css\chaptermanager\" />
+  </ItemGroup>
+
 </Project>

@@ -70,7 +70,7 @@
             <a href="/novel/@Model.NovelId" class="btn btn-flat btn-orange">
                 <i class="bi bi-book"></i> Xem truyện
             </a>
-            <a href="/dashboard/author/chapter-manager/@Model.NovelId" class="btn btn-flat btn-indigo">
+            <a asp-controller="ChapterManagerment" asp-action="Index" asp-route-id="@Model.NovelId" class="btn btn-flat btn-indigo">
                 <i class="bi bi-list-task"></i> Quản lý chương
             </a>
             <a asp-controller="NovelManagerment" asp-action="Modify" asp-route-id="@Model.NovelId" class="btn btn-flat btn-blue">
