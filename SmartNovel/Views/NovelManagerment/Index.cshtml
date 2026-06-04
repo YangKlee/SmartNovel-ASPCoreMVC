@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Quản lý truyện";
     Layout = "_LayoutAdmin";
 }
@@ -10,6 +10,24 @@
     <link rel="stylesheet" href="~/css/novelmanager/novelManager.css" />
 </head>
 <div class="story-management-wrapper">
+    <!-- Hiển thị thông báo (Thành công / Thất bại) từ TempData -->
+    @if (TempData["Success"] != null)
+    {
+        if ((bool)TempData["Success"] == true)
+        {
+            <div class="alert alert-success alert-dismissible fade show mt-3 mb-0" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i> @TempData["Msg"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-danger alert-dismissible fade show mt-3 mb-0" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["Msg"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+    }
     <div class="story-header">
         <h1 class="story-title">Quản lý truyện</h1>
         <a class="btn-create" asp-controller="NovelManagerment" asp-action="Add">

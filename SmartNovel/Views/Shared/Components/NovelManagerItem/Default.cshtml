@@ -73,7 +73,7 @@
             <a href="/dashboard/author/chapter-manager/@Model.NovelId" class="btn btn-flat btn-indigo">
                 <i class="bi bi-list-task"></i> Quản lý chương
             </a>
-            <a href="/dashboard/author/novel-manager/modify-novel/@Model.NovelId" class="btn btn-flat btn-blue">
+            <a asp-controller="NovelManagerment" asp-action="Modify" asp-route-id="@Model.NovelId" class="btn btn-flat btn-blue">
                 <i class="bi bi-pencil-square"></i> Chỉnh sửa
             </a>
             <button type="button" onclick="confirmDelete('@Model.NovelId')" class="btn btn-flat btn-warn">

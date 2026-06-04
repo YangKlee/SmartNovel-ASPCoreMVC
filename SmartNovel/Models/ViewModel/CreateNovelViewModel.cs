@@ -6,6 +6,8 @@ namespace SmartNovel.Models.ViewModel
 {
     public class CreateNovelViewModel
     {
+        public string? NovelId { get; set; }
+
         [Required(ErrorMessage = "Tiêu đề là bắt buộc.")]
         [MaxLength(255, ErrorMessage = "Tiêu đề tối đa 255 ký tự.")]
         public string Title { get; set; } = string.Empty;

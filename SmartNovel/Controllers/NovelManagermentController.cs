@@ -169,16 +169,147 @@ namespace SmartNovel.Controllers
 
                 await _context.SaveChangesAsync();
                 
-                ViewBag.Success = true;
-                ViewBag.Msg = "Tạo truyện thành công!";
-                ModelState.Clear();
-                return View(new CreateNovelViewModel()); 
+                TempData["Success"] = true;
+                TempData["Msg"] = "Tạo truyện thành công!";
+                return RedirectToAction("Index");
             }
             catch
             {
                 ViewBag.Success = false;
                 ViewBag.Msg = "Something went wrong huhuhuuhhu";
                 return View(req);
+            }
+        }
+        [HttpGet]
+        [Authorize(Roles = "3")]
+        public async Task<IActionResult> Modify(string id)
+        {
+            var cate = await _context.Categories.Where(c => c.Status == "active").ToListAsync();
+            ViewBag.AvailableGenres = cate;
+            ViewBag.IsModify = true;
+            
+            var novel = await _context.Novels.Include(n => n.Categories).FirstOrDefaultAsync(c => c.NovelId == id);
+            if (novel == null) return NotFound();
+
+            ViewBag.FileCoverUrl = novel.ImageNovelUrl;
+            ViewBag.FileBannerUrl = novel.ImageBanerNovelUrl;
+            
+            var model = new CreateNovelViewModel
+            {
+                NovelId = novel.NovelId,
+                AgeRating = novel.AgeRating,
+                Description = novel.Description,
+                Genres = novel.Categories.Select(c => c.CategoryId).ToList(),
+                Status = novel.Status,
+                Title = novel.Title, 
+            };
+
+            return View("Add", model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "3")]
+        public async Task<IActionResult> Modify(string id, CreateNovelViewModel req)
+        {
+            var cate = await _context.Categories.Where(c => c.Status == "active").ToListAsync();
+            ViewBag.AvailableGenres = cate;
+            ViewBag.IsModify = true;
+
+            var novel = await _context.Novels.Include(n => n.Categories).FirstOrDefaultAsync(c => c.NovelId == id);
+            if (novel == null) return NotFound();
+
+            ViewBag.FileCoverUrl = novel.ImageNovelUrl;
+            ViewBag.FileBannerUrl = novel.ImageBanerNovelUrl;
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Success = false;
+                ViewBag.Msg = "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.";
+                return View("Add", req);
+            }
+
+            if (req.Status != "Public" && req.Status != "Draft")
+            {
+                ViewBag.Success = false;
+                ViewBag.Msg = "Trạng thái truyện không hợp lệ.";
+                return View("Add", req);
+            }
+
+            novel.Status = req.Status;
+            novel.Title = req.Title;
+            novel.Description = req.Description;
+            novel.UpdateTime = DateTime.Now;
+            novel.AgeRating = req.AgeRating;
+
+            // Update Categories
+            novel.Categories.Clear();
+            if (req.Genres != null)
+            {
+                foreach (var categoryId in req.Genres)
+                {
+                    var category = await _context.Categories.FirstOrDefaultAsync(c => c.CategoryId == categoryId);
+                    if (category != null)
+                    {
+                        novel.Categories.Add(category);
+                    }
+                }
+            }
+
+            try
+            {
+                string publicLink = "https://pub-20056e4912f440f08b3d40eea545f95f.r2.dev/smart-novel/novel-image/";
+                
+                if (req.CoverImage != null)
+                {
+                    if (novel.ImageNovelUrl != null)
+                    {
+                        var fileOldName = novel.ImageNovelUrl.Replace(publicLink, "");
+                        await _fileServicesUpload.DeleteFile("smart-novel/novel-image/", fileOldName);
+    
+                    }
+                    Guid idFile = Guid.NewGuid();
+                    string fileCoverNameRaw = req.CoverImage.FileName;
+                    string fileCoverName = $"{idFile.ToString()}-{fileCoverNameRaw}";
+                    var resultUploadCover = await _fileServicesUpload.UploadFile("smart-novel/novel-image/",
+                        fileCoverName, req.CoverImage);
+
+                    if (resultUploadCover)
+                    {
+                        novel.ImageNovelUrl = publicLink + fileCoverName;
+                    }
+                }
+
+                if (req.BannerImage != null)
+                {
+                    if (novel.ImageBanerNovelUrl != null)
+                    {
+                        var fileOldName = novel.ImageBanerNovelUrl.Replace(publicLink, "");
+                        await _fileServicesUpload.DeleteFile("smart-novel/novel-image/", fileOldName);
+
+                    }
+                    Guid idFile1 = Guid.NewGuid();
+                    string fileBannerNameRaw = req.BannerImage.FileName;
+                    string fileBannerName = $"{idFile1.ToString()}-{fileBannerNameRaw}";
+
+                    var resultUploadBanner = await _fileServicesUpload.UploadFile("smart-novel/novel-image/",
+                        fileBannerName, req.BannerImage);
+                    if (resultUploadBanner)
+                    {
+                        novel.ImageBanerNovelUrl = publicLink + fileBannerName;
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+                
+                TempData["Success"] = true;
+                TempData["Msg"] = "Cập nhật truyện thành công!";
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                ViewBag.Success = false;
+                ViewBag.Msg = "Something went wrong huhuhuuhhu";
+                return View("Add", req);
             }
         }
     }
