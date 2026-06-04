@@ -49,6 +49,7 @@
     </div>
 
 </div>
+@await Html.PartialAsync("/Views/Shared/PartialView/_Pagination.cshtml", Model)
 <script>
     const selectElement = document.getElementById("status-dropdown");
     selectElement.value = @Model.SelectedStatus

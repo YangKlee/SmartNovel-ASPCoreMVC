@@ -27,8 +27,10 @@ namespace SmartNovel.Controllers
                 query = query.Where(n => n.Status == req.SelectedStatus);
             }
             var totalCount = await query.CountAsync();
+            // đống này lộn xộn vcl nhưng miễn nó hoạt động đc là oke
             var items = await query.Select(n => new NovelViewModel
             {
+
                 NovelId = n.NovelId,
                 Title = n.Title,
                 Slug = n.Slug,
