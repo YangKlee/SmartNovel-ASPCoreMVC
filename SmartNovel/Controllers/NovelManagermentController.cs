@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmartNovel.Models;
 using SmartNovel.Models.ViewModel;
@@ -14,6 +15,7 @@ namespace SmartNovel.Controllers
         {
             _context = context;
         }
+        [Authorize(Roles = "3")]
         public async Task<IActionResult>  Index(NovelManagermentViewModel req)
         {
             var uid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
