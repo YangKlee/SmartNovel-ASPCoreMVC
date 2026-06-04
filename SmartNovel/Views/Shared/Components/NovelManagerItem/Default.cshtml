@@ -22,7 +22,6 @@
             <div class="meta-row">
         
                 @{
-                    // Logic xử lý màu nền cho trạng thái (thay thế ngStyle)
                     string statusColor = Model.Status == "Public" ? "green" :
                                          Model.Status == "Reject" ? "red" : "gray";
                 }
@@ -36,9 +35,9 @@
 
             <div class="meta-item">
                 Thể loại:
-                @if (Model.Categories != null && Model.Categories.Any())
+                @if (Model.categories != null && Model.categories.Any())
                 {
-                    @foreach (var c in Model.Categories)
+                    @foreach (var c in Model.categories)
                     {
                         <span class="meta-item">#@c.Name</span>
                     }
@@ -51,15 +50,15 @@
 
             <div class="stats-box">
                 <div class="stat-tag tag-green">
-                    <span class="stat-number">@Model.CountChapterPublic</span>
+                    <span class="stat-number">@Model.countChapterPublic</span>
                     <span class="stat-label">Chương đã đăng</span>
                 </div>
                 <div class="stat-tag tag-gray">
-                    <span class="stat-number">@Model.CountChapterDraf</span>
+                    <span class="stat-number">@Model.countChapterDraft</span>
                     <span class="stat-label">Bản nháp</span>
                 </div>
                 <div class="stat-tag tag-red">
-                    <span class="stat-number">@Model.CountChapterRemove</span>
+                    <span class="stat-number">@Model.countChapterRemove</span>
                     <span class="stat-label">Đã gỡ</span>
                 </div>
             </div>
@@ -83,9 +82,9 @@
         </div>
 
         <div class="social-metrics">
-            <div class="metric"><span class="material-icons">visibility</span> @Model.ViewCount</div>
-            <div class="metric"><span class="material-icons">star</span> @Model.NovelRating</div>
-            <div class="metric"><span class="material-icons">chat</span> @Model.LikeCount</div>
+            <div class="metric"><i class="bi bi-eye"></i> @Model.ViewCount</div>
+            <div class="metric"><i class="bi bi-star"></i> @Model.novelRating</div>
+            <div class="metric"><i class="bi bi-chat"></i> @Model.LikeCount</div>
         </div>
     </div>
 </div>

@@ -4,4 +4,52 @@
 }
 @{
 }
-<h1>Hello world</h1>
+@model SmartNovel.Models.ViewModel.NovelManagermentViewModel
+<head>
+    <link rel="stylesheet" href="~/css/novelmanager/novelItemcss.css" />
+    <link rel="stylesheet" href="~/css/novelmanager/novelManager.css" />
+</head>
+<div class="story-management-wrapper">
+    <div class="story-header">
+        <h1 class="story-title">Quản lý truyện</h1>
+        <a class="btn-create" asp-controller="Novel" asp-action="Create">
+            <i class="bi bi-plus-circle"></i> Tạo truyện mới
+        </a>
+    </div>
+
+    <form method="get" asp-action="Index" id="filterForm">
+        <div class="story-controls">
+            <select id="status-dropdown" class="status-dropdown" asp-for="SelectedStatus" onchange="this.form.submit()">
+                <option value="all">Tất cả trạng thái</option>
+                <option value="public">Đã đăng</option>
+                <option value="draft">Lưu nháp</option>
+                <option value="cancel">Đã gỡ</option>
+            </select>
+            
+            <input type="text" class="search-input"  asp-for="Keyword" placeholder="Tìm kiếm truyện...">
+            
+            <button type="submit" style="display: none;"></button>
+        </div>
+    </form>
+
+    <div class="novel-list">
+        @if (Model.novels != null && Model.novels.Any())
+        {
+            foreach (var n in Model.novels)
+            {
+                <div class="novel-item-wrapper">
+                    @await Component.InvokeAsync("NovelManagerItem", n)
+                </div>
+            }
+        }
+        else
+        {
+            <span class="empty-noti">Không có truyện</span>
+        }
+    </div>
+
+</div>
+<script>
+    const selectElement = document.getElementById("status-dropdown");
+    selectElement.value = @Model.SelectedStatus
+</script>

@@ -14,21 +14,20 @@ namespace SmartNovel.Controllers
         {
             _context = context;
         }
-        public async Task<IActionResult>  Index([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10,
-            [FromQuery] string type = "all", [FromQuery] string keyword = "")
+        public async Task<IActionResult>  Index(NovelManagermentViewModel req)
         {
             var uid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var query = _context.Novels.AsNoTracking().Where(n => n.Uid == uid);
-            if (!string.IsNullOrWhiteSpace(keyword))
+            if (!string.IsNullOrWhiteSpace(req.Keyword))
             {
-                query = query.Where(n => n.Title.Contains(keyword));
+                query = query.Where(n => n.Title.Contains(req.Keyword));
             }
-            if (!string.IsNullOrEmpty(type) && type.ToLower() != "all")
+            if (!string.IsNullOrEmpty(req.SelectedStatus) && req.SelectedStatus.ToLower() != "all")
             {
-                query = query.Where(n => n.Status == type);
+                query = query.Where(n => n.Status == req.SelectedStatus);
             }
             var totalCount = await query.CountAsync();
-            var items = await query.Select(n => new NovelManagermentViewModel
+            var items = await query.Select(n => new NovelViewModel
             {
                 NovelId = n.NovelId,
                 Title = n.Title,
@@ -50,14 +49,15 @@ namespace SmartNovel.Controllers
                 novelRating = n.Ratings
                         .Select(r => (double?)r.RatingPoint)
                         .Average() ?? 0
-            }).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+            }).Skip((req.CurrentPage - 1) * req.PageSize).Take(req.PageSize).ToListAsync();
 
-            var models = new ResultPartition<NovelManagermentViewModel>
+            var models = new NovelManagermentViewModel
             {
-                data = items,
-                PageNumber = pageNumber,
-                PageSize = pageSize,
-                TotalCount = totalCount
+
+                novels = items,
+                PageSize = req.PageSize,
+                TotalItem = totalCount,
+                CurrentPage = req.CurrentPage
 
             };
 
