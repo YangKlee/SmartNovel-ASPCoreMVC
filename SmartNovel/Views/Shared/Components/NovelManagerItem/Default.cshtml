@@ -1,0 +1,97 @@
+﻿@model SmartNovel.Models.ViewModel.NovelViewModel
+<div class="novel-card card-outlined">
+    <div class="novel-content-wrapper">
+        <div class="cover-section">
+            @if (!string.IsNullOrEmpty(Model.ImageNovelUrl))
+            {
+                <img src="@Model.ImageNovelUrl" alt="Cover" class="cover-img" />
+            }
+            else
+            {
+                <div class="cover-placeholder"></div>
+            }
+        </div>
+
+        <div class="info-section">
+            <h2 class="novel-title">@Model.Title</h2>
+
+            <div class="summary-box">
+                <p><i>@Model.Description</i></p>
+            </div>
+
+            <div class="meta-row">
+                @if (!string.IsNullOrEmpty(Model.AuthorName))
+                {
+                    <span class="meta-item">Tác giả: <strong>@Model.AuthorName</strong></span>
+                }
+        
+                @{
+                    // Logic xử lý màu nền cho trạng thái (thay thế ngStyle)
+                    string statusColor = Model.Status == "Public" ? "green" :
+                                         Model.Status == "Reject" ? "red" : "gray";
+                }
+                <span class="meta-item">
+                    Trạng thái truyện:
+                    <span style="background-color: @statusColor; color: white; padding: 5px; border-radius: 10px;">
+                        @Model.Status
+                    </span>
+                </span>
+            </div>
+
+            <div class="meta-item">
+                Thể loại:
+                @if (Model.Categories != null && Model.Categories.Any())
+                {
+                    @foreach (var c in Model.Categories)
+                    {
+                        <span class="meta-item">#@c.Name</span>
+                    }
+                }
+                else
+                {
+                    <span style="color: red; font-size: 12px;">(Không có)</span>
+                }
+            </div>
+
+            <div class="stats-box">
+                <div class="stat-tag tag-green">
+                    <span class="stat-number">@Model.CountChapterPublic</span>
+                    <span class="stat-label">Chương đã đăng</span>
+                </div>
+                <div class="stat-tag tag-gray">
+                    <span class="stat-number">@Model.CountChapterDraf</span>
+                    <span class="stat-label">Bản nháp</span>
+                </div>
+                <div class="stat-tag tag-red">
+                    <span class="stat-number">@Model.CountChapterRemove</span>
+                    <span class="stat-label">Đã gỡ</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="action-bar">
+        <div class="action-buttons">
+            <a href="/novel/@Model.NovelId" class="btn btn-flat btn-orange">
+                <i class="bi bi-book"></i> Xem truyện
+            </a>
+            <a href="/dashboard/author/chapter-manager/@Model.NovelId" class="btn btn-flat btn-indigo">
+                <i class="bi bi-list-task"></i> Quản lý chương
+            </a>
+            <a href="/dashboard/author/novel-manager/modify-novel/@Model.NovelId" class="btn btn-flat btn-blue">
+                <i class="bi bi-pencil-square"></i> Chỉnh sửa
+            </a>
+            <button type="button" onclick="confirmDelete('@Model.NovelId')" class="btn btn-flat btn-warn">
+                <i class="bi bi-trash"></i> Xóa
+            </button>
+        </div>
+
+        <div class="social-metrics">
+            <div class="metric"><span class="material-icons">visibility</span> @Model.ViewCount</div>
+            <div class="metric"><span class="material-icons">star</span> @Model.NovelRating</div>
+            <div class="metric"><span class="material-icons">chat</span> @Model.LikeCount</div>
+        </div>
+    </div>
+</div>
+
+@* <partial name="_ConfirmDeletePartial" model="novel" /> *@

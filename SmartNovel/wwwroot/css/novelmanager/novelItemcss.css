@@ -1,0 +1,200 @@
+﻿.novel-card {
+    border-radius: 12px;
+    overflow: hidden;
+    background: #ffffff;
+    margin-bottom: 16px;
+    border: 1px solid #e0e0e0;
+    transition: box-shadow 0.3s ease;
+}
+
+    .novel-card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+.novel-content-wrapper {
+    display: flex;
+    padding: 16px;
+    gap: 20px;
+}
+
+.cover-section {
+    flex-shrink: 0;
+    width: 120px;
+    height: 160px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+    .cover-section .cover-placeholder {
+        width: 100%;
+        height: 100%;
+        background-color: #e5e7eb;
+    }
+
+    .cover-section .cover-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.info-section {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+    .info-section .novel-title {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 700;
+        color: #1f2937;
+    }
+
+    .info-section .summary-box {
+        background-color: #f3f4f6;
+        padding: 12px 16px;
+        border-radius: 8px;
+        color: #4b5563;
+        font-size: 14px;
+    }
+
+        .info-section .summary-box p {
+            margin: 0;
+        }
+
+    .info-section .meta-row {
+        display: flex;
+        gap: 24px;
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+    .info-section .meta-item {
+        color: #6b7280;
+    }
+
+    .info-section .stats-box {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+        .info-section .stats-box .stat-tag {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            min-width: 110px;
+        }
+
+            .info-section .stats-box .stat-tag .stat-number {
+                font-weight: 800;
+                font-size: 24px;
+                line-height: 1;
+            }
+
+            .info-section .stats-box .stat-tag .stat-label {
+                font-weight: 500;
+            }
+
+        .info-section .stats-box .tag-green {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .info-section .stats-box .tag-gray {
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+
+        .info-section .stats-box .tag-red {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+.action-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-top: 1px solid #e5e7eb;
+}
+
+    .action-bar .action-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+
+.btn-flat {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 500;
+    font-family: inherit;
+    font-size: 14px;
+    transition: opacity 0.2s;
+}
+
+    .btn-flat:hover {
+        opacity: 0.85;
+    }
+
+    .btn-flat i {
+        font-size: 16px;
+    }
+
+.btn-orange {
+    background-color: #f97316;
+    color: white;
+}
+
+.btn-indigo {
+    background-color: #4f46e5;
+    color: white;
+}
+
+.btn-blue {
+    background-color: #0ea5e9;
+    color: white;
+}
+
+.btn-warn {
+    background-color: #f44336;
+    color: white;
+}
+
+
+.action-bar .social-metrics {
+    display: flex;
+    gap: 16px;
+    color: #9ca3af;
+}
+
+    .action-bar .social-metrics .metric {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 15px;
+    }
+
+
+.material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
