@@ -1,0 +1,250 @@
+﻿@model SmartNovel.ViewModels.NovelSearchViewModel
+
+@{
+    ViewData["Title"] = "Tìm truyện";
+}
+
+<link rel="stylesheet" href="~/css/novel-search.css" />
+
+<div class="container mt-4">
+
+    <div class="search-panel">
+
+        <h2>Tìm Truyện</h2>
+
+        <form method="get">
+
+            <div class="row g-2">
+
+                <!-- Từ khóa -->
+                <div class="col-md-3">
+                    <input class="form-control"
+                           name="keyword"
+                           value="@Model.Keyword"
+                           placeholder="Tên truyện..." />
+                </div>
+
+                <!-- Trạng thái -->
+                <div class="col-md-2">
+                    <select class="form-select" name="status">
+
+                        <option value="">Tất cả trạng thái</option>
+
+                        <option value="ACTIVE"
+                                selected="@(Model.Status == "ACTIVE")">
+                            ACTIVE
+                        </option>
+
+                        <option value="ONGOING"
+                                selected="@(Model.Status == "ONGOING")">
+                            ONGOING
+                        </option>
+
+                        <option value="PAUSED"
+                                selected="@(Model.Status == "PAUSED")">
+                            PAUSED
+                        </option>
+
+                    </select>
+                </div>
+
+                <!-- Tác giả -->
+                <div class="col-md-2">
+                    <select class="form-select" name="authorId">
+
+                        <option value="">Tất cả tác giả</option>
+
+                        @foreach (var author in Model.Authors)
+                        {
+                            <option value="@author.Uid"
+                                    selected="@(Model.AuthorId == author.Uid)">
+                                @author.DisplayName
+                            </option>
+                        }
+
+                    </select>
+                </div>
+
+                <!-- Rating -->
+                <div class="col-md-2">
+                    <select class="form-select" name="minRating">
+
+                        <option value="">Đánh giá</option>
+
+                        <option value="5"
+                                selected="@(Model.MinRating == 5)">
+                            ⭐ 5 sao
+                        </option>
+
+                        <option value="4"
+                                selected="@(Model.MinRating == 4)">
+                            ⭐ 4 sao trở lên
+                        </option>
+
+                        <option value="3"
+                                selected="@(Model.MinRating == 3)">
+                            ⭐ 3 sao trở lên
+                        </option>
+
+                        <option value="2"
+                                selected="@(Model.MinRating == 2)">
+                            ⭐ 2 sao trở lên
+                        </option>
+
+                        <option value="1"
+                                selected="@(Model.MinRating == 1)">
+                            ⭐ 1 sao trở lên
+                        </option>
+
+                    </select>
+                </div>
+
+                <!-- Sắp xếp -->
+                <div class="col-md-2">
+                    <select class="form-select" name="sortBy">
+
+                        <option value=""
+                                selected="@(string.IsNullOrEmpty(Model.SortBy))">
+                            Mới cập nhật
+                        </option>
+
+                        <option value="view"
+                                selected="@(Model.SortBy == "view")">
+                            Lượt xem
+                        </option>
+
+                        <option value="like"
+                                selected="@(Model.SortBy == "like")">
+                            Lượt thích
+                        </option>
+
+                        <option value="name"
+                                selected="@(Model.SortBy == "name")">
+                            Tên A-Z
+                        </option>
+
+                    </select>
+                </div>
+
+                <!-- Nút tìm -->
+                <div class="col-md-1">
+                    <button class="btn btn-primary w-100">
+                        Tìm
+                    </button>
+                </div>
+
+            </div>
+
+            <hr />
+
+            <!-- Thể loại -->
+
+            <h5>Thể loại</h5>
+
+            <div class="category-grid">
+
+                @foreach (var category in Model.Categories)
+                {
+                    <label class="tag-item">
+
+                        <input type="checkbox"
+                               name="selectedCategories"
+                               value="@category.CategoryId"
+                               checked="@(Model.SelectedCategories.Contains(category.CategoryId))" />
+
+                        @category.Name
+
+                    </label>
+                }
+
+            </div>
+
+        </form>
+
+    </div>
+
+    @if (Model.IsSearching)
+    {
+        <div class="row mt-4">
+
+            @if (Model.Novels.Any())
+            {
+                @foreach (var novel in Model.Novels)
+                {
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+
+                        <div class="novel-card">
+
+                            <img src="@(string.IsNullOrEmpty(novel.ImageNovelUrl)
+                                                                 ? "/images/no-image.png"
+                                                                 : novel.ImageNovelUrl)" />
+
+                            <div class="content">
+
+                                <h5>@novel.Title</h5>
+
+                                <small>
+                                    @novel.UidNavigation.DisplayName
+                                </small>
+
+                                <div>
+                                    👁 @novel.ViewCount
+                                </div>
+
+                                <div>
+                                    ❤ @novel.LikeCount
+                                </div>
+
+                                <div>
+                                    📖 @novel.Status
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="alert alert-warning">
+                    Không tìm thấy truyện phù hợp.
+                </div>
+            }
+
+        </div>
+
+        @if (Model.TotalPages > 1)
+        {
+            <nav class="mt-4">
+
+                <ul class="pagination justify-content-center">
+
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+
+                            <a class="page-link"
+                               asp-action="Search"
+                               asp-route-page="@i"
+                               asp-route-keyword="@Model.Keyword"
+                               asp-route-status="@Model.Status"
+                               asp-route-authorId="@Model.AuthorId"
+                               asp-route-sortBy="@Model.SortBy"
+                               asp-route-minRating="@Model.MinRating">
+
+                                @i
+
+                            </a>
+
+                        </li>
+                    }
+
+                </ul>
+
+            </nav>
+        }
+    }
+
+</div>

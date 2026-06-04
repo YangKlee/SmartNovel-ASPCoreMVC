@@ -1,0 +1,46 @@
+﻿.search-panel {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.08);
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(180px,1fr));
+    gap: 10px;
+}
+
+.tag-item {
+    background: #f7f7f7;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.novel-card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    transition: .3s;
+}
+
+    .novel-card:hover {
+        transform: translateY(-4px);
+    }
+
+    .novel-card img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+    }
+
+    .novel-card .content {
+        padding: 12px;
+    }
+
+    .novel-card h5 {
+        font-size: 16px;
+        min-height: 50px;
+    }
