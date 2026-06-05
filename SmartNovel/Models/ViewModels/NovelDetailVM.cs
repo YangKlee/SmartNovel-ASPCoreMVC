@@ -24,6 +24,6 @@ namespace SmartNovel.Models.ViewModels
 
         public bool IsBlockedAuthor { get; set; }
 
-        public bool IsAuthorBlocked { get; set; } // Added to match controller usage (IsAuthorBlocked)
+        public bool IsAuthorBlocked { get; set; } 
     }
 }

@@ -55,10 +55,20 @@ namespace SmartNovel.Controllers
                     .FirstOrDefault(x => x.Uid == uid)
                     ?.RatingPoint;
             }
+
             if (!string.IsNullOrEmpty(uid))
             {
-                isAuthorBlocked = novel.Uids.Any(x => x.Uid == uid);
+                var user = _context.Users
+                    .Include(x => x.Authors)
+                    .FirstOrDefault(x => x.Uid == uid);
+
+                if (user != null)
+                {
+                    isAuthorBlocked = user.Authors
+                        .Any(x => x.Uid == novel.Uid);
+                }
             }
+
             if (!string.IsNullOrEmpty(uid))
             {
                 isFollowing = novel.Uids.Any(x => x.Uid == uid);
@@ -121,7 +131,7 @@ namespace SmartNovel.Controllers
 
             return RedirectToAction(
                 nameof(Detail),
-                new { slug = novel.Slug });
+                new { novelId = novel.NovelId });
         }
 
         [Authorize]
@@ -147,7 +157,7 @@ namespace SmartNovel.Controllers
 
                 return RedirectToAction(
                     nameof(Detail),
-                    new { slug = novel.Slug });
+                    new { novelId = novel.NovelId });
             }
 
             return RedirectToAction("Following");
@@ -304,6 +314,12 @@ namespace SmartNovel.Controllers
                 _context.SaveChanges();
             }
 
+            if (uid == authorId)
+            {
+                return RedirectToAction("Detail",
+                    new { novelId = Request.Form["novelId"] });
+            }
+
             return RedirectToAction(
                 nameof(BlockedAuthors));
         }
@@ -331,8 +347,7 @@ namespace SmartNovel.Controllers
                 _context.SaveChanges();
             }
 
-            return RedirectToAction(
-                nameof(BlockedAuthors));
+            return Redirect(Request.Headers["Referer"].ToString());
         }
         [Authorize]
         public IActionResult BlockedAuthors()
