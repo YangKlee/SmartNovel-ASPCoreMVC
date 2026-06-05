@@ -1,0 +1,28 @@
+﻿@model IEnumerable<SmartNovel.Models.User>
+
+<div class="card border-0 shadow-sm top-authors-widget">
+    <div class="card-header bg-dark text-white py-2">
+        <h6 class="fw-bold text-uppercase mb-0 fs-7">
+            <i class="bi bi-people-fill me-2"></i>Top Tác Giả
+        </h6>
+    </div>
+
+    <div class="card-body p-0">
+        <div class="author-list">
+            @{
+                int rank = 1;
+            }
+            @foreach (var tacGia in Model)
+            {
+                <div class="author-item d-flex align-items-center p-2 border-bottom">
+                    <span class="rank-label rank-@rank me-2">#@rank :</span>
+
+                    <h6 class="mb-0 text-truncate fw-bold fs-7">
+                        <a href="/Author/@tacGia.Uid" class="text-decoration-none author-name-link rank-text-@rank">@tacGia.DisplayName</a>
+                    </h6>
+                </div>
+                rank++;
+            }
+        </div>
+    </div>
+</div>

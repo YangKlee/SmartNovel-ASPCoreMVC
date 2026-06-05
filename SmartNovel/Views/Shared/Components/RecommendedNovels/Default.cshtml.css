@@ -1,0 +1,137 @@
+﻿/* Đường gạch chân tiêu đề dày màu xám nhạt */
+.section-header {
+    border-bottom: 2px solid #dee2e6 !important;
+}
+
+.section-title {
+    color: #212529;
+    font-size: 1.15rem;
+    letter-spacing: 0.5px;
+}
+
+/* Custom các nút tab chữ nhỏ trơn kề nhau cho Truyện Đề Xuất (Tone Xanh Dương) */
+.tab-item-btn {
+    background-color: transparent !important;
+    border: none !important;
+    color: #6c757d;
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 0.25rem 0.5rem;
+}
+
+    .tab-item-btn:hover {
+        color: #0d6efd; /* Đổi sang màu xanh dương khi hover */
+    }
+
+    .tab-item-btn.active {
+        color: #0d6efd !important; /* Đổi màu chữ active sang xanh dương giống tiêu đề */
+        border-bottom: 2px solid #0d6efd !important; /* Gạch chân màu xanh dương */
+        border-radius: 0;
+    }
+
+/* Kích thước text siêu nhỏ cho tag và thống kê */
+.text-xs {
+    font-size: 0.7rem;
+}
+
+/* Khung bọc ảnh bìa để xử lý tỉ lệ và bo góc */
+.card-img-wrapper {
+    height: 185px;
+    overflow: hidden;
+    border-radius: 6px;
+    background-color: #f1f1f1;
+}
+
+    .card-img-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+.novel-card:hover .card-img-wrapper img {
+    transform: scale(1.05);
+}
+
+/* Thiết kế nhãn độ tuổi tròn xoe viền trắng giống ảnh mẫu */
+.age-badge {
+    width: 28px;
+    height: 28px;
+    font-size: 0.68rem;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+/* Định dạng text phần card */
+.novel-title a {
+    color: #212529;
+    text-decoration: none;
+    font-size: 0.82rem;
+}
+
+    .novel-title a:hover {
+        color: #0d6efd; /* Tên truyện đổi sang xanh dương khi hover */
+    }
+
+.novel-author {
+    font-size: 0.75rem;
+    margin-bottom: 0;
+}
+
+/* Thiết kế 2 nút mũi tên Slider hai bên sườn (Đồng bộ nút bấm khi hover) */
+.slider-container {
+    padding: 0 1.5rem;
+}
+
+.btn-arrow {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    cursor: pointer;
+    color: #495057;
+    transition: all 0.2s;
+}
+
+    .btn-arrow:hover {
+        background: #0d6efd; /* Nút mũi tên hóa xanh khi hover cho đúng bài */
+        color: #fff;
+        border-color: #0d6efd;
+    }
+
+.btn-prev {
+    left: -5px !important;
+}
+
+.btn-next {
+    right: -5px !important;
+}
+.slider-container .row {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto; /* Bật thanh cuộn ngang */
+    scroll-behavior: smooth; /* Tạo hiệu ứng cuộn mượt mà */
+    padding-bottom: 10px; /* Thêm khoảng trống để không bị đè mất bóng đổ của card */
+}
+
+    /* 2. Ẩn thanh cuộn xấu xí của trình duyệt (Nhìn giao diện sẽ sạch sẽ y như ảnh mẫu) */
+    .slider-container .row::-webkit-scrollbar {
+        height: 0px; /* Ẩn trên Chrome, Safari, Edge */
+        background: transparent;
+    }
+
+.slider-container .row {
+    scrollbar-width: none; /* Ẩn trên Firefox */
+    -ms-overflow-style: none; /* Ẩn trên IE */
+}
+
+    /* 3. Khóa cứng độ rộng của từng ô truyện (Không cho tụi nó co rúm lại với nhau) */
+    .slider-container .row .col {
+        flex: 0 0 20% !important; /* Mặc định màn hình máy tính hiển thị đúng 5 truyện (100% / 5 = 20%) */
+        max-width: 20% !important;
+    }
