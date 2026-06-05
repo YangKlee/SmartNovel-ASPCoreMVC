@@ -1,0 +1,268 @@
+﻿:root {
+    /* Colors */
+    --auth-bg: #f3f5f8;
+    --auth-card-bg: #3a3b40;
+    --auth-text-main: #ffffff;
+    --auth-text-muted: #f3f4f6;
+    --auth-label: #d1d5db;
+    --auth-primary: #ff0000;
+    --auth-primary-hover: #dc2626;
+    --auth-link: #ef4444;
+    --auth-input-bg: #212226;
+    --auth-input-border: transparent;
+    --auth-input-focus: #4b5563;
+    --auth-input-text: #ffffff;
+    --auth-input-placeholder: #6b7280;
+    --auth-divider: #464850;
+    /* Spacing & Borders */
+    --auth-radius-lg: 12px;
+    --auth-radius-md: 8px;
+    --auth-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Layout cơ bản */
+.auth-overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: var(--auth-bg);
+    padding: 20px;
+    font-family: var(--auth-font);
+}
+
+.auth-card {
+    background-color: var(--auth-card-bg);
+    color: var(--auth-text-main);
+    border-radius: var(--auth-radius-lg);
+    width: 100%;
+    max-width: 480px;
+    padding: 40px;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+}
+
+.auth-close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    color: var(--auth-text-main);
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+    .auth-close-btn:hover {
+        opacity: 1;
+    }
+
+/* Header của Card */
+.auth-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+    .auth-header h2 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin: 0 0 10px 0;
+        text-transform: uppercase;
+    }
+
+    .auth-header p {
+        font-size: 0.95rem;
+        color: var(--auth-text-muted);
+        margin: 0;
+    }
+
+/* Form Controls */
+.form-group {
+    margin-bottom: 24px;
+}
+
+    .form-group label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--auth-label);
+        margin-bottom: 10px;
+        text-transform: uppercase;
+    }
+
+.label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+    .label-row label {
+        margin-bottom: 0;
+    }
+
+.auth-link {
+    cursor: pointer;
+    color: var(--auth-link);
+    font-size: 0.9rem;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+    .auth-link:hover {
+        text-decoration: underline;
+    }
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: var(--auth-input-bg);
+    border-radius: var(--auth-radius-md);
+    padding: 0 16px;
+    height: 50px;
+    border: 1px solid var(--auth-input-border);
+    transition: border-color 0.3s;
+}
+
+    .input-wrapper:focus-within {
+        border-color: var(--auth-input-focus);
+    }
+
+    .input-wrapper .icon {
+        display: flex;
+        color: var(--auth-label);
+        margin-right: 12px;
+    }
+
+    .input-wrapper input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        color: var(--auth-input-text);
+        font-size: 1rem;
+        outline: none;
+        padding: 0;
+        width: 100%;
+    }
+
+        .input-wrapper input::placeholder {
+            color: var(--auth-input-placeholder);
+        }
+
+/* Nút Icon bên trong Input (ví dụ: nút ẩn/hiện mật khẩu) */
+.icon-btn {
+    background: transparent;
+    border: none;
+    color: var(--auth-label);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 12px;
+    outline: none;
+}
+
+    .icon-btn:hover {
+        color: var(--auth-text-main);
+    }
+
+/* Nút Submit */
+.submit-btn {
+    width: 100%;
+    background-color: var(--auth-primary);
+    color: var(--auth-text-main);
+    border: none;
+    border-radius: var(--auth-radius-md);
+    height: 50px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    margin-top: 10px;
+    transition: background-color 0.2s;
+}
+
+    .submit-btn:hover {
+        background-color: var(--auth-primary-hover);
+    }
+
+    .submit-btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+
+/* Divider (Đường kẻ ngang Hoặc) */
+.auth-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 30px 0;
+}
+
+    .auth-divider::before,
+    .auth-divider::after {
+        content: '';
+        flex: 1;
+        height: 5px;
+        background-color: var(--auth-divider);
+        border-radius: 4px;
+    }
+
+    .auth-divider span {
+        padding: 0 16px;
+        color: var(--auth-label); /* Tái sử dụng biến */
+        font-size: 0.85rem;
+        text-transform: uppercase;
+    }
+
+/* Các nút Social */
+.social-login {
+    display: flex;
+    gap: 16px;
+}
+
+.social-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background-color: var(--auth-input-bg);
+    color: var(--auth-text-main);
+    border: none;
+    border-radius: var(--auth-radius-md);
+    height: 50px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+    .social-btn:hover {
+        background-color: #2c2d32; /* Tùy chỉnh màu hover cho nút social nếu cần */
+    }
+
+/* Footer của Card */
+.auth-footer {
+    text-align: center;
+    margin-top: 30px;
+    color: var(--auth-label);
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+    .auth-footer a {
+        color: var(--auth-link);
+        text-decoration: none;
+        font-weight: 600;
+        margin-left: 5px;
+    }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }

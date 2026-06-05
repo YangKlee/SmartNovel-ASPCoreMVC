@@ -62,4 +62,5 @@ public partial class User
     public virtual ICollection<User> Uids { get; set; } = new List<User>();
 
     public virtual ICollection<User> UidsNavigation { get; set; } = new List<User>();
+
 }
