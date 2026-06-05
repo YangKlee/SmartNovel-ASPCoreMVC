@@ -170,27 +170,30 @@ namespace SmartNovel.Controllers
         {
             return await _context.Chapters.AnyAsync(c => c.NovelId == novelID && c.ChaperOrder == order);
         }
-        [HttpGet("ChapterManagerment/Modify/{novelID}")]
+        [HttpGet("ChapterManagerment/Modify/{chapterId}")]
         [Authorize(Roles = "3")]
-        public async Task<IActionResult> modify(string? novelID)
+        public async Task<IActionResult> modify(string? chapterId)
         {
-            if (novelID == null)
+            if (chapterId == null)
                 return NotFound();
             var uid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var ehe = await _context.Novels.AnyAsync(n => n.NovelId == novelID && n.Uid == uid);
+            var chapter = await _context.Chapters.FirstOrDefaultAsync(c => c.ChapterId == chapterId);
+            if (chapter == null)
+                return NotFound();
+
+            var ehe = await _context.Novels.AnyAsync(n => n.NovelId == chapter.NovelId && n.Uid == uid);
             if (!ehe)
             {
                 ViewBag.Success = false;
                 ViewBag.Msg = "Cưng tính copy id truyện người ta rồi sửa chương à, t rào trước r";
                 return View("Add", new CreateChapterViewModel());
             }
-            var chapter = await _context.Chapters.FirstOrDefaultAsync(c => c.NovelId == novelID);
+            
             string htmlContent = "";
             try
             {
-
-                htmlContent = await _httpClient.GetStringAsync(chapter.ChapterFileUrl);
-
+                if (!string.IsNullOrEmpty(chapter.ChapterFileUrl))
+                    htmlContent = await _httpClient.GetStringAsync(chapter.ChapterFileUrl);
             }
             catch (HttpRequestException e)
             {
@@ -208,6 +211,136 @@ namespace SmartNovel.Controllers
             };
             ViewBag.isEdit = true;
             return View("Add", model);
+        }
+
+        [HttpPost("ChapterManagerment/Modify/{chapterId}")]
+        [Authorize(Roles = "3")]
+        public async Task<IActionResult> Modify(string chapterId, CreateChapterViewModel req)
+        {
+            var uid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var chapterModify = await _context.Chapters.FirstOrDefaultAsync(c => c.ChapterId == chapterId);
+            if (chapterModify == null)
+            {
+                ViewBag.Success = false;
+                ViewBag.Msg = "Không tìm thấy chương này.";
+                ViewBag.isEdit = true;
+                return View("Add", req);
+            }
+
+            var checkAuthor = await _context.Novels.AnyAsync(n => n.Uid == uid && n.NovelId == chapterModify.NovelId);
+            if (!checkAuthor)
+            {
+                ViewBag.Success = false;
+                ViewBag.Msg = "Bạn không có quyền chỉnh sửa chương này.";
+                ViewBag.isEdit = true;
+                return View("Add", req);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Success = false;
+                ViewBag.Msg = "Vui lòng kiểm tra lại thông tin.";
+                ViewBag.isEdit = true;
+                return View("Add", req);
+            }
+
+            // Kiểm tra trùng số chương nếu có đổi số chương
+            if (chapterModify.ChaperOrder != req.Order)
+            {
+                if (await checkDublicateOrderChapter(chapterModify.NovelId, req.Order))
+                {
+                    ViewBag.Success = false;
+                    ViewBag.Msg = "Số chương đã tồn tại";
+                    ViewBag.isEdit = true;
+                    return View("Add", req);
+                }
+            }
+
+            chapterModify.ChapterTitle = req.Title;
+            chapterModify.ChaperOrder = req.Order;
+            chapterModify.AllowComment = req.AllowComment;
+            chapterModify.SummaryChapter = req.Description;
+            chapterModify.Status = req.Status;
+            chapterModify.UpdateTime = DateTime.Now;
+
+            string publicLink = "https://pub-20056e4912f440f08b3d40eea545f95f.r2.dev/smart-novel/novel-file/";
+
+            try
+            {
+                if (!string.IsNullOrEmpty(chapterModify.ChapterFileUrl))
+                {
+                    var fileOldName = chapterModify.ChapterFileUrl.Replace(publicLink, "");
+                    await _fileServicesUpload.DeleteFile("smart-novel/novel-file/", fileOldName);
+                }
+
+                string fileName = $"{Guid.NewGuid().ToString()}-{chapterModify.ChapterId}.html";
+                var res = await _fileServicesUpload.UploadHtml("smart-novel/novel-file/", fileName, req.Content);
+                
+                if (res)
+                    chapterModify.ChapterFileUrl = publicLink + fileName;
+
+                await _context.SaveChangesAsync();
+                
+                TempData["Success"] = true;
+                TempData["Msg"] = "Cập nhật chương thành công!";
+                return RedirectToAction("Index", new { novelId = chapterModify.NovelId });
+            }
+            catch
+            {
+                ViewBag.Success = false;
+                ViewBag.Msg = "Đã xảy ra lỗi hệ thống khi cập nhật dữ liệu.";
+                ViewBag.isEdit = true;
+                return View("Add", req);
+            }
+        }
+
+        [HttpPost("ChapterManagerment/Delete/{chapterId}")]
+        [Authorize(Roles = "3")]
+        public async Task<IActionResult> Delete(string chapterId)
+        {
+            var uid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var chapterDelete = await _context.Chapters.FirstOrDefaultAsync(c => c.ChapterId == chapterId);
+            
+            if (chapterDelete == null)
+            {
+                TempData["Success"] = false;
+                TempData["Msg"] = "Không tìm thấy chương này.";
+                return RedirectToAction("Index");
+            }
+
+            var novelId = chapterDelete.NovelId;
+
+            var checkAuthor = await _context.Novels.AnyAsync(n => n.Uid == uid && n.NovelId == novelId);
+            if (!checkAuthor)
+            {
+                TempData["Success"] = false;
+                TempData["Msg"] = "Bạn không có quyền xóa chương này.";
+                return RedirectToAction("Index", new { novelId = novelId });
+            }
+
+            string publicLink = "https://pub-20056e4912f440f08b3d40eea545f95f.r2.dev/smart-novel/novel-file/";
+
+            try
+            {
+                if (!string.IsNullOrEmpty(chapterDelete.ChapterFileUrl))
+                {
+                    var fileOldName = chapterDelete.ChapterFileUrl.Replace(publicLink, "");
+                    await _fileServicesUpload.DeleteFile("smart-novel/novel-file/", fileOldName);
+                }
+                
+                _context.Chapters.Remove(chapterDelete);
+                await _context.SaveChangesAsync();
+                
+                TempData["Success"] = true;
+                TempData["Msg"] = "Xóa chương thành công!";
+                return RedirectToAction("Index", new { novelId = novelId });
+            }
+            catch
+            {
+                TempData["Success"] = false;
+                TempData["Msg"] = "Đã xảy ra lỗi hệ thống khi xóa chương.";
+                return RedirectToAction("Index", new { novelId = novelId });
+            }
         }
     }
 }
