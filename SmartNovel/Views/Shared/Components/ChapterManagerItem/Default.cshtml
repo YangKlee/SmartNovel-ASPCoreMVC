@@ -55,10 +55,10 @@
         <a href="/Chapter/@Model.ChapterId" class="btn btn-outline-secondary btn-sm" title="Xem trước chương">
           <i class="bi bi-eye"></i> Xem
         </a>
-        <a href="/NovelManagerment/EditChapter/@Model.ChapterId" class="btn btn-outline-primary btn-sm" title="Chỉnh sửa chương">
+        <a href="/ChapterManagerment/Modify/@Model.NovelId" class="btn btn-outline-primary btn-sm" title="Chỉnh sửa chương">
           <i class="bi bi-pencil"></i> Sửa
         </a>
-        <form action="/NovelManagerment/DeleteChapter/@Model.ChapterId" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa chương này?');">
+        <form action="/ChapterManagerment/Delete/@Model.ChapterId" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa chương này?');">
             <button type="submit" class="btn btn-outline-danger btn-sm" title="Xóa chương">
               <i class="bi bi-trash"></i> Xóa
             </button>

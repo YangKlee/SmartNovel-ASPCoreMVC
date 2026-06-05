@@ -1,0 +1,154 @@
+@model SmartNovel.Models.ViewModel.CreateChapterViewModel
+
+@{
+    ViewData["Title"] = ViewBag.isEdit == true ? "Cập Nhật Chương" : "Thêm Chương Mới";
+    Layout = "_LayoutAdmin";
+}
+
+<link href="~/css/chaptermanager/add.css" rel="stylesheet" />
+
+<div class="popup-overlay" id="addChapterPopup">
+    <div class="create-chapter-container">
+        <!-- Đóng quay về trang chapter managerment -->
+        <button asp-controller="ChapterManagerment" asp-action="Index" class="btn-close-popup" type="button">
+            <i class="bi bi-x-lg"></i>
+        </button>
+
+        <div class="form-header">
+            <h2>@(ViewBag.isEdit == true ? "Cập Nhật Chương" : "Thêm Chương Mới")</h2>
+        </div>
+
+        <!-- Hiển thị thông báo (Thất bại) -->
+        @if (ViewBag.Success != null && ViewBag.Success == false)
+        {
+            <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> @ViewBag.Msg
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <form class="chapter-form" asp-action="@(ViewBag.isEdit == true ? "Modify" : "Add")" asp-controller="ChapterManagerment" method="post" id="chapterForm">
+            <div class="form-row">
+                <div class="form-group title-group">
+                    <label asp-for="Title" class="control-label">Tiêu đề chương (Title) <span class="text-danger">*</span></label>
+                    <input asp-for="Title" class="form-control" placeholder="Nhập tiêu đề chương..." />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="form-group order-group">
+                    <label asp-for="Order" class="control-label">Thứ tự chương <span class="text-danger">*</span></label>
+                    <input asp-for="Order" class="form-control" type="number" placeholder="Ví dụ: 1" />
+                    <span asp-validation-for="Order" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Status" class="control-label">Trạng thái <span class="text-danger">*</span></label>
+                <select asp-for="Status" class="form-control">
+                    <option value="public">Public (Công khai)</option>
+                    <option value="draft">Draft (Bản nháp)</option>
+                </select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Description" class="control-label">Mô tả (Description)</label>
+                <textarea asp-for="Description" class="form-control" rows="3" placeholder="Viết mô tả ngắn gọn cho chương này..."></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-check">
+                <input asp-for="AllowComment" type="checkbox" class="form-check-input" />
+                <label asp-for="AllowComment" class="form-check-label">Cho phép bình luận chương này</label>
+            </div>
+
+            <div class="editor-placeholder">
+                <input type="hidden" asp-for="Content" id="hiddenContent" />
+                <div id="quill-editor"></div>
+                <span asp-validation-for="Content" class="text-danger"></span>
+            </div>
+
+            <div class="form-actions">
+                <button onclick="toggleDisplayForm()" type="button" class="btn btn-outline-secondary btn-preview">
+                    <i class="bi bi-eye"></i> Xem trước
+                </button>
+                <button type="submit" class="btn btn-primary btn-save">
+                    <i class="bi bi-floppy"></i> @(ViewBag.isEdit == true ? "Cập Nhật" : "Lưu chương")
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Preview Popup -->
+<div class="preview-popup popup-overlay" id="previewPopup">
+    <div class="create-chapter-container">
+        <button class="btn-close-popup" type="button" onclick="toggleDisplayForm()">
+            <i class="bi bi-x-lg"></i>
+        </button>
+        <div class="form-header">
+            <h2 id="previewTitle"></h2>
+        </div>
+        <div id="previewContent"></div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <!-- Quill library dependencies -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+    <script>
+        var quill;
+        document.addEventListener("DOMContentLoaded", function() {
+
+            quill = new Quill('#quill-editor', {
+                theme: 'snow',
+                placeholder: 'Nhập nội dung của bạn vào đây...',
+                modules: {
+                    toolbar: [
+                        [{ 'header': [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        ['blockquote', 'code-block'],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        ['link', 'image']
+                    ]
+                }
+            });
+
+
+            var hiddenContent = document.getElementById('hiddenContent').value;
+            if (hiddenContent) {
+                quill.root.innerHTML = hiddenContent;
+            }
+
+            var form = document.getElementById('chapterForm');
+            form.addEventListener('submit', function(e) {
+                var content = quill.root.innerHTML;
+                if (content === '<p><br></p>') {
+                    content = ''; // Handle empty quill editor
+                }
+                document.getElementById('hiddenContent').value = content;
+            });
+        });
+
+
+        function toggleDisplayForm() {
+            var previewPopup = document.getElementById('previewPopup');
+            if (previewPopup.style.display === 'none' || previewPopup.style.display === '') {
+                // Populate preview
+                var title = document.getElementById('Title').value;
+                var content = quill.root.innerHTML;
+                
+                document.getElementById('previewTitle').innerText = title || "Chưa có tiêu đề";
+                document.getElementById('previewContent').innerHTML = content;
+                
+                previewPopup.style.display = 'flex';
+            } else {
+                previewPopup.style.display = 'none';
+            }
+        }
+    </script>
+}

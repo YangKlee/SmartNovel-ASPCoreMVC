@@ -16,13 +16,13 @@
       </a>
       <h2 class="page-title">Quản lý chương</h2>
     </div>
-    <a href="/ChapterManagerment/Add" class="add-btn">
+    <a asp-controller="ChapterManagerment" asp-action="Add" asp-route-id="@Model.SelectedNovelId" class="add-btn">
       <i class="bi bi-plus-lg"></i>
       Thêm chương mới
     </a>
   </div>
 
-  <!-- Hiển thị thông báo (Thành công / Thất bại) từ TempData -->
+
   @if (TempData["Success"] != null)
   {
       if ((bool)TempData["Success"] == true)

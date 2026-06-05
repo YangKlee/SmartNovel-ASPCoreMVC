@@ -154,11 +154,10 @@
 </div>
 
 @section Scripts {
-    <!-- Partial view dùng để bật Client-Side Validation của ASP.NET Core -->
     <partial name="_ValidationScriptsPartial" />
     
     <script>
-        // JS thuần xử lý hiển thị Preview ảnh bìa và banner trước khi Upload
+        //  xử lý hiển thị Preview ảnh bìa và banner trước khi Upload
         function previewImage(event, containerId, imgId, placeholderId) {
             const input = event.target;
             if (input.files && input.files[0]) {

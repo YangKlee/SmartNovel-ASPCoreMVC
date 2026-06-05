@@ -38,6 +38,7 @@ builder.Services.AddTransient<SmartNovel.Services.MailServices>();
 builder.Services.AddSingleton<FileStorageServices>();
 builder.Services.AddScoped<SmartNovel.Services.MenuDashboardServices>();
 builder.Services.AddMemoryCache();
+builder.Services.AddHttpClient();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
