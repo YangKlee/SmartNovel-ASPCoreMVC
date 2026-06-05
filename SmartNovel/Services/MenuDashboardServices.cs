@@ -53,8 +53,8 @@ namespace SmartNovel.Services
                     items.Add(new MenuDashboardItem { slot = 2, icon = "bi bi-chat-dots", content = "Quản lý Bình luận", controllerLink = "ModComment", actionLink = "Index" });
                     break;
                 case "3": // Author
-                    items.Add(new MenuDashboardItem { slot = 1, icon = "bi bi-journal-plus", content = "Đăng truyện mới", controllerLink = "AuthorNovel", actionLink = "Create" });
-                    items.Add(new MenuDashboardItem { slot = 2, icon = "bi bi-list-task", content = "Truyện của tôi", controllerLink = "AuthorNovel", actionLink = "MyNovels" });
+                    items.Add(new MenuDashboardItem { slot = 1, icon = "bi bi-journal-plus", content = "Đăng truyện mới", controllerLink = "NovelManagerment", actionLink = "Add" });
+                    items.Add(new MenuDashboardItem { slot = 2, icon = "bi bi-list-task", content = "Truyện của tôi", controllerLink = "NovelManagerment", actionLink = "Index" });
                     items.Add(new MenuDashboardItem { slot = 3, icon = "bi bi-bar-chart", content = "Thống kê", controllerLink = "AuthorStats", actionLink = "Index" });
                     break;
                 default:
