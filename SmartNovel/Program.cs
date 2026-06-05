@@ -3,10 +3,12 @@ using Amazon.S3;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using SmartNovel.Models;
-using SmartNovelBE.Services;
+using SmartNovel.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddHttpClient<ChapterContentService>();
 builder.Services.AddControllersWithViews();
 var conString = builder.Configuration.GetConnectionString("SmartNovel");
 builder.Services.AddDbContext<SmartTruyenDbContext>(options =>
@@ -62,6 +64,8 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

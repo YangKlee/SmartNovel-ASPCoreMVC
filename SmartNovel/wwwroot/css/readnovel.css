@@ -1,0 +1,278 @@
+﻿.reading-background {
+    background-color: #f3f4f6;
+    /* Màu nền xám nhạt */
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.reading-paper {
+    background-color: #ffffff;
+    /* Giấy trắng */
+    width: 100%;
+    max-width: 900px;
+    min-height: 85vh;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.reading-header {
+    padding: 32px 40px 16px 40px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.title-container {
+    text-align: center;
+    margin-bottom: 0px;
+    width: 100%;
+    padding: 0 40px;
+    /* Tránh đè lên toolbar nếu màn hình nhỏ */
+}
+/* control title */
+.chapter-top-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #6b7280;
+    font-size: 18px;
+}
+
+.chapter-breadcrumb {
+    color: #6b7280;
+    text-decoration: none;
+    max-width: 300px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+    .chapter-breadcrumb:hover {
+        color: #111827;
+    }
+
+.chapter-separator {
+    color: #9ca3af;
+}
+
+.chapter-current-title {
+    color: #374151;
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.chapter-actions {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.chapter-link {
+    border: none;
+    background: none;
+    color: #6b7280;
+    text-decoration: none;
+    cursor: pointer;
+    transition: .2s;
+}
+
+    .chapter-link:hover {
+        color: #111827;
+    }
+/* title */
+.novel-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #111827;
+    letter-spacing: 0.5px;
+}
+
+.chapter-title {
+    margin: 4px 0 0 0;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #4b5563;
+}
+
+.toolbar-actions {
+    position: absolute;
+    bottom: 8px;
+    right: 16px;
+    display: flex;
+    gap: 4px;
+}
+
+    /* Chỉnh icon */
+    .toolbar-actions button {
+        color: #4b5563;
+        transition: all 0.2s ease;
+    }
+
+        .toolbar-actions button:hover {
+            color: #111827;
+            background-color: #f3f4f6;
+        }
+
+.reading-content {
+    padding: 40px 60px;
+    font-size: 1.1875rem;
+    line-height: 1.8;
+    color: #1f2937;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+/* Dùng ::ng-deep kết hợp !important để đè bẹp TẤT CẢ inline-style rác khi copy-paste từ nơi khác */
+::ng-deep .reading-content * {
+    white-space: pre-wrap !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    word-wrap: break-word !important;
+    box-sizing: border-box !important;
+    max-width: 100% !important;
+}
+
+::ng-deep .reading-content p {
+    margin-bottom: 1.5rem;
+    text-indent: 2rem;
+}
+
+::ng-deep .reading-content img {
+    max-width: 100%;
+    height: auto;
+    box-sizing: border-box;
+}
+
+::ng-deep .ql-editor {
+    padding: 0 !important;
+    /* Bỏ padding mặc định của Quill để không lấn lề */
+    overflow: visible !important;
+    /* Tránh bị cắt chữ do overflow mặc định của Quill */
+    box-sizing: border-box;
+    width: 100%;
+}
+
+/* Responsive cho màn hình nhỏ (Mobile) */
+@media (max-width: 768px) {
+    .reading-background {
+        padding: 0;
+    }
+
+    .reading-paper {
+        min-height: 100vh;
+        box-shadow: none;
+    }
+
+    .reading-content {
+        padding: 24px 20px;
+        font-size: 1.125rem;
+    }
+
+    .toolbar-actions {
+        position: static;
+        justify-content: flex-end;
+        width: 100%;
+        margin-top: 16px;
+    }
+}
+.chapter-navigation {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.nav-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 180px;
+    height: 48px;
+    background: #111827;
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all .2s ease;
+}
+
+    .nav-btn:hover {
+        background: #000;
+        color: #fff;
+        text-decoration: none;
+        transform: translateY(-2px);
+    }
+
+    .nav-btn:active {
+        transform: translateY(0);
+    }
+/* container nút đọc */
+.d-flex.justify-content-center.gap-2.mb-3 {
+    background: #f9fafb;
+    padding: 10px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    position: sticky;
+    top: 10px;
+    z-index: 100;
+}
+
+/*Mục lục chương*/
+
+#tocContainer {
+    margin-top: 24px;
+}
+
+.toc-card {
+    background: #2f313d;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0,0,0,.12);
+}
+
+.toc-header {
+    background: #292b36;
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+    padding: 18px 24px;
+}
+
+.toc-list {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.toc-item {
+    display: block;
+    padding: 14px 24px;
+    color: #e5e7eb;
+    text-decoration: none;
+    border-top: 1px solid rgba(255,255,255,.08);
+    transition: all .2s ease;
+}
+
+    .toc-item:hover {
+        background: #3a3d4a;
+        color: white;
+        text-decoration: none;
+    }
+
+.active-chapter {
+    background: #111827;
+    color: #60a5fa !important;
+    font-weight: 700;
+}

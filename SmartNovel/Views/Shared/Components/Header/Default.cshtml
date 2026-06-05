@@ -1,0 +1,115 @@
+﻿@using System.Security.Claims
+@using SmartNovel.Models
+
+@inject SmartTruyenDbContext _context
+
+@model List<MenuNav>
+
+<header class="main-header">
+
+    <!-- Logo -->
+    <a href="/" class="logo">Logo</a>
+
+    <!-- Menu công khai -->
+    <nav class="nav-links">
+
+        @foreach (var item in Model)
+        {
+            <div class="dropdown">
+
+                <a class="nav-item"
+                       href="@(item.UrlLink ?? "#")">
+
+                    @if (!string.IsNullOrEmpty(item.IconBootstrap))
+                    {
+                        <i class="@item.IconBootstrap"></i>
+                    }
+
+                    <span>@item.Content</span>
+
+                    @if (item.InverseParent.Any())
+                    {
+                        <i class="bi bi-chevron-down ms-icon"></i>
+                    }
+
+                </a>
+
+                @if (item.InverseParent.Any())
+                {
+                    <div class="dropdown-menu">
+
+                        @foreach (var child in item.InverseParent.OrderBy(x => x.Id))
+                        {
+                            <a href="@child.UrlLink">
+                                @child.Content
+                            </a>
+                        }
+
+                    </div>
+                }
+
+            </div>
+        }
+
+    </nav>
+
+    @if (!User.Identity!.IsAuthenticated)
+    {
+        <div class="auth-buttons">
+
+            <a href="/Auth/Login"
+                   class="btn btn-login">
+                Đăng nhập
+            </a>
+
+            <a href="/Auth/Register"
+                   class="btn btn-register">
+                Đăng ký
+            </a>
+
+        </div>
+    }
+    else
+    {
+        var roleId =
+            User.FindFirst(ClaimTypes.Role)?.Value;
+
+        var roleMenus = _context.MenuNavs
+            .Where(x => x.RoleId == roleId)
+            .OrderBy(x => x.Id)
+            .ToList();
+
+        <div class="user-dropdown">
+
+            <button class="user-info">
+
+                <i class="bi bi-person-circle"></i>
+
+                <span>
+                    @User.Identity.Name
+                </span>
+
+            </button>
+
+            <div class="user-dropdown-menu">
+
+                @foreach (var item in roleMenus)
+                {
+                    <a href="@item.UrlLink">
+
+                        @if (!string.IsNullOrEmpty(item.IconBootstrap))
+                        {
+                            <i class="@item.IconBootstrap"></i>
+                        }
+
+                        <span>@item.Content</span>
+
+                    </a>
+                }
+
+            </div>
+
+        </div>
+    }
+
+</header>
