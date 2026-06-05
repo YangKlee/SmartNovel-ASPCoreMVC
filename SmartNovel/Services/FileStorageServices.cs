@@ -2,7 +2,7 @@
 using Amazon.S3.Model;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
-namespace SmartNovelBE.Services
+namespace SmartNovel.Services
 {
     public class FileStorageServices
     {

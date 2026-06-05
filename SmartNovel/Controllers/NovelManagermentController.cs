@@ -11,9 +11,9 @@ namespace SmartNovel.Controllers
     public class NovelManagermentController : Controller
     {
         private readonly SmartTruyenDbContext _context;
-        private readonly SmartNovelBE.Services.FileStorageServices _fileServicesUpload;
+        private readonly SmartNovel.Services.FileStorageServices _fileServicesUpload;
         
-        public NovelManagermentController(SmartTruyenDbContext context, SmartNovelBE.Services.FileStorageServices fileServicesUpload)
+        public NovelManagermentController(SmartTruyenDbContext context, SmartNovel.Services.FileStorageServices fileServicesUpload)
         {
             _context = context;
             _fileServicesUpload = fileServicesUpload;

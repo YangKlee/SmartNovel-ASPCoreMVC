@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Ocsp;
 using SmartNovel.Models;
 using SmartNovel.Models.ViewModel;
-using SmartNovelBE.Services;
+using SmartNovel.Services;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Net.Http;
