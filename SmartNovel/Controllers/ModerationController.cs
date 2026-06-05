@@ -13,9 +13,7 @@ namespace SmartNovel.Controllers
             _context = context;
         }
 
-        // =====================================================
         // TRANG QUẢN LÝ BÁO CÁO
-        // =====================================================
         public async Task<IActionResult> Index()
         {
             ViewBag.Novels = await _context.ReportTickets
@@ -57,9 +55,7 @@ namespace SmartNovel.Controllers
             return View();
         }
 
-        // =====================================================
         // GỠ TRUYỆN
-        // =====================================================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveNovel(string ticketId)
@@ -92,9 +88,8 @@ namespace SmartNovel.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // =====================================================
         // GỠ CHƯƠNG
-        // =====================================================
+     
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveChapter(string ticketId)
@@ -127,9 +122,9 @@ namespace SmartNovel.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // =====================================================
+       
         // GỠ BÌNH LUẬN
-        // =====================================================
+      
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveComment(string ticketId)
@@ -162,9 +157,9 @@ namespace SmartNovel.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // =====================================================
+        
         // BÁC BỎ BÁO CÁO
-        // =====================================================
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RejectTicket(string ticketId)
