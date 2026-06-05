@@ -1,0 +1,79 @@
+﻿@model SmartNovel.Models.ViewModel.UserProfileViewModel;
+@section Styles {
+    <link rel="stylesheet" href="~/css/account/form-layout.css" asp-append-version="true" />
+}
+@if (ViewBag.Msg != null)
+{
+    if (ViewBag.Success == true)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Thành công!</strong> @ViewBag.Msg
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Lỗi!</strong> @ViewBag.Msg
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+}
+<div class="account-container">
+    <h1 class="page-title fs-1">CẬP NHẬT THÔNG TIN</h1>
+
+    <div class="profile-wrapper justify-content-center">
+        <div class="content-form">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header py-3 rounded-top-3">
+                    <h5 class="mb-0"><i class="fas fa-user-edit me-2"></i> Chỉnh sửa thông tin cá nhân</h5>
+                </div>
+                <div class="card-body p-4">
+                    
+                    <form asp-action="UpdateInfo" method="post">
+                        
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="DisplayName" class="form-label fw-bold color-dark-custom"></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fas fa-id-card text-muted"></i></span>
+                                <input asp-for="DisplayName" class="form-control focus-custom" placeholder="Nhập tên hiển thị của bạn..." />
+                            </div>
+                            <span asp-validation-for="DisplayName" class="text-danger small mt-1 d-block"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Birthday" class="form-label fw-bold color-dark-custom"></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fas fa-calendar-alt text-muted"></i></span>
+                                <input asp-for="Birthday" type="date" class="form-control focus-custom" />
+                            </div>
+                            <span asp-validation-for="Birthday" class="text-danger small mt-1 d-block"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Phone" class="form-label fw-bold color-dark-custom"></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fas fa-mobile-alt text-muted"></i></span>
+                                <input asp-for="Phone" class="form-control focus-custom" placeholder="Ví dụ: 0912345678" />
+                            </div>
+                            <span asp-validation-for="Phone" class="text-danger small mt-1 d-block"></span>
+                        </div>
+
+                        <div class="d-flex gap-2 justify-content-end border-top pt-3">
+                            <a asp-action="Index" class="btn btn-outline-secondary px-4 py-2 rounded-2">
+                                <i class="fas fa-times me-2"></i> Hủy bỏ
+                            </a>
+                            <button type="submit" class="btn btn-dark-custom px-4 py-2 rounded-2 shadow-sm">
+                                <i class="fas fa-save me-2"></i> Lưu thay đổi
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

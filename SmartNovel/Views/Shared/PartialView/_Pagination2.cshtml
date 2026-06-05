@@ -1,0 +1,150 @@
+﻿@model SmartNovel.Models.ViewModel.ChapterManagermentViewModel
+
+@{
+    // Nếu không có dữ liệu hoặc chỉ có 1 trang thì ẩn phân trang
+    if (Model.TotalPage <= 1)
+    {
+        return;
+    }
+
+    int currentPage = Model.CurrentPage;
+    int totalPage = Model.TotalPage;
+
+    // Tính toán 3 trang liền kề
+    int startPage = Math.Max(1, currentPage - 1);
+    int endPage = Math.Min(totalPage, currentPage + 1);
+
+    if (currentPage == 1)
+    {
+        endPage = Math.Min(totalPage, 3);
+    }
+    else if (currentPage == totalPage)
+    {
+        startPage = Math.Max(1, totalPage - 2);
+    }
+
+    //  Tính toán số trang khi nhảy 
+    int jumpBackPage = Math.Max(1, currentPage - 3);
+    int jumpForwardPage = Math.Min(totalPage, currentPage + 3);
+
+    // Tùng từ điển
+    var queryParams = new Dictionary<string, string>();
+    foreach (var key in Context.Request.Query.Keys)
+    {
+        // Bỏ qua tham số CurrentPage cũ để gán giá trị mới
+        if (!key.Equals("CurrentPage", StringComparison.OrdinalIgnoreCase))
+        {
+            queryParams[key] = Context.Request.Query[key].ToString();
+        }
+    }
+}
+
+<style>
+    .custom-pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        margin: 20px 0;
+        font-family: Arial, sans-serif;
+    }
+
+        .custom-pagination a {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 36px;
+            height: 36px;
+            padding: 0 10px;
+            background-color: #fff;
+            color: #333;
+            text-decoration: none;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.2s ease-in-out;
+        }
+
+            .custom-pagination a:hover:not(.disabled) {
+                background-color: #f8f9fa;
+                border-color: #007bff;
+                color: #007bff;
+            }
+
+            .custom-pagination a.active {
+                background-color: #007bff;
+                border-color: #007bff;
+                color: #fff;
+                font-weight: bold;
+                pointer-events: none; /* Đang ở trang này thì không cho bấm nữa */
+            }
+
+            .custom-pagination a.disabled {
+                color: #aaa;
+                border-color: #eee;
+                background-color: #f9f9f9;
+                pointer-events: none; /* Chặn click khi bị vô hiệu hóa */
+            }
+
+            .custom-pagination a.jump-btn {
+                font-weight: bold;
+                color: #6c757d;
+                letter-spacing: 1px;
+            }
+</style>
+
+<div class="custom-pagination">
+
+    @{
+        queryParams["CurrentPage"] = "1";
+    }
+    <a asp-all-route-data="queryParams" class="@(currentPage == 1 ? "disabled" : "")" title="Trang đầu">
+        <i class="bi bi-chevron-bar-left"></i> Đầu
+    </a>
+
+    @if (currentPage > 2)
+    {
+        queryParams["CurrentPage"] = jumpBackPage.ToString();
+        <a asp-all-route-data="queryParams" class="jump-btn" title="Lùi 3 trang">
+            -3
+        </a>
+    }
+
+    @{
+        queryParams["CurrentPage"] = (currentPage - 1).ToString();
+    }
+    <a asp-all-route-data="queryParams" class="@(currentPage == 1 ? "disabled" : "")" title="Trang trước">
+        <i class="bi bi-chevron-left"></i>
+    </a>
+
+    @for (int i = startPage; i <= endPage; i++)
+    {
+        queryParams["CurrentPage"] = i.ToString();
+        <a asp-all-route-data="queryParams" class="@(i == currentPage ? "active" : "")">
+            @i
+        </a>
+    }
+
+    @{
+        queryParams["CurrentPage"] = (currentPage + 1).ToString();
+    }
+    <a asp-all-route-data="queryParams" class="@(currentPage == totalPage ? "disabled" : "")" title="Trang sau">
+        <i class="bi bi-chevron-right"></i>
+    </a>
+
+    @if (currentPage < totalPage - 1)
+    {
+        queryParams["CurrentPage"] = jumpForwardPage.ToString();
+        <a asp-all-route-data="queryParams" class="jump-btn" title="Tiến 3 trang">
+            +3
+        </a>
+    }
+
+    @{
+        queryParams["CurrentPage"] = totalPage.ToString();
+    }
+    <a asp-all-route-data="queryParams" class="@(currentPage == totalPage ? "disabled" : "")" title="Trang cuối">
+        Cuối <i class="bi bi-chevron-bar-right"></i>
+    </a>
+
+</div>

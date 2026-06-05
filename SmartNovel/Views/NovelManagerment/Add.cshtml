@@ -1,0 +1,175 @@
+@model SmartNovel.Models.ViewModel.CreateNovelViewModel
+@{
+    ViewData["Title"] = "Thêm Truyện Mới";
+    Layout = "_LayoutAdmin";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/novelmanager/add.css" />
+}
+
+<div class="popup-overlay">
+  <div class="create-novel-container">
+    <a asp-controller="NovelManagerment" asp-action="Index" class="btn-close-popup"><i class="bi bi-x"></i></a>
+    <div class="form-header">
+      <h2>@(ViewBag.IsModify == true ? "Cập Nhật Truyện" : "Tạo Truyện Mới")</h2>
+    </div>
+
+    <!-- Hiển thị thông báo (Thành công / Thất bại) -->
+    @if (ViewBag.Success != null)
+    {
+        if (ViewBag.Success == true)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i> @ViewBag.Msg
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> @ViewBag.Msg
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+    }
+
+    <form asp-action="@(ViewBag.IsModify == true ? "Modify" : "Add")" asp-controller="NovelManagerment" method="post" enctype="multipart/form-data" class="novel-form">
+      @if (ViewBag.IsModify == true)
+      {
+          <input type="hidden" asp-for="NovelId" />
+      }
+      <div class="form-layout">
+        <!-- Bảng trái: Uploads -->
+        <div class="left-panel">
+          <!-- Ảnh bìa -->
+          <div class="form-group">
+            <label>Ảnh bìa truyện</label>
+            <div class="upload-area" onclick="document.getElementById('coverInput').click()">
+              <input type="file" id="coverInput" asp-for="CoverImage" accept="image/*" hidden onchange="previewImage(event, 'coverPreviewContainer', 'coverPreviewImg', 'coverPlaceholder')" />
+              
+              <div class="preview-container" id="coverPreviewContainer" style="display: @(ViewBag.IsModify == true && !string.IsNullOrEmpty(ViewBag.FileCoverUrl) ? "block" : "none");">
+                <img src="@(ViewBag.IsModify == true ? ViewBag.FileCoverUrl : "#")" id="coverPreviewImg" alt="Cover Preview" class="cover-preview" />
+              </div>
+              
+              <div class="upload-placeholder" id="coverPlaceholder" style="display: @(ViewBag.IsModify == true && !string.IsNullOrEmpty(ViewBag.FileCoverUrl) ? "none" : "block");">
+                <i class="bi bi-cloud-upload"></i>
+                <p>Tải ảnh bìa lên</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Banner -->
+          <div class="form-group mt-4">
+            <label>Ảnh banner truyện</label>
+            <div class="upload-area banner-area" onclick="document.getElementById('bannerInput').click()">
+              <input type="file" id="bannerInput" asp-for="BannerImage" accept="image/*" hidden onchange="previewImage(event, 'bannerPreviewContainer', 'bannerPreviewImg', 'bannerPlaceholder')" />
+              
+              <div class="preview-container" id="bannerPreviewContainer" style="display: @(ViewBag.IsModify == true && !string.IsNullOrEmpty(ViewBag.FileBannerUrl) ? "block" : "none");">
+                <img src="@(ViewBag.IsModify == true ? ViewBag.FileBannerUrl : "#")" id="bannerPreviewImg" alt="Banner Preview" class="banner-preview" />
+              </div>
+              
+              <div class="upload-placeholder" id="bannerPlaceholder" style="display: @(ViewBag.IsModify == true && !string.IsNullOrEmpty(ViewBag.FileBannerUrl) ? "none" : "block");">
+                <i class="bi bi-cloud-upload"></i>
+                <p>Tải ảnh banner lên</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bảng phải: Inputs -->
+        <div class="right-panel">
+          <!-- Tiêu đề -->
+          <div class="form-group">
+            <label>Tiêu đề (Title) <span class="required">*</span></label>
+            <input type="text" class="form-control" asp-for="Title" placeholder="Nhập tiêu đề truyện..." />
+            <span asp-validation-for="Title" class="text-danger mt-1 small"></span>
+          </div>
+
+          <!-- Mô tả -->
+          <div class="form-group mt-3">
+            <label>Mô tả (Description)</label>
+            <textarea class="form-control" asp-for="Description" rows="5"
+              placeholder="Nhập mô tả truyện..."></textarea>
+          </div>
+
+          <!-- Độ tuổi -->
+          <div class="form-group mt-3">
+            <label>Độ tuổi (Age Rating) <span class="required">*</span></label>
+            <div class="range-slider-container">
+              <input type="range" class="custom-range" min="6" max="18" asp-for="AgeRating" id="ageRatingInput" oninput="document.getElementById('ageValue').innerText = this.value + '+'" />
+              <span class="age-value" id="ageValue">@(Model?.AgeRating ?? "6")+</span>
+            </div>
+            <span asp-validation-for="AgeRating" class="text-danger mt-1 small"></span>
+          </div>
+
+          <!-- Thể loại -->
+          <div class="form-group mt-3">
+            <label>Thể loại (Genres)</label>
+            <div class="genres-checkbox-list">
+                @if (ViewBag.AvailableGenres != null)
+                {
+                    foreach (var genre in ViewBag.AvailableGenres)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="Genres" value="@genre.CategoryId" id="genre-@genre.CategoryId" @(Model?.Genres != null && Model.Genres.Contains(genre.CategoryId) ? "checked" : "") />
+                            <label class="form-check-label" for="genre-@genre.CategoryId" style="cursor: pointer; user-select: none;">
+                                            @genre.Name
+                            </label>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-muted small w-100 text-center">
+                        Đang cập nhật danh sách thể loại...
+                    </div>
+                }
+            </div>
+          </div>
+
+          <!-- Trạng thái -->
+          <div class="form-group mt-3">
+            <label>Trạng thái (Status) <span class="required">*</span></label>
+            <select class="form-select" asp-for="Status">
+              <option value="Public">Public (Công khai)</option>
+              <option value="Draft">Draft (Bản nháp)</option>
+            </select>
+            <span asp-validation-for="Status" class="text-danger mt-1 small"></span>
+          </div>
+
+          <!-- Submit/Cancel Buttons -->
+          <div class="form-actions mt-4 d-flex gap-2">
+            <a asp-controller="NovelManagerment" asp-action="Index" class="btn btn-secondary w-50">
+              <i class="bi bi-x-circle"></i> Hủy
+            </a>
+            <button type="submit" class="btn btn-primary btn-submit w-50">
+              <i class="bi bi-save"></i> @(ViewBag.IsModify == true ? "Cập Nhật" : "Lưu Truyện")
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    
+    <script>
+        //  xử lý hiển thị Preview ảnh bìa và banner trước khi Upload
+        function previewImage(event, containerId, imgId, placeholderId) {
+            const input = event.target;
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById(imgId);
+                    img.src = e.target.result;
+                    document.getElementById(containerId).style.display = 'block'; // Hiện ảnh
+                    document.getElementById(placeholderId).style.display = 'none'; // Ẩn nút chọn
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+}
