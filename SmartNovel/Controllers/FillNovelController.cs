@@ -16,106 +16,79 @@ namespace SmartNovel.Controllers
 
         public async Task<IActionResult> Search(
             string? keyword,
-            string? status,
             string? authorId,
-            string? sortBy,
             int? minRating,
             List<string>? selectedCategories,
             int page = 1)
         {
             const int pageSize = 12;
 
-            var query = _context.Novels
-                .Include(n => n.Categories)
-                .Include(n => n.UidNavigation)
-                .Include(n => n.Ratings)
-                .AsQueryable();
-            bool isSearching =
-            !string.IsNullOrWhiteSpace(keyword) ||
-            !string.IsNullOrWhiteSpace(status) ||
-            !string.IsNullOrWhiteSpace(authorId) ||
-            !string.IsNullOrWhiteSpace(sortBy) ||
-            minRating.HasValue ||
-            (selectedCategories != null && selectedCategories.Any());
+            // Kiểm tra xem người dùng có đang thực hiện tìm kiếm không?
+            // Chỉ cần 1 trong các điều kiện này tồn tại, ta sẽ thực hiện query
+            bool isSearching = !string.IsNullOrWhiteSpace(keyword) ||
+                               !string.IsNullOrWhiteSpace(authorId) ||
+                               minRating.HasValue ||
+                               (selectedCategories != null && selectedCategories.Any());
 
-            if (!string.IsNullOrWhiteSpace(keyword))
-            {
-                query = query.Where(x =>
-                    x.Title.Contains(keyword));
-            }
-
-            if (!string.IsNullOrWhiteSpace(status))
-            {
-                query = query.Where(x =>
-                    x.Status == status);
-            }
-
-            if (!string.IsNullOrWhiteSpace(authorId))
-            {
-                query = query.Where(x =>
-                    x.Uid == authorId);
-            }
-            if (minRating.HasValue)
-            {
-                query = query.Where(x =>
-                    x.Ratings.Any() &&
-                    x.Ratings.Average(r => r.RatingPoint) >= minRating.Value);
-            }
-
-            if (selectedCategories != null &&
-                selectedCategories.Any())
-            {
-                query = query.Where(x =>
-                    x.Categories.Any(c =>
-                        selectedCategories.Contains(c.CategoryId)));
-            }
-
-            query = sortBy switch
-            {
-                "view" => query.OrderByDescending(x => x.ViewCount),
-                "like" => query.OrderByDescending(x => x.LikeCount),
-                "name" => query.OrderBy(x => x.Title),
-                _ => query.OrderByDescending(x => x.UpdateTime)
-            };
-
+            var novels = new List<Novel>();
             int totalItems = 0;
 
-            List<Novel> novels = new();
-
+            // Chỉ truy vấn database nếu người dùng có yêu cầu tìm kiếm
             if (isSearching)
             {
-                totalItems = await query.CountAsync();
+                var query = _context.Novels
+                    .Include(n => n.Categories)
+                    .Include(n => n.UidNavigation)
+                    .Include(n => n.Ratings)
+                    .AsQueryable();
 
+                if (!string.IsNullOrWhiteSpace(keyword))
+                {
+                    string k = keyword.Trim().ToLower();
+                    query = query.Where(x => x.Title.ToLower().Contains(k));
+                }
+
+                if (!string.IsNullOrWhiteSpace(authorId))
+                {
+                    query = query.Where(x => x.Uid == authorId);
+                }
+
+                if (minRating.HasValue)
+                {
+                    query = query.Where(x => x.Ratings.Any() &&
+                                       x.Ratings.Average(r => r.RatingPoint) >= minRating.Value);
+                }
+
+                if (selectedCategories != null && selectedCategories.Any())
+                {
+                    query = query.Where(x => x.Categories.Any(c => selectedCategories.Contains(c.CategoryId)));
+                }
+
+                // Sắp xếp
+                query = query.OrderByDescending(x => x.UpdateTime);
+
+                // Đếm và phân trang
+                totalItems = await query.CountAsync();
                 novels = await query
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
                     .ToListAsync();
             }
 
+            // Đóng gói ViewModel
             var vm = new NovelSearchViewModel
             {
                 Keyword = keyword,
-                Status = status,
                 AuthorId = authorId,
-                SortBy = sortBy,
                 CurrentPage = page,
-                IsSearching = isSearching,
                 MinRating = minRating,
-                TotalPages =
-                    (int)Math.Ceiling(totalItems / (double)pageSize),
+                IsSearching = isSearching, // Truyền trạng thái này xuống View để ẩn/hiện danh sách
+                TotalPages = isSearching ? (int)Math.Ceiling(totalItems / (double)pageSize) : 0,
+                SelectedCategories = selectedCategories ?? new(),
 
-                SelectedCategories =
-                    selectedCategories ?? new(),
-
-                Categories =
-                    await _context.Categories
-                    .OrderBy(x => x.Name)
-                    .ToListAsync(),
-
-                Authors =
-                    await _context.Users
-                    .Where(x => x.RoleId == "3")
-                    .ToListAsync(),
+                // Luôn lấy dữ liệu cho dropdown (Thể loại, Tác giả) để người dùng chọn
+                Categories = await _context.Categories.OrderBy(x => x.Name).ToListAsync(),
+                Authors = await _context.Users.Where(x => x.RoleId == "3").ToListAsync(),
 
                 Novels = novels
             };
