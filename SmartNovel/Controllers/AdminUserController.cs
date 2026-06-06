@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Crypto.Generators;
 using SmartNovel.Models;
 using SmartNovel.ViewModels;
+using BCrypt.Net; 
 using SmartNovel.ViewModels.AdminUser;
 
 namespace SmartNovel.Controllers
@@ -15,7 +17,7 @@ namespace SmartNovel.Controllers
             _context = context;
         }
 
-        public IActionResult Index(string keyword, string role, string status, int page = 1)
+        public async Task<IActionResult> Index(string keyword, string role, string status, int page = 1)
         {
             int pageSize = 10; 
 
@@ -38,10 +40,10 @@ namespace SmartNovel.Controllers
                 query = query.Where(u => u.Status == status);
             }
 
-            int totalUsers = query.Count();
+            int totalUsers = await query.CountAsync();
             int totalPages = (int)Math.Ceiling(totalUsers / (double)pageSize);
 
-            var users = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            var users = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
 
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = totalPages;
@@ -56,6 +58,7 @@ namespace SmartNovel.Controllers
             var model = new CreateUserViewModel();
             return View(model);
         }
+
         [HttpPost]
         public async Task<IActionResult> Create(CreateUserViewModel model)
         {
@@ -80,7 +83,7 @@ namespace SmartNovel.Controllers
                 Email = model.Email,
                 Phone = model.PhoneNumber,
                 CreatorPoint = model.CreatorPoint,
-                Password = model.Password,
+                Password = BCrypt.Net.BCrypt.HashPassword(model.Password),
                 RoleId = model.RoleID,
                 Status = model.Status
             };
@@ -142,7 +145,7 @@ namespace SmartNovel.Controllers
 
             if (!string.IsNullOrEmpty(model.NewPassword))
             {
-                existingUser.Password = model.NewPassword;
+                existingUser.Password = BCrypt.Net.BCrypt.HashPassword(model.NewPassword);
             }
 
             _context.Users.Update(existingUser);
