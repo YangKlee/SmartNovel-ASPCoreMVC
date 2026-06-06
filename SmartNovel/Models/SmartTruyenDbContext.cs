@@ -608,6 +608,7 @@ public partial class SmartTruyenDbContext : DbContext
                     });
         });
 
+
         OnModelCreatingPartial(modelBuilder);
     }
 

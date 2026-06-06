@@ -4,10 +4,15 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+@*     @await RenderSectionAsync("Styles", required: false) *@
+    <link rel="stylesheet" href="~/css/auth/authLayout.css" asp-append-version="true" />
 </head>
 <body>
     <div class="main">
         @RenderBody()
     </div>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

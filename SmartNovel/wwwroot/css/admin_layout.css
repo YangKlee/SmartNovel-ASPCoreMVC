@@ -1,0 +1,39 @@
+body {
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+}
+
+.header-container {
+    flex-shrink: 0;
+}
+
+.container-fluid.d-flex {
+    flex-grow: 1;
+    overflow: hidden; /* Chứa nội dung, ẩn cuộn tổng thể */
+}
+
+.author-sidebar {
+    overflow-y: auto; /* Sidebar cuộn độc lập */
+    height: 100%;
+    min-height: auto !important; /* Ghi đè min-height: 100vh */
+}
+
+/* Phần Scrollbar cho Sidebar để đẹp hơn */
+.author-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+.author-sidebar::-webkit-scrollbar-thumb {
+    background: #555; 
+    border-radius: 4px;
+}
+.author-sidebar::-webkit-scrollbar-thumb:hover {
+    background: #888; 
+}
+
+.flex-grow-1.bg-light {
+    overflow-y: auto; /* Nội dung chính cuộn độc lập */
+    height: 100%;
+}

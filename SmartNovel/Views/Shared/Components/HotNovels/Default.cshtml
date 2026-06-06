@@ -1,0 +1,153 @@
+﻿@model SmartNovel.ViewModels.HotNovelsViewModel
+
+<section id="hot-novels-section" class="novel-section mb-5">
+    <div class="section-header d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+        <h4 class="section-title fw-bold text-uppercase mb-0">
+            <i class="bi bi-fire me-1 text-danger"></i>Truyện Hot
+        </h4>
+
+        <ul class="nav nav-tabs border-0 mt-tabs" id="hotTabs" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active tab-item-btn" data-bs-toggle="tab" data-bs-target="#hot-daily" type="button">Đọc nhiều hôm nay</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link tab-item-btn" data-bs-toggle="tab" data-bs-target="#hot-quarter" type="button">Top quý</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link tab-item-btn" data-bs-toggle="tab" data-bs-target="#hot-monthly" type="button">Top tháng</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link tab-item-btn" data-bs-toggle="tab" data-bs-target="#hot-seasonal" type="button">Top mùa</button>
+            </li>
+        </ul>
+    </div>
+
+    <div class="position-relative slider-container">
+        <button onclick="scrollSlider('hot-novels-section', -1)" class="btn-arrow btn-prev position-absolute top-50 start-0 translate-middle-y shadow-sm">
+            <i class="bi bi-chevron-left"></i>
+        </button>
+        <div class="tab-content" id="hotTabsContent">
+
+            <div class="tab-pane fade show active" id="hot-daily" role="tabpanel">
+                <div class="row row-cols-2 row-cols-md-5 g-3">
+                    @foreach (var truyen in Model.Daily)
+                    {
+                        <div class="col">
+                            <div class="card novel-card h-100 border-0">
+                                <div class="card-img-wrapper position-relative">
+                                    <span class="badge position-absolute top-0 start-0 bg-success m-2 px-2 py-1 text-xs">Chương @truyen.Chapters.Count</span>
+                                    <img src="@truyen.ImageNovelUrl" class="card-img-top rounded-3" alt="@truyen.Title">
+                                    <span class="age-badge position-absolute bottom-0 end-0 m-2 bg-danger text-white rounded-circle fw-bold d-flex align-items-center justify-content-center">@truyen.AgeRating</span>
+                                </div>
+                                <div class="card-body px-1 py-2 text-center">
+                                    <h6 class="novel-title text-truncate fw-bold mb-1"><a href="/truyen/@truyen.NovelId">@truyen.Title</a></h6>
+                                    <p class="novel-tags text-muted text-xs text-truncate mb-2">@(truyen.Categories.FirstOrDefault()?.Name ?? "Chưa rõ")</p>
+                                    <div class="novel-stats d-flex justify-content-center gap-2 text-muted text-xs">
+                                        <span><i class="bi bi-eye"></i> @(truyen.ViewCount ?? 0)</span>
+                                        <span><i class="bi bi-info-circle"></i> @truyen.Status</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="hot-quarter" role="tabpanel">
+                <div class="row row-cols-2 row-cols-md-5 g-3">
+                    @foreach (var truyen in Model.Quarterly)
+                    {
+                        <div class="col">
+                            <div class="card novel-card h-100 border-0">
+                                <div class="card-img-wrapper position-relative">
+                                    <span class="badge position-absolute top-0 start-0 bg-success m-2 px-2 py-1 text-xs">Chương @truyen.Chapters.Count</span>
+                                    <img src="@truyen.ImageNovelUrl" class="card-img-top rounded-3" alt="@truyen.Title">
+                                    <span class="age-badge position-absolute bottom-0 end-0 m-2 bg-danger text-white rounded-circle fw-bold d-flex align-items-center justify-content-center">@truyen.AgeRating</span>
+                                </div>
+                                <div class="card-body px-1 py-2 text-center">
+                                    <h6 class="novel-title text-truncate fw-bold mb-1"><a href="/Novel/@truyen.Slug">@truyen.Title</a></h6>
+                                    <p class="novel-tags text-muted text-xs text-truncate mb-2">@(truyen.Categories.FirstOrDefault()?.Name ?? "Chưa rõ")</p>
+                                    <div class="novel-stats d-flex justify-content-center gap-2 text-muted text-xs">
+                                        <span><i class="bi bi-eye"></i> @(truyen.ViewCount ?? 0)</span>
+                                        <span><i class="bi bi-info-circle"></i> @truyen.Status</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="hot-monthly" role="tabpanel">
+                <div class="row row-cols-2 row-cols-md-5 g-3">
+                    @foreach (var truyen in Model.Monthly)
+                    {
+                        <div class="col">
+                            <div class="card novel-card h-100 border-0">
+                                <div class="card-img-wrapper position-relative">
+                                    <span class="badge position-absolute top-0 start-0 bg-success m-2 px-2 py-1 text-xs">Chương @truyen.Chapters.Count</span>
+                                    <img src="@truyen.ImageNovelUrl" class="card-img-top rounded-3" alt="@truyen.Title">
+                                    <span class="age-badge position-absolute bottom-0 end-0 m-2 bg-danger text-white rounded-circle fw-bold d-flex align-items-center justify-content-center">@truyen.AgeRating</span>
+                                </div>
+                                <div class="card-body px-1 py-2 text-center">
+                                    <h6 class="novel-title text-truncate fw-bold mb-1"><a href="/Novel/@truyen.Slug">@truyen.Title</a></h6>
+                                    <p class="novel-tags text-muted text-xs text-truncate mb-2">@(truyen.Categories.FirstOrDefault()?.Name ?? "Chưa rõ")</p>
+                                    <div class="novel-stats d-flex justify-content-center gap-2 text-muted text-xs">
+                                        <span><i class="bi bi-eye"></i> @(truyen.ViewCount ?? 0)</span>
+                                        <span><i class="bi bi-info-circle"></i> @truyen.Status</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="hot-seasonal" role="tabpanel">
+                <div class="row row-cols-2 row-cols-md-5 g-3">
+                    @foreach (var truyen in Model.Sesonaly)
+                    {
+                        <div class="col">
+                            <div class="card novel-card h-100 border-0">
+                                <div class="card-img-wrapper position-relative">
+                                    <span class="badge position-absolute top-0 start-0 bg-success m-2 px-2 py-1 text-xs">Chương @truyen.Chapters.Count</span>
+                                    <img src="@truyen.ImageNovelUrl" class="card-img-top rounded-3" alt="@truyen.Title">
+                                    <span class="age-badge position-absolute bottom-0 end-0 m-2 bg-danger text-white rounded-circle fw-bold d-flex align-items-center justify-content-center">@truyen.AgeRating</span>
+                                </div>
+                                <div class="card-body px-1 py-2 text-center">
+                                    <h6 class="novel-title text-truncate fw-bold mb-1"><a href="/Novel/@truyen.Slug">@truyen.Title</a></h6>
+                                    <p class="novel-tags text-muted text-xs text-truncate mb-2">@(truyen.Categories.FirstOrDefault()?.Name ?? "Chưa rõ")</p>
+                                    <div class="novel-stats d-flex justify-content-center gap-2 text-muted text-xs">
+                                        <span><i class="bi bi-eye"></i> @(truyen.ViewCount ?? 0)</span>
+                                        <span><i class="bi bi-info-circle"></i> @truyen.Status</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+
+        <button onclick="scrollSlider('hot-novels-section', 1)" class="btn-arrow btn-next position-absolute top-50 end-0 translate-middle-y shadow-sm">
+            <i class="bi bi-chevron-right"></i>
+        </button>
+    </div>
+</section>
+
+<script>
+    function scrollSlider(sectionId, direction) {
+        const activeTab = document.querySelector(`#${sectionId} .tab-pane.active`);
+        if (!activeTab) return;
+
+        const row = activeTab.querySelector('.row');
+        if (row) {
+            const scrollAmount = row.clientWidth * 0.8;
+            row.scrollBy({
+                left: scrollAmount * direction,
+                behavior: 'smooth'
+            });
+        }
+    }
+</script>

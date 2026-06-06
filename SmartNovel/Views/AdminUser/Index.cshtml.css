@@ -1,0 +1,116 @@
+﻿/* =========================================
+   GIAO DIỆN QUẢN TRỊ ADMIN (SMARTNOVEL)
+========================================= */
+
+/* 1. Nền trang web (Tạo độ nổi cho các khối trắng) */
+body {
+    background-color: #f4f6f9;
+}
+
+/* 2. Thanh công cụ (Toolbar) */
+.admin-toolbar {
+    background-color: #ffffff;
+    border-radius: 10px;
+    border: none !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03) !important;
+}
+
+/* Ô tìm kiếm bo góc mượt mà */
+.search-input-group {
+    max-width: 350px;
+}
+
+    .search-input-group .form-control {
+        border-right: none;
+        border-color: #e2e8f0;
+        box-shadow: none;
+    }
+
+        .search-input-group .form-control:focus {
+            border-color: #cbd5e1;
+        }
+
+    .search-input-group .btn {
+        border-left: none;
+        border-color: #e2e8f0;
+        color: #64748b;
+    }
+
+        .search-input-group .btn:hover {
+            background-color: #f8fafc !important;
+            color: #0f172a;
+        }
+
+/* 3. Bảng dữ liệu (Table Custom) */
+.table-responsive {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04) !important;
+    border: 1px solid #f1f5f9;
+}
+
+.table-custom {
+    border-collapse: separate;
+    border-spacing: 0;
+    border: none;
+}
+
+    .table-custom thead th {
+        background-color: #f8fafc;
+        color: #475569;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #e2e8f0;
+        padding: 14px 12px;
+    }
+
+    .table-custom tbody td {
+        vertical-align: middle;
+        color: #334155;
+        border-bottom: 1px solid #f1f5f9;
+        padding: 12px;
+    }
+
+    .table-custom tbody tr:hover {
+        background-color: #f8fafc;
+    }
+
+/* 4. Cột Thao tác & Nút bấm (Action Buttons) */
+.col-action {
+    width: 130px; /* Cố định chiều rộng để bảng không bị giật */
+}
+
+.btn-action {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease-in-out;
+}
+
+    .btn-action i {
+        font-size: 1.1rem;
+    }
+    /* Hiệu ứng Hover cho nút Sửa */
+    .btn-action:hover {
+        background-color: #e0f2fe !important;
+        transform: translateY(-2px);
+    }
+/* Hiệu ứng Hover riêng cho nút Xóa */
+.btn-action-delete:hover {
+    background-color: #fee2e2 !important;
+}
+
+    .btn-action-delete:hover i {
+        color: #dc2626 !important;
+    }
+
+/* 5. Cải thiện thanh Phân trang (Pagination) */
+.pagination .page-link {
+    color: #475569;
+    border: 1px solid #e2e8f0;
