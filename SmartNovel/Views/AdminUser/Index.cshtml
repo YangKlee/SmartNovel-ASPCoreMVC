@@ -1,0 +1,120 @@
+﻿@model IEnumerable<SmartNovel.Models.User>
+
+@{
+    ViewData["Title"] = "Quản lý người dùng";
+    Layout = "_LayoutAdmin";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<h3 class="mb-4">Quản lý người dùng</h3>
+
+<div class="d-flex justify-content-between mb-3">
+    <form asp-controller="AdminUser" asp-action="Index" method="get" class="d-flex gap-2">
+        <input type="text" name="keyword" class="form-control" placeholder="Tìm tên, email..." value="@Context.Request.Query["keyword"]">
+
+        <select name="role" class="form-select">
+            <option value="">-- Tất cả vai trò --</option>
+            <option value="ROLE-0001" selected="@(Context.Request.Query["role"] == "ROLE-0001")">Quản trị viên</option>
+            <option value="ROLE-0002" selected="@(Context.Request.Query["role"] == "ROLE-0002")">Tác giả</option>
+            <option value="ROLE-0003" selected="@(Context.Request.Query["role"] == "ROLE-0003")">Độc giả</option>
+        </select>
+
+        <select name="status" class="form-select">
+            <option value="">-- Tất cả trạng thái --</option>
+            <option value="Active" selected="@(Context.Request.Query["status"] == "Active")">Hoạt động</option>
+            <option value="Banned" selected="@(Context.Request.Query["status"] == "Banned")">Bị khóa</option>
+        </select>
+
+        <button type="submit" class="btn btn-primary">Lọc</button>
+        <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+    </form>
+
+    <a asp-controller="AdminUser" asp-action="Create" class="btn btn-success">
+        Thêm mới
+    </a>
+</div>
+
+<table class="table table-bordered table-striped align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>STT</th>
+            <th>Họ và tên</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Vai trò</th>
+            <th>Trạng thái</th>
+            <th>Điểm</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            int stt = 1;
+            foreach (var user in Model)
+            {
+                <tr>
+                    <td>@(stt++)</td>
+                    <td>@user.DisplayName</td>
+                    <td>@user.Username</td>
+                    <td>@user.Email</td>
+                    <td>@(user.RoleId == "ROLE-0001" ? "Admin" : user.RoleId == "ROLE-0002" ? "Tác giả" : "Độc giả")</td>
+                    <td>@user.Status</td>
+                    <td>@user.CreatorPoint</td>
+                    <td>
+                        <a asp-controller="AdminUser" asp-action="Edit" asp-route-id="@user.Uid" class="btn btn-sm btn-warning">Sửa</a>
+
+                        <form asp-action="DeleteUser" method="post" class="d-inline" onsubmit="return confirm('Chắc chắn xóa?');">
+                            <input type="hidden" name="id" value="@user.Uid" />
+                            <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr><td colspan="8" class="text-center">Chưa có dữ liệu</td></tr>
+        }
+    </tbody>
+</table>
+
+@* 
+//Phan trang *@
+@if (ViewBag.TotalPages > 1)
+{
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-end mt-3">
+
+            <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                <a class="page-link" href="?keyword=@Context.Request.Query["keyword"]&role=@Context.Request.Query["role"]&status=@Context.Request.Query["status"]&page=@(ViewBag.CurrentPage - 1)">
+                    Trước
+                </a>
+            </li>
+
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                    <a class="page-link" href="?keyword=@Context.Request.Query["keyword"]&role=@Context.Request.Query["role"]&status=@Context.Request.Query["status"]&page=@i">
+                        @i
+                    </a>
+                </li>
+            }
+
+            <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+                <a class="page-link" href="?keyword=@Context.Request.Query["keyword"]&role=@Context.Request.Query["role"]&status=@Context.Request.Query["status"]&page=@(ViewBag.CurrentPage + 1)">
+                    Sau
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+}

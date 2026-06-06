@@ -1,0 +1,100 @@
+﻿.story-management-wrapper {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    width: 100%;
+    padding: 16px;
+}
+
+/* Phần Header: Tiêu đề và Nút */
+.story-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.story-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #000;
+    margin: 0;
+}
+
+/* Đổi display thành inline-flex hoặc flex và bỏ text-decoration vì dùng thẻ <a> */
+.btn-create {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #3b3b45;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    text-decoration: none; /* Thêm vào để thẻ <a> không có gạch chân */
+}
+
+    .btn-create:hover {
+        background-color: #2a2a32;
+        color: #ffffff;
+    }
+
+    .btn-create i {
+        font-size: 16px;
+    }
+
+/* Phần Controls: Dropdown và Ô tìm kiếm */
+.story-controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.status-dropdown {
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #222;
+    background-color: #fcfcfc;
+    border: 1px solid #999;
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+    min-width: 150px;
+}
+
+    .status-dropdown:focus {
+        border-color: #555;
+    }
+
+.search-input {
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #333;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    outline: none;
+}
+
+    .search-input::placeholder {
+        color: #999;
+    }
+
+    .search-input:focus {
+        border-color: #555;
+    }
+
+.empty-noti {
+    display: block;
+    text-align: center;
+    margin: 40px auto;
+    font-size: 16px;
+    color: #888;
+}
+
+.novel-list {
+    margin-top: 20px;
+}
