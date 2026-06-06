@@ -361,3 +361,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/SmartNovel/appsettings.json
+/SmartNovel/appsettings.Development.json
+/SmartNovel/appsettings.json
+/SmartNovel/appsettings.json
+/SmartNovel/appsettings.json

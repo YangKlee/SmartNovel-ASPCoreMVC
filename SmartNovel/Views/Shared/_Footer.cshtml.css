@@ -1,0 +1,115 @@
+﻿
+/* 1. Khung nền tổng thể của Footer (Màu xám nhạt như ảnh) */
+.custom-footer {
+    background-color: #D2D7D7;
+    display: flex;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #212529;
+}
+
+/* 2. Khung Logo tạm thời (Border mảnh, bo góc nhẹ) */
+.logo-placeholder {
+    width: 65px;
+    height: 65px;
+    border: 2px solid #A5A9A9;
+    border-radius: 8px;
+    background-color: #E2E6E6;
+}
+
+/* 3. Slogan chữ nhỏ phía dưới tên thương hiệu */
+.italic-slogan {
+    font-size: 0.85rem;
+    color: #555555;
+    margin-top: 5px;
+}
+
+/* 4. Định dạng các liên kết điều khoản (Quyền riêng tư | Điều khoản...) */
+.privacy-links p,
+.privacy-links a {
+    font-size: 0.9rem;
+    color: #333333;
+    transition: color 0.2s ease;
+}
+
+    .privacy-links a:hover {
+        color: #000000;
+        text-decoration: underline !important;
+    }
+
+/* 5. Định dạng các cột danh mục (Explore, Information, Support) */
+/* Thêm ::deep vào trước để phá vỡ thế cô lập bị đè */
+::deep .footer-links li a {
+    margin-bottom:15px;
+    color: #212529 !important;
+    text-decoration: none !important;
+    font-size: 0.95rem;
+    display: inline-block;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+::deep .footer-links li a:hover {
+        color: #495057 !important;
+        transform: translateX(3px);
+        text-decoration: none !important;
+    }
+
+::deep .privacy-links a {
+    color: #212529 !important;
+    text-decoration: none !important;
+}
+::deep .privacy-links a:hover {
+        color: #000000 !important;
+}
+
+/* 6. Khu vực các biểu tượng Mạng Xã Hội (Social Icons) */
+.social-icons a {
+    color: #212529;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+    .social-icons a:hover {
+        transform: scale(1.15);
+        opacity: 0.8;
+    }
+
+/* Màu sắc chuẩn cho các icon đặc thù */
+.text-orange {
+    color: #FF4500 !important; /* Màu đặc trưng của Reddit */
+}
+
+/* 7. Khung nhập Email (Stay Updated) - Màu hồng cam nhạt */
+.input-custom {
+    background-color: #E89090 !important;
+    border: none !important;
+    color: #212529 !important;
+    border-radius: 2px !important;
+    padding: 8px 12px;
+}
+
+    /* Đổi màu chữ gợi ý (Placeholder) bên trong ô Email */
+    .input-custom::placeholder {
+        color: #495057;
+        opacity: 0.8;
+    }
+
+    /* Định cấu hình khi người dùng click chọn ô nhập Email */
+    .input-custom:focus {
+        background-color: #DF8080 !important;
+        box-shadow: 0 0 0 0.25rem rgba(232, 144, 144, 0.25) !important;
+    }
+
+/* 8. Nút bấm Subscribe - Màu đỏ Coral */
+.btn-danger-custom {
+    background-color: #F86C6C;
+    border: none;
+    color: #FFFFFF;
+    padding: 8px 12px;
+    border-radius: 2px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+    .btn-danger-custom:hover {
+        background-color: #E05555;
+        color: #FFFFFF;
+    }
