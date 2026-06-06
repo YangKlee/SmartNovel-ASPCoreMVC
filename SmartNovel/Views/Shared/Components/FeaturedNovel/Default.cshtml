@@ -1,12 +1,12 @@
-﻿@model SmartNovel.Models.Novel
+@model SmartNovel.Models.Novel
 
 @if (Model != null)
 {
     <div class="featured-novel-container mb-5 shadow-sm rounded-4 overflow-hidden">
         <div class="row g-0 bg-white">
             <div class="col-md-4 col-lg-3">
-                <div class="featured-cover-wrapper">
-                    <img src="@Model.ImageNovelUrl" alt="@Model.Title" class="featured-cover">
+                <div class="featured-cover-wrapper h-100">
+                    <img src="@Model.ImageNovelUrl" alt="@Model.Title" class="featured-cover img-fluid w-100 h-100 object-fit-cover">
                     <div class="featured-overlay"></div>
                 </div>
             </div>
