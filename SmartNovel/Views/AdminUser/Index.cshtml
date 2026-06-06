@@ -22,9 +22,9 @@
 
         <select name="role" class="form-select">
             <option value="">-- Tất cả vai trò --</option>
-            <option value="ROLE-0001" selected="@(Context.Request.Query["role"] == "ROLE-0001")">Quản trị viên</option>
-            <option value="ROLE-0002" selected="@(Context.Request.Query["role"] == "ROLE-0002")">Tác giả</option>
-            <option value="ROLE-0003" selected="@(Context.Request.Query["role"] == "ROLE-0003")">Độc giả</option>
+            <option value="1" selected="@(Context.Request.Query["role"] == "1")">Quản trị viên</option>
+            <option value="3" selected="@(Context.Request.Query["role"] == "3")">Tác giả</option>
+            <option value="4" selected="@(Context.Request.Query["role"] == "4")">Độc giả</option>
         </select>
 
         <select name="status" class="form-select">
@@ -66,7 +66,7 @@
                     <td>@user.DisplayName</td>
                     <td>@user.Username</td>
                     <td>@user.Email</td>
-                    <td>@(user.RoleId == "ROLE-0001" ? "Admin" : user.RoleId == "ROLE-0002" ? "Tác giả" : "Độc giả")</td>
+                    <td>@(user.RoleId == "1" ? "Admin" : user.RoleId == "3" ? "Tác giả" : "Độc giả")</td>
                     <td>@user.Status</td>
                     <td>@user.CreatorPoint</td>
                     <td>
