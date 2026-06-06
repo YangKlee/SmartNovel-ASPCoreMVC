@@ -2,6 +2,7 @@
 /* 1. Khung nền tổng thể của Footer (Màu xám nhạt như ảnh) */
 .custom-footer {
     background-color: #D2D7D7;
+    display: flex;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #212529;
 }

@@ -1,0 +1,140 @@
+.chapter-manager-container {
+  padding: 32px;
+  background-color: #f4f6f8;
+  min-height: 100vh;
+  font-family: 'Inter', Roboto, 'Segoe UI', sans-serif;
+}
+
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.page-title {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #000;
+  letter-spacing: -0.5px;
+}
+
+.add-btn {
+  background-color: #3b3f46 !important;
+  color: white !important;
+  border-radius: 6px;
+  font-weight: 600;
+  padding: 8px 24px;
+  font-size: 0.95rem;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+.add-btn:hover {
+  background-color: #2b2f36 !important;
+  color: white !important;
+}
+
+.filter-section {
+  background-color: #fdfdfd;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+}
+
+.novel-select-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.novel-select-row .label {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.custom-field {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.novel-select {
+  width: 400px;
+}
+
+.search-filter-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.status-filter {
+  width: 200px;
+}
+
+.search-box {
+  flex: 1;
+}
+
+.stats-row {
+  display: flex;
+  gap: 16px;
+}
+
+.stat-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+}
+
+.stat-number {
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.stat-card.total {
+  background-color: #dbe0e4;
+  border-color: #a7b1b9;
+  color: #111;
+}
+
+.stat-card.public {
+  background-color: #5deb7a;
+  border-color: #38b451;
+  color: #111;
+}
+
+.stat-card.draft {
+  background-color: #e7a692;
+  border-color: #a3614d;
+  color: #111;
+}
+
+.stat-card.removed {
+  background-color: #f35858;
+  border-color: #c93b3b;
+  color: white;
+}
+
+.chapter-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}

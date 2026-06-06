@@ -1,0 +1,272 @@
+﻿@using SmartNovel.Models
+
+@{
+    ViewData["Title"] = "Kiểm duyệt nội dung";
+
+    var novels = ViewBag.Novels as List<ReportTicket>;
+    var chapters = ViewBag.Chapters as List<ReportTicket>;
+    var comments = ViewBag.Comments as List<ReportTicket>;
+    var history = ViewBag.History as List<ReportTicket>;
+}
+
+<link rel="stylesheet" href="~/css/moderation.css" />
+
+<div class="moderation-page">
+
+    <div class="container-custom">
+
+        <div class="page-header">
+            <h1>
+                <i class="bi bi-shield-fill-check"></i>
+                Kiểm duyệt nội dung
+            </h1>
+        </div>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="success-box">
+                @TempData["Success"]
+            </div>
+        }
+
+        <ul class="nav nav-tabs moderation-tabs">
+
+            <li class="nav-item">
+                <button class="nav-link active"
+                        data-bs-toggle="tab"
+                        data-bs-target="#novels">
+                    Truyện
+                </button>
+            </li>
+
+            <li class="nav-item">
+                <button class="nav-link"
+                        data-bs-toggle="tab"
+                        data-bs-target="#chapters">
+                    Chương
+                </button>
+            </li>
+
+            <li class="nav-item">
+                <button class="nav-link"
+                        data-bs-toggle="tab"
+                        data-bs-target="#comments">
+                    Bình luận
+                </button>
+            </li>
+
+            <li class="nav-item">
+                <button class="nav-link"
+                        data-bs-toggle="tab"
+                        data-bs-target="#history">
+                    Lịch sử xử lý
+                </button>
+            </li>
+
+        </ul>
+
+        <div class="tab-content">
+
+            <!-- NOVELS -->
+            <div class="tab-pane fade show active" id="novels">
+
+                @if (novels?.Any() == true)
+                {
+                    @foreach (var item in novels)
+                    {
+                        <div class="moderation-card">
+
+                            <div class="card-title">
+                                @item.Novel?.Title
+                            </div>
+
+                            <div class="card-description">
+                                @(item.Novel?.Description ?? "Không có mô tả")
+                            </div>
+
+                            <div class="report-reason">
+                                <strong>Lý do:</strong>
+                                @item.ReasonDetail
+                            </div>
+
+                            <div class="action-buttons">
+
+                                <form asp-action="RemoveNovel" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden"
+                                           name="ticketId"
+                                           value="@item.TiketId" />
+
+                                    <button type="submit" class="btn-remove">
+                                        Gỡ truyện
+                                    </button>
+                                </form>
+
+                                <form asp-action="RejectTicket" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden"
+                                           name="ticketId"
+                                           value="@item.TiketId" />
+
+                                    <button type="submit" class="btn-ignore">
+                                        Bỏ qua
+                                    </button>
+                                </form>
+
+                            </div>
+
+                        </div>
+                    }
+                }
+            </div>
+
+            <!-- CHAPTERS -->
+            <div class="tab-pane fade" id="chapters">
+
+                @if (chapters?.Any() == true)
+                {
+                    @foreach (var item in chapters)
+                    {
+                        <div class="moderation-card">
+
+                            <div class="card-title">
+                                @item.Chapter?.ChapterTitle
+                            </div>
+
+                            <div class="card-description">
+                                @(item.Chapter?.SummaryChapter ?? "Không có mô tả")
+                            </div>
+
+                            <div class="report-reason">
+                                <strong>Lý do:</strong>
+                                @item.ReasonDetail
+                            </div>
+
+                            <div class="action-buttons">
+
+                                <form asp-action="RemoveChapter" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden"
+                                           name="ticketId"
+                                           value="@item.TiketId" />
+
+                                    <button type="submit" class="btn-remove">
+                                        Gỡ chương
+                                    </button>
+                                </form>
+
+                                <form asp-action="RejectTicket" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden"
+                                           name="ticketId"
+                                           value="@item.TiketId" />
+
+                                    <button type="submit" class="btn-ignore">
+                                        Bỏ qua
+                                    </button>
+                                </form>
+
+                            </div>
+
+                        </div>
+                    }
+                }
+            </div>
+
+            <!-- COMMENTS -->
+            <div class="tab-pane fade" id="comments">
+
+                @if (comments?.Any() == true)
+                {
+                    @foreach (var item in comments)
+                    {
+                        <div class="moderation-card">
+
+                            <div class="comment-box">
+                                @item.Comment?.Content
+                            </div>
+
+                            <div class="report-reason">
+                                <strong>Lý do:</strong>
+                                @item.ReasonDetail
+                            </div>
+
+                            <div class="action-buttons">
+
+                                <form asp-action="RemoveComment" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden"
+                                           name="ticketId"
+                                           value="@item.TiketId" />
+
+                                    <button type="submit" class="btn-remove">
+                                        Gỡ bình luận
+                                    </button>
+                                </form>
+
+                                <form asp-action="RejectTicket" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden"
+                                           name="ticketId"
+                                           value="@item.TiketId" />
+
+                                    <button type="submit" class="btn-ignore">
+                                        Bỏ qua
+                                    </button>
+                                </form>
+
+                            </div>
+
+                        </div>
+                    }
+                }
+            </div>
+
+            <!-- HISTORY -->
+            <div class="tab-pane fade" id="history">
+
+                <div class="history-section">
+
+                    <table class="history-table">
+
+                        <thead>
+                            <tr>
+                                <th>Ticket</th>
+                                <th>Loại</th>
+                                <th>Lý do</th>
+                                <th>Người báo cáo</th>
+                                <th>Người xử lý</th>
+                                <th>Kết quả</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @if (history != null)
+                            {
+                                @foreach (var item in history)
+                                {
+                                    <tr>
+                                        <td>@item.TiketId</td>
+                                        <td>@item.Type</td>
+                                        <td>@item.ReasonDetail</td>
+                                        <td>@item.RepoterU?.DisplayName</td>
+                                        <td>@item.ResolvedU?.DisplayName</td>
+                                        <td>@item.Status</td>
+                                    </tr>
+                                }
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
