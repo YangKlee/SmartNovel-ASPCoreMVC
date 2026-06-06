@@ -22,6 +22,6 @@
 
         public string? NextChapterTitle { get; set; }
 
-        public List<Chapter> AllChapters { get; set; } = new();
+        public List<Chapter>? AllChapters { get; set; } = new();
     }
 }

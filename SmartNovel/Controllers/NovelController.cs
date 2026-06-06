@@ -192,7 +192,7 @@ namespace SmartNovel.Controllers
         public async Task<IActionResult> Read(string novelId, string chapterId)
         {
             var chapter = await _context.Chapters
-                .Include(x => x.Novel)
+                .Include(c => c.Novel)
                 .FirstOrDefaultAsync(x =>
                     x.NovelId == novelId &&
                     x.ChapterId == chapterId);
@@ -200,7 +200,7 @@ namespace SmartNovel.Controllers
             if (chapter == null)
                 return NotFound();
 
-            if (chapter.Status != "Public")
+            if (chapter.Status.ToLower() != "public")
                 return NotFound();
 
             string htmlContent =
@@ -251,7 +251,7 @@ namespace SmartNovel.Controllers
                     x.Status == "Public")
                 .OrderBy(x => x.ChaperOrder)
                 .ToListAsync()
-                };
+            };
 
             return View(vm);
         }

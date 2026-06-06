@@ -1,4 +1,4 @@
-﻿@model SmartNovel.Models.ViewModels.ReadNovelVM
+@model SmartNovel.Models.ViewModels.ReadNovelVM
 
 @{
     ViewData["Title"] = Model.ChapterTitle;
@@ -174,35 +174,44 @@
         }
 
         loadVoices();
-        speechSynthesis.onvoiceschanged = loadVoices;
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = loadVoices;
+        }
 
-        // ƯU TIÊN GIỌNG GOOGLE VIỆT NAM
+        // ƯU TIÊN GIỌNG VIỆT NAM
         function getVietnameseVoice() {
+            // Lấy danh sách giọng đọc mới nhất
+            let currentVoices = speechSynthesis.getVoices();
+            if (currentVoices.length > 0) {
+                voices = currentVoices;
+            }
             if (!voices || voices.length === 0) return null;
 
-            // 1. Google voice (ưu tiên cao nhất)
-            let googleVoice = voices.find(v =>
-                v.lang.includes("vi") &&
-                v.name.toLowerCase().includes("google")
+            // Lọc tất cả giọng đọc tiếng Việt dựa vào lang hoặc tên
+            let viVoices = voices.filter(v => 
+                (v.lang && v.lang.toLowerCase().includes("vi")) ||
+                (v.name && v.name.toLowerCase().includes("vietnamese")) ||
+                (v.name && v.name.toLowerCase().includes("việt nam"))
             );
+            
+            if (viVoices.length === 0) return null;
+
+            // 1. Google voice (ưu tiên)
+            let googleVoice = viVoices.find(v => v.name.toLowerCase().includes("google"));
             if (googleVoice) return googleVoice;
 
-            // 2. Giọng natural / neural
-            let premiumVoice = voices.find(v =>
-                v.lang.includes("vi") &&
-                (
-                    v.name.toLowerCase().includes("natural") ||
-                    v.name.toLowerCase().includes("neural")
-                )
+            // 2. Giọng natural / neural / online (Edge/Windows)
+            let premiumVoice = viVoices.find(v =>
+                v.name.toLowerCase().includes("natural") ||
+                v.name.toLowerCase().includes("neural") ||
+                v.name.toLowerCase().includes("online") ||
+                v.name.toLowerCase().includes("hoaimy") ||
+                v.name.toLowerCase().includes("namminh")
             );
             if (premiumVoice) return premiumVoice;
 
-            // 3. chuẩn vi-VN
-            let standardVoice = voices.find(v => v.lang === "vi-VN");
-            if (standardVoice) return standardVoice;
-
-            // 4. fallback
-            return voices.find(v => v.lang.toLowerCase().includes("vi")) || null;
+            // 3. Lấy giọng tiếng Việt đầu tiên tìm thấy
+            return viVoices[0];
         }
 
         // LẤY NỘI DUNG TEXT
@@ -232,6 +241,9 @@
             const voice = getVietnameseVoice();
             if (voice) {
                 speech.voice = voice;
+            } else {
+                alert("Máy của bạn chưa có sẵn giọng đọc Tiếng Việt, hoặc trình duyệt tải chưa xong. \n\nVui lòng sử dụng trình duyệt Microsoft Edge, hoặc vào cài đặt Windows (Settings > Time & Language > Speech) để thêm giọng Tiếng Việt (Vietnamese TTS) nhé!");
+                return; // Ngừng đọc để tránh phát ra tiếng Anh
             }
 
             speech.rate = 0.95;
