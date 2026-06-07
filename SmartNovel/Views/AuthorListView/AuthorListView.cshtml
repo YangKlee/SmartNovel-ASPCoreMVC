@@ -1,0 +1,31 @@
+﻿@model SmartNovel.Models.ViewModel.AuthorListModel
+
+<form asp-action="ListAuthors" method="get">
+    <input type="text" name="Keyword" value="@Model.Keyword" placeholder="Tìm tên tác giả..." />
+    <button type="submit">Tìm</button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Tên hiển thị</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Authors)
+        {
+            <tr>
+                <td>@item.Username</td>
+                <td>@item.DisplayName</td>
+                <td>@item.Email</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@for (int i = 1; i <= Model.TotalPages; i++)
+{
+    <a asp-action="ListAuthors" asp-route-CurrentPage="@i" asp-route-Keyword="@Model.Keyword">@i</a>
+}
