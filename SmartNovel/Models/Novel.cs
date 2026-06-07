@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace SmartNovel.Models;
@@ -46,4 +46,10 @@ public partial class Novel
     public virtual ICollection<Category> Categories { get; set; } = new List<Category>();
 
     public virtual ICollection<User> Uids { get; set; } = new List<User>();
+
+    //Ham lay loai truyen dau tien 
+    public string CategoryName => Categories.FirstOrDefault()?.Name ?? "Chưa có";
+
+    //ham tinh rate tb 
+    public string AverageRating => Ratings.Any() ? Ratings.Average(r => r.RatingPoint).ToString("0.0") : "0.0";
 }

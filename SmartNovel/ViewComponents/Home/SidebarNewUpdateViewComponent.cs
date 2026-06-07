@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmartNovel.Models;
 using System.Linq;
@@ -30,7 +30,9 @@ namespace SmartNovel.ViewComponents.NewFolder
 
             var updateNewNovel = await db.Novels
                 .Include( u => u.Chapters)
-                .Where (u => u.Status =="Ongoing" || u.Status == "Completed")
+                .Include( u => u.Categories)
+                .Include( u => u.Ratings)
+                .Where (u => u.Status =="Public")
                 .Where(u => !u.Categories.Any(c =>blockedCategoryIds.Contains(c.CategoryId)))
                 .Where(u => !blockedAuthorIds.Contains(u.Uid))
                 .OrderByDescending(u => u.Chapters.Max(c => c.CreateTime))  

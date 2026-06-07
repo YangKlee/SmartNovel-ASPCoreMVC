@@ -1,0 +1,103 @@
+/* ============================================
+   FOOTER - SMART TRUYỆN (Dark Navy Theme)
+============================================ */
+
+/* 1. Nền tổng thể */
+.custom-footer {
+    background-color: #1e2a3a;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #c8cfd8;
+    font-size: 0.88rem;
+}
+
+/* 2. Logo icon */
+.footer-logo {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #4a90d9, #7b68ee);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.1rem;
+}
+
+/* 3. Tên thương hiệu */
+.footer-brand {
+    color: #ffffff;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* 4. Slogan */
+.footer-slogan {
+    color: #8a95a5;
+    font-size: 0.78rem;
+    font-style: italic;
+}
+
+/* 5. Copyright */
+.footer-copyright {
+    color: #6b7688;
+    font-size: 0.75rem;
+}
+
+/* 6. Tiêu đề cột */
+.footer-heading {
+    color: #ffffff;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.75rem;
+}
+
+/* 7. Danh sách link */
+.footer-links li {
+    margin-bottom: 0.4rem;
+}
+
+.footer-links li a {
+    color: #8a95a5;
+    text-decoration: none;
+    font-size: 0.82rem;
+    transition: color 0.2s ease, padding-left 0.2s ease;
+}
+
+.footer-links li a:hover {
+    color: #ffffff;
+    padding-left: 4px;
+}
+
+/* 8. Social icons */
+.social-icons a {
+    color: #8a95a5;
+    font-size: 1.1rem;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.social-icons a:hover {
+    color: #ffffff;
+    transform: scale(1.15);
+}
+
+/* 9. Policy links */
+.footer-policy {
+    font-size: 0.78rem;
+}
+
+.footer-policy a {
+    color: #8a95a5;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.footer-policy a:hover {
+    color: #ffffff;
+}
+
+.footer-policy .separator {
+    color: #4a5568;
+    margin: 0 0.4rem;
+}
