@@ -1,4 +1,4 @@
-﻿namespace SmartNovel.Models.ViewModels
+namespace SmartNovel.Models.ViewModels
 {
     public class ReadNovelVM
     {
@@ -23,5 +23,7 @@
         public string? NextChapterTitle { get; set; }
 
         public List<Chapter>? AllChapters { get; set; } = new();
+
+        public List<Comment>? Comments { get; set; } = new();
     }
 }
