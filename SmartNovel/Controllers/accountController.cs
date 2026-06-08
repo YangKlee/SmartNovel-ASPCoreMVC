@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -200,6 +202,57 @@ namespace SmartNovel.Controllers
             }
 
 
+        }
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> changeAuthor()
+        {
+            var uid = User.FindFirst(ClaimTypes.Role)?.Value;
+            if (uid == "4")
+                return View();
+            else
+            {
+                return NotFound();
+            }
+        }
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> dochangeAuthor()
+        {
+            var role = User.FindFirst(ClaimTypes.Role)?.Value;
+            var uid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (role == "4")
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Uid == uid);
+                user.RoleId = "3";
+                await _context.SaveChangesAsync();
+
+                // Cập nhật lại session/cookie với quyền mới
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.Uid),
+                    new Claim(ClaimTypes.Name, user.Username),
+                    new Claim(ClaimTypes.Role, user.RoleId)
+                };
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var authProperties = new AuthenticationProperties
+                {
+                    IsPersistent = true,
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddDays(1)
+                };
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(claimsIdentity),
+                    authProperties
+                );
+
+                TempData["Msg"] = "Chuyển tác giả thành công!";
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return NotFound();
+            }
         }
     }
 }

@@ -9,6 +9,13 @@
 <div class="account-container">
     <h1 class="page-title">TÀI KHOẢN NGƯỜI DÙNG</h1>
     
+    @if (TempData["Msg"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            <i class="fas fa-check-circle me-2"></i> @TempData["Msg"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
     <div class="profile-wrapper">
         <div class="sidebar">
             <div class="profile-card">
@@ -41,7 +48,9 @@
                 <a asp-action="ChangeProfileImage" class="btn btn-dark-custom w-100 shadow-sm"><i class="fas fa-edit me-2"></i> Đổi ảnh đại diện</a>
                 <a asp-action="updateInfo" class="btn btn-dark-custom w-100 shadow-sm"><i class="fas fa-edit me-2"></i> Sửa thông tin</a>
                 <a asp-action="ChangePassword" class="btn btn-dark-custom w-100 shadow-sm"><i class="fas fa-unlock-alt me-2"></i> Đổi mật khẩu</a>
-                <a asp-action="ChangeEmail" class="btn btn-dark-custom w-100 shadow-sm"><i class="fas fa-envelope me-2"></i> Đổi Email</a>
+                @if(Model.RoleId == "4"){
+                    <a asp-action="ChangeAuthor" class="btn btn-dark-custom w-100 shadow-sm"><i class="fas fa-envelope me-2"></i> Chuyển tài khoản tác giả</a>
+                }
             </div>
         </div>
 
