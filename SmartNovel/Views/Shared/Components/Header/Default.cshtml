@@ -73,17 +73,27 @@
     {
         var roleId =
             User.FindFirst(ClaimTypes.Role)?.Value;
+        var uid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         var roleMenus = _context.MenuNavs
             .Where(x => x.RoleId == roleId)
             .OrderBy(x => x.Id)
             .ToList();
+            
+        var currentUser = _context.Users.FirstOrDefault(x => x.Uid == uid);
 
         <div class="user-dropdown">
 
             <button class="user-info d-flex align-items-center">
 
-                <i class="bi bi-person-circle fs-4"></i>
+                @if (currentUser != null && !string.IsNullOrEmpty(currentUser.AvartarUrl))
+                {
+                    <img src="@currentUser.AvartarUrl" alt="Avatar" class="rounded-circle object-fit-cover shadow-sm" style="width: 32px; height: 32px;" />
+                }
+                else
+                {
+                    <i class="bi bi-person-circle fs-4"></i>
+                }
 
                 <div class="d-flex flex-column text-start ms-2 lh-sm">
                     <span class="fw-medium">
