@@ -28,7 +28,6 @@ namespace SmartNovel.Controllers
             var novel = _context.Novels
                 .Include(x => x.UidNavigation)
                 .Include(x => x.Categories)
-                .Include(x => x.Uids)
                 .FirstOrDefault(x => x.NovelId == novelId);
 
             if (novel == null)
@@ -199,8 +198,8 @@ namespace SmartNovel.Controllers
 
             if (chapter == null)
                 return NotFound();
-
-            if (chapter.Status.ToLower() != "public")
+            var role = User.FindFirstValue(ClaimTypes.Role); // mài định chặn hem cho tác giả coi truyện hay gì.đã sửa
+            if (chapter.Status.ToLower() != "public" && role == "4")
                 return NotFound();
 
             string htmlContent =

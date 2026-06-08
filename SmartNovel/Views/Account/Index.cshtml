@@ -1,6 +1,6 @@
 @model SmartNovel.Models.User
 @{
-     ViewData["Title"] = "Hồ sô";
+     ViewData["Title"] = "Tài khoản";
     Layout = "_Layout";
 }
 @section Styles {
@@ -38,6 +38,7 @@
             </div>
 
             <div class="d-flex flex-column gap-2 mt-3">
+                <a asp-action="ChangeProfileImage" class="btn btn-dark-custom w-100 shadow-sm"><i class="fas fa-edit me-2"></i> Đổi ảnh đại diện</a>
                 <a asp-action="updateInfo" class="btn btn-dark-custom w-100 shadow-sm"><i class="fas fa-edit me-2"></i> Sửa thông tin</a>
                 <a asp-action="ChangePassword" class="btn btn-dark-custom w-100 shadow-sm"><i class="fas fa-unlock-alt me-2"></i> Đổi mật khẩu</a>
                 <a asp-action="ChangeEmail" class="btn btn-dark-custom w-100 shadow-sm"><i class="fas fa-envelope me-2"></i> Đổi Email</a>
