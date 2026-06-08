@@ -161,17 +161,18 @@ namespace SmartNovel.Controllers
                     ViewBag.Msg = "File upload phải > 0b đến <= 5mb";
                     return View(new ChangeProfileViewModel { CurrentImage = req.CurrentImage });
                 }
-                // xóa file img cũ
-                if (!string.IsNullOrEmpty(user.AvartarUrl))
-                {
-                    var fileOldName = user.AvartarUrl.Replace(publicLink, "");
-                    await _fileServicesUpload.DeleteFile("smart-novel/user-image/", fileOldName);
-                }
+
+
                 if (string.IsNullOrEmpty(extension) || !permittedExtensions.Contains(extension))
                 {
                     ViewBag.Success = false;
                     ViewBag.Msg = "Loại file không hợp lệ";
                     return View(new ChangeProfileViewModel { CurrentImage = req.CurrentImage });
+                }
+                if (!string.IsNullOrEmpty(user.AvartarUrl))
+                {
+                    var fileOldName = user.AvartarUrl.Replace(publicLink, "");
+                    await _fileServicesUpload.DeleteFile("smart-novel/user-image/", fileOldName);
                 }
                 string fileName = Guid.NewGuid().ToString() + "-" + req.NewImage.FileName;
                 var res = await _fileServicesUpload.UploadFile("smart-novel/user-image/", fileName, req.NewImage);
