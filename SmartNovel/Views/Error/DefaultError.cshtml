@@ -1,0 +1,60 @@
+@{
+    ViewData["Title"] = "Error";
+}
+<style>
+    .error-container {
+        min-height: 75vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
+    }
+    .error-image {
+        width: 100%;
+        max-width: 350px;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        margin-bottom: 2rem;
+        transition: transform 0.3s ease;
+    }
+    .error-image:hover {
+        transform: scale(1.02);
+    }
+    .error-alert {
+        max-width: 600px;
+        border-left: 5px solid #dc3545;
+        background-color: #f8d7da;
+        color: #842029;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.1);
+    }
+    .error-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+</style>
+
+<div class="error-container">
+    <img src="https://pub-20056e4912f440f08b3d40eea545f95f.r2.dev/smart-novel/res/images.jpg" alt="Error Image" class="error-image" />
+    
+    <div class="alert error-alert">
+        <div class="error-title">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            Đã xảy ra lỗi
+        </div>
+        <div class="mt-2 text-start text-md-center">
+            Xin lỗi, có một lỗi không mong muốn đã xảy ra trong quá trình xử lý yêu cầu của bạn.
+        </div>
+        <div class="mt-4 text-center">
+            <a href="/" class="btn btn-danger px-4 py-2 rounded-3 fw-bold">Về trang chủ</a>
+        </div>
+    </div>
+</div>

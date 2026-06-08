@@ -5,6 +5,7 @@
 }
 
 <link rel="stylesheet" href="~/css/readnovel.css" asp-append-version="true" />
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 
 <div class="reading-background">
     <div class="reading-paper">
@@ -87,8 +88,10 @@
         </div>
 
         <!-- CONTENT -->
-        <div class="reading-content">
-            @Html.Raw(Model.HtmlContent)
+        <div class="reading-content ql-snow">
+            <div class="ql-editor" style="padding: 0; font-family: inherit; font-size: inherit; line-height: inherit;">
+                @Html.Raw(Model.HtmlContent)
+            </div>
         </div>
 
         <!-- NAVIGATION -->
