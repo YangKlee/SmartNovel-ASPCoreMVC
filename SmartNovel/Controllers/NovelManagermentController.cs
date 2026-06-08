@@ -93,6 +93,43 @@ namespace SmartNovel.Controllers
                 return View(req);
             }
 
+            long maxFileSizeInBytes = 5 * 1024 * 1024;
+            string[] permittedExtensions = { ".jpg", ".jpeg", ".png" };
+
+            if (req.CoverImage != null)
+            {
+                var extension = Path.GetExtension(req.CoverImage.FileName).ToLowerInvariant();
+                if (req.CoverImage.Length > maxFileSizeInBytes || req.CoverImage.Length == 0)
+                {
+                    ViewBag.Success = false;
+                    ViewBag.Msg = "File ảnh bìa phải > 0b đến <= 5mb";
+                    return View(req);
+                }
+                if (string.IsNullOrEmpty(extension) || !permittedExtensions.Contains(extension))
+                {
+                    ViewBag.Success = false;
+                    ViewBag.Msg = "Loại file ảnh bìa không hợp lệ";
+                    return View(req);
+                }
+            }
+
+            if (req.BannerImage != null)
+            {
+                var extension = Path.GetExtension(req.BannerImage.FileName).ToLowerInvariant();
+                if (req.BannerImage.Length > maxFileSizeInBytes || req.BannerImage.Length == 0)
+                {
+                    ViewBag.Success = false;
+                    ViewBag.Msg = "File ảnh banner phải > 0b đến <= 5mb";
+                    return View(req);
+                }
+                if (string.IsNullOrEmpty(extension) || !permittedExtensions.Contains(extension))
+                {
+                    ViewBag.Success = false;
+                    ViewBag.Msg = "Loại file ảnh banner không hợp lệ";
+                    return View(req);
+                }
+            }
+
             var uid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (uid == null) return Redirect("/auth/Login");
 
@@ -226,6 +263,43 @@ namespace SmartNovel.Controllers
                 ViewBag.Success = false;
                 ViewBag.Msg = "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.";
                 return View("Add", req);
+            }
+
+            long maxFileSizeInBytes = 5 * 1024 * 1024;
+            string[] permittedExtensions = { ".jpg", ".jpeg", ".png" };
+
+            if (req.CoverImage != null)
+            {
+                var extension = Path.GetExtension(req.CoverImage.FileName).ToLowerInvariant();
+                if (req.CoverImage.Length > maxFileSizeInBytes || req.CoverImage.Length == 0)
+                {
+                    ViewBag.Success = false;
+                    ViewBag.Msg = "File ảnh bìa phải > 0b đến <= 5mb";
+                    return View("Add", req);
+                }
+                if (string.IsNullOrEmpty(extension) || !permittedExtensions.Contains(extension))
+                {
+                    ViewBag.Success = false;
+                    ViewBag.Msg = "Loại file ảnh bìa không hợp lệ";
+                    return View("Add", req);
+                }
+            }
+
+            if (req.BannerImage != null)
+            {
+                var extension = Path.GetExtension(req.BannerImage.FileName).ToLowerInvariant();
+                if (req.BannerImage.Length > maxFileSizeInBytes || req.BannerImage.Length == 0)
+                {
+                    ViewBag.Success = false;
+                    ViewBag.Msg = "File ảnh banner phải > 0b đến <= 5mb";
+                    return View("Add", req);
+                }
+                if (string.IsNullOrEmpty(extension) || !permittedExtensions.Contains(extension))
+                {
+                    ViewBag.Success = false;
+                    ViewBag.Msg = "Loại file ảnh banner không hợp lệ";
+                    return View("Add", req);
+                }
             }
 
             if (req.Status != "Public" && req.Status != "Draft")
