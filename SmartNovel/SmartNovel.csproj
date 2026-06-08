@@ -7,13 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Views\Error\**" />
-    <Content Remove="Views\Error\**" />
-    <EmbeddedResource Remove="Views\Error\**" />
-    <None Remove="Views\Error\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AWSSDK.S3" Version="4.0.24" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.2.0" />
     <PackageReference Include="MailKit" Version="4.17.0" />
@@ -32,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Views\Error\" />
     <Folder Include="wwwroot\css\chaptermanager\" />
   </ItemGroup>
 
