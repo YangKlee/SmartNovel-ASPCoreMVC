@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmartNovel.Models;
@@ -195,7 +195,7 @@ namespace SmartNovel.Controllers
                 .FirstOrDefaultAsync(x =>
                     x.NovelId == novelId &&
                     x.ChapterId == chapterId);
-
+            var comment = await _context.Comments.Include(c=> c.UidNavigation).Where(c => c.ChapterId == chapter.ChapterId).ToListAsync();
             if (chapter == null)
                 return NotFound();
             var role = User.FindFirstValue(ClaimTypes.Role); // mài định chặn hem cho tác giả coi truyện hay gì.đã sửa
@@ -243,7 +243,7 @@ namespace SmartNovel.Controllers
                 NextChapterId = nextChapter?.ChapterId,
 
                 NextChapterTitle = nextChapter?.ChapterTitle,
-
+                Comments = comment,
                 AllChapters = await _context.Chapters
                 .Where(x =>
                     x.NovelId == novelId &&
@@ -368,6 +368,52 @@ namespace SmartNovel.Controllers
             };
 
             return View(vm);
+        }
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> AddComment([FromForm] string ChapterID, [FromForm] string NovelID, [FromForm] string Content)
+        {
+            var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var newComment = new Comment
+            {
+                ChapterId = ChapterID,
+                CommentId = Guid.NewGuid().ToString(),
+                Content = Content,
+                TimeCommeny = DateTime.Now,
+                Uid = uid,
+                Status = "Active",
+              
+
+            };
+            _context.Comments.Add(newComment);
+            await _context.SaveChangesAsync();
+            return Redirect($"/truyen/{NovelID}/{ChapterID}");
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> DeleteComment([FromForm] string commentId, [FromForm] string chapterId)
+        {
+            var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            
+            var comment = await _context.Comments.FirstOrDefaultAsync(c => c.CommentId == commentId && c.ChapterId == chapterId);
+            if (comment == null)
+            {
+                return NotFound();
+            }
+            // Chỉ chủ ở hữu comment mới được xoá
+            if (comment.Uid != uid)
+            {
+                return Forbid();
+            }
+            var chapter = await _context.Chapters.FirstOrDefaultAsync(c => c.ChapterId == chapterId);
+            if (chapter == null)
+            {
+                return NotFound();
+            }
+            _context.Comments.Remove(comment);
+            await _context.SaveChangesAsync();
+            return Redirect($"/truyen/{chapter.NovelId}/{chapterId}");
         }
     }
 }
