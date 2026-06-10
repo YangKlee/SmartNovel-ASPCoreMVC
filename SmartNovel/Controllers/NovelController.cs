@@ -401,8 +401,9 @@ namespace SmartNovel.Controllers
             {
                 return NotFound();
             }
-            // Chỉ chủ ở hữu comment mới được xoá
-            if (comment.Uid != uid)
+            // Chỉ chủ ở hữu comment mới được xoá (trừ khi là Admin hoặc Mod)
+            var role = User.FindFirstValue(ClaimTypes.Role);
+            if (comment.Uid != uid && role != "1" && role != "2")
             {
                 return Forbid();
             }

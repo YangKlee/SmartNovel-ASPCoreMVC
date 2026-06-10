@@ -111,7 +111,10 @@
             <div class="d-flex align-items-center">
                 @if (User.Identity.IsAuthenticated)
                 {
-                    if (Model.Uid == User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+                    var isAuthor = Model.Uid == User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                    var isAdminOrMod = User.FindFirst(ClaimTypes.Role)?.Value == "1" || User.FindFirst(ClaimTypes.Role)?.Value == "2";
+                    
+                    if (isAuthor || isAdminOrMod)
                     {
                         <form asp-controller="Novel" asp-action="DeleteComment" method="post" class="m-0" onsubmit="return confirm('Bạn có chắc chắn muốn xóa bình luận này?');">
                             <input type="hidden" name="commentId" value="@Model.CommentId" />
@@ -121,7 +124,8 @@
                             </button>
                         </form>
                     }
-                    else
+                    
+                    if (!isAuthor)
                     {
                         <button type="button" class="btn btn-sm text-secondary border-0 bg-transparent p-0 ms-2" title="Báo cáo vi phạm" onclick="reportComment('@Model.CommentId')">
                             <i class="bi bi-flag"></i>

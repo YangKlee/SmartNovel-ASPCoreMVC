@@ -12,18 +12,15 @@ namespace SmartNovel.Services
             switch (roleId)
             {
                 case "1": // Admin
-                    tools.Add(new QuickToolItemViewModel { Content = "Truyện của tôi", IconBootstrap = "bi-folder-fill", Link = "/NovelManagerment" });
-                    tools.Add(new QuickToolItemViewModel { Content = "Thêm truyện mới", IconBootstrap = "bi-folder-plus", Link = "/NovelManagerment/Create" });
-                    tools.Add(new QuickToolItemViewModel { Content = "Bình luận", IconBootstrap = "bi-list", Link = "/Comments" });
-                    tools.Add(new QuickToolItemViewModel { Content = "Hộp thư", IconBootstrap = "bi-chat-left-dots-fill", Link = "/Messages" });
-                    tools.Add(new QuickToolItemViewModel { Content = "Số liệu thống kê", IconBootstrap = "bi-bar-chart-fill", Link = "/Stats" });
+
+                    tools.Add(new QuickToolItemViewModel { Content = "Quản lý truyện", IconBootstrap = "bi-folder-fill", Link = "/NovelManagerment" });
+                    tools.Add(new QuickToolItemViewModel { Content = "Quản lý bình luận", IconBootstrap = "bi-list", Link = "/CommentManagerment/" });
+                    tools.Add(new QuickToolItemViewModel { Content = "Quản lý người dùng", IconBootstrap = "bi-list", Link = "/AdminUser/" });
                     break;
                 case "2": // Moderator
-                    tools.Add(new QuickToolItemViewModel { Content = "Truyện của tôi", IconBootstrap = "bi-folder-fill", Link = "/NovelManagerment" });
-                    tools.Add(new QuickToolItemViewModel { Content = "Thêm truyện mới", IconBootstrap = "bi-folder-plus", Link = "/NovelManagerment/Create" });
-                    tools.Add(new QuickToolItemViewModel { Content = "Bình luận", IconBootstrap = "bi-list", Link = "/Comments" });
-                    tools.Add(new QuickToolItemViewModel { Content = "Hộp thư", IconBootstrap = "bi-chat-left-dots-fill", Link = "/Messages" });
-                    tools.Add(new QuickToolItemViewModel { Content = "Số liệu thống kê", IconBootstrap = "bi-bar-chart-fill", Link = "/Stats" });
+                    tools.Add(new QuickToolItemViewModel { Content = "Quản lý truyện", IconBootstrap = "bi-folder-fill", Link = "/NovelManagerment" });
+                    tools.Add(new QuickToolItemViewModel { Content = "Quản lý bình luận", IconBootstrap = "bi-list", Link = "/CommentManagerment/" });
+
                     break;
                 case "3": // Author
                     tools.Add(new QuickToolItemViewModel { Content = "Truyện của tôi", IconBootstrap = "bi-folder-fill", Link = "/NovelManagerment" });
