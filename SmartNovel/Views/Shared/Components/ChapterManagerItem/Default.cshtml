@@ -58,6 +58,14 @@
         <a href="/ChapterManagerment/Modify/@Model.ChapterId" class="btn btn-outline-primary btn-sm" title="Chỉnh sửa chương">
           <i class="bi bi-pencil"></i> Sửa
         </a>
+        @if (User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value == "1" || User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value == "2")
+        {
+            <form action="/ChapterManagerment/TakeDown/@Model.ChapterId" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn gỡ chương này?');">
+                <button type="submit" class="btn btn-outline-warning btn-sm" title="Gỡ chương">
+                  <i class="bi bi-shield-x"></i> Gỡ
+                </button>
+            </form>
+        }
         <form action="/ChapterManagerment/Delete/@Model.ChapterId" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa chương này?');">
             <button type="submit" class="btn btn-outline-danger btn-sm" title="Xóa chương">
               <i class="bi bi-trash"></i> Xóa

@@ -387,7 +387,7 @@ namespace SmartNovel.Controllers
             };
             _context.Comments.Add(newComment);
             await _context.SaveChangesAsync();
-            return Redirect($"/truyen/{NovelID}/{ChapterID}");
+            return Redirect($"/truyen/{NovelID}/{ChapterID}#{newComment.CommentId}");
         }
 
         [HttpPost]
@@ -401,8 +401,9 @@ namespace SmartNovel.Controllers
             {
                 return NotFound();
             }
-            // Chỉ chủ ở hữu comment mới được xoá
-            if (comment.Uid != uid)
+            // Chỉ chủ ở hữu comment mới được xoá (trừ khi là Admin hoặc Mod)
+            var role = User.FindFirstValue(ClaimTypes.Role);
+            if (comment.Uid != uid && role != "1" && role != "2")
             {
                 return Forbid();
             }
@@ -413,7 +414,7 @@ namespace SmartNovel.Controllers
             }
             _context.Comments.Remove(comment);
             await _context.SaveChangesAsync();
-            return Redirect($"/truyen/{chapter.NovelId}/{chapterId}");
+            return Redirect($"/truyen/{chapter.NovelId}/{chapterId}#comment-container");
         }
     }
 }

@@ -1,0 +1,125 @@
+@model SmartNovel.Models.Comment
+
+@{
+    string GetRoleName(string roleId) {
+        return roleId switch {
+            "1" => "Admin",
+            "2" => "Moderator",
+            "3" => "Tác giả",
+            _ => "Độc giả"
+        };
+    }
+    
+    var roleName = GetRoleName(Model.UidNavigation?.RoleId);
+    var displayName = Model.UidNavigation?.DisplayName ?? "Ẩn danh";
+    var avatarUrl = Model.UidNavigation?.AvartarUrl;
+    var novelId = Model.Chapter?.NovelId ?? "";
+}
+
+<style>
+    .dashboard-comment-item {
+        display: flex;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #eaeaea;
+        text-decoration: none;
+        color: inherit;
+        transition: background-color 0.2s;
+    }
+
+    .dashboard-comment-item:last-child {
+        border-bottom: none;
+    }
+
+    .dashboard-comment-item:hover {
+        background-color: #fdfdfd;
+    }
+
+    .dc-avatar {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background-color: #d1d5db;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+        margin-right: 15px;
+    }
+
+    .dc-avatar i {
+        font-size: 1.5rem;
+        color: #4b5563;
+    }
+    
+    .dc-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    .dc-content {
+        flex-grow: 1;
+        overflow: hidden;
+    }
+
+    .dc-user-info {
+        display: flex;
+        align-items: baseline;
+        margin-bottom: 4px;
+    }
+
+    .dc-username {
+        font-weight: 500;
+        color: #9ca3af;
+        font-size: 1rem;
+        margin-right: 8px;
+    }
+
+    .dc-role {
+        font-size: 0.85rem;
+        color: #9ca3af;
+        font-style: italic;
+    }
+
+    .dc-text {
+        font-size: 0.95rem;
+        color: #1f2937;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-style: italic;
+    }
+
+    .dc-action {
+        color: #4b5563;
+        font-size: 1.25rem;
+        margin-left: 10px;
+    }
+</style>
+
+<a href="/truyen/@novelId/@Model.ChapterId#@Model.CommentId" class="dashboard-comment-item">
+    <div class="dc-avatar">
+        @if (!string.IsNullOrEmpty(avatarUrl))
+        {
+            <img src="@avatarUrl" alt="Avatar" />
+        }
+        else
+        {
+            <i class="bi bi-person"></i>
+        }
+    </div>
+    <div class="dc-content">
+        <div class="dc-user-info">
+            <span class="dc-username">@@@displayName</span>
+            <span class="dc-role">@roleName</span>
+        </div>
+        <div class="dc-text">
+            @Model.Content
+        </div>
+    </div>
+    <div class="dc-action">
+        <i class="bi bi-chevron-right"></i>
+    </div>
+</a>

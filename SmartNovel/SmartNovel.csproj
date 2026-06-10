@@ -29,6 +29,7 @@
   <ItemGroup>
     <Folder Include="Views\Error\" />
     <Folder Include="wwwroot\css\chaptermanager\" />
+    <Folder Include="wwwroot\css\CommentReader\" />
   </ItemGroup>
 
 </Project>

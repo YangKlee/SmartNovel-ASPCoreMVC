@@ -30,13 +30,30 @@
     }
     <div class="story-header">
         <h1 class="story-title">Quản lý truyện</h1>
-        <a class="btn-create" asp-controller="NovelManagerment" asp-action="Add">
-            <i class="bi bi-plus-circle"></i> Tạo truyện mới
-        </a>
+        @if (User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value == "3")
+        {
+            <a class="btn-create" asp-controller="NovelManagerment" asp-action="Add">
+                <i class="bi bi-plus-circle"></i> Tạo truyện mới
+            </a>
+        }
     </div>
 
     <form method="get" asp-action="Index" id="filterForm">
         <div class="story-controls">
+            @if (User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value == "1" || User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value == "2")
+            {
+                <select class="status-dropdown" asp-for="SelectedAuthor" onchange="this.form.submit()">
+                    <option value="">-- Tất cả tác giả --</option>
+                    @if (ViewBag.Authors != null)
+                    {
+                        foreach (var author in ViewBag.Authors)
+                        {
+                            <option value="@author.Uid">@author.DisplayName</option>
+                        }
+                    }
+                </select>
+            }
+
             <select id="status-dropdown" class="status-dropdown" asp-for="SelectedStatus" onchange="this.form.submit()">
                 <option value="all">Tất cả trạng thái</option>
                 <option value="public">Đã đăng</option>
