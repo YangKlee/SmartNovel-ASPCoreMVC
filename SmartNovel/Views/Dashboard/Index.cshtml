@@ -1,0 +1,40 @@
+﻿@using System.Security.Claims
+@{
+    ViewData["Title"] = "Trang quản lý";
+    Layout = "_LayoutAdmin";
+    var roleId = User.FindFirst(ClaimTypes.Role)?.Value;
+    var username = User.FindFirst(ClaimTypes.Name)?.Value;
+}
+@model SmartNovel.Models.ViewModel.DashboardViewModel
+<div class="dashboard-container">
+    <h1>Chào mừng @username</h1>
+    @* thông số *@
+    @{
+        if(roleId == "3")
+        {
+            @await Component.InvokeAsync("DashboardAuthorStats", Model.authorStats)
+        }
+        else if(roleId  == "2" || roleId == "1")
+        {
+            // chỗ này để in thống kê của admin, moderator
+
+        }
+        
+
+    }
+    @* truy cập nhanh*@
+    @await Component.InvokeAsync("DashboardAuthorStats", Model.authorStats);
+
+    @* author: bình luận, admin hay mod hiện báo cáo mới nhất*@
+    @{
+        if (roleId == "3")
+        {
+            @await Component.InvokeAsync("DashboardComment", Model.lastComment)
+        }
+        else if (roleId == "2" || roleId == "1")
+        {
+            // chỗ này để hiển thị báo cáo mới nhất
+
+        }
+    }
+</div>
