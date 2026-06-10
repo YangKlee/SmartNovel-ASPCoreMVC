@@ -33,7 +33,23 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
         // Thời gian cookie có hiệu lực 
         options.ExpireTimeSpan = TimeSpan.FromDays(30);
+    })
+    .AddGoogle(options =>
+    {
+        options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+        options.SaveTokens = true;
+        options.Events = new Microsoft.AspNetCore.Authentication.OAuth.OAuthEvents
+        {
+            OnRemoteFailure = context =>
+            {
+                context.Response.Redirect("/Auth/Login");
+                context.HandleResponse();
+                return Task.CompletedTask;
+            }
+        };
     });
+
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddTransient<SmartNovel.Services.MailServices>();
