@@ -1,17 +1,28 @@
+using SmartNovel.Models;
 using SmartNovel.Models.ViewModel;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace SmartNovel.Services
 {
     public class MenuDashboardServices
     {
-        public MenuDashboardViewModel GetMenuDashboard(ClaimsPrincipal user)
+        private readonly SmartTruyenDbContext _context;
+
+        public MenuDashboardServices(SmartTruyenDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<MenuDashboardViewModel> GetMenuDashboardAsync(ClaimsPrincipal user)
         {
             var model = new MenuDashboardViewModel
             {
                 FullName = "Khách",
                 Role = "Guest",
+                AvatarUrl = string.Empty,
                 items = new List<MenuDashboardItem>()
             };
 
@@ -21,6 +32,16 @@ namespace SmartNovel.Services
                 var roleId = user.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
                 model.Role = GetRoleName(roleId);
                 model.items = GetMenuItemsByRoleId(roleId);
+
+                var uid = user.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (!string.IsNullOrEmpty(uid))
+                {
+                    var appUser = await _context.Users.FirstOrDefaultAsync(u => u.Uid == uid);
+                    if (appUser != null)
+                    {
+                        model.AvatarUrl = appUser.AvartarUrl ?? string.Empty;
+                    }
+                }
             }
 
             return model;
