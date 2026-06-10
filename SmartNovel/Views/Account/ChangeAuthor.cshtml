@@ -1,0 +1,198 @@
+@{
+    ViewData["Title"] = "Điều khoản Tác giả";
+}
+
+<style>
+    .tos-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        background: #fff;
+        padding: 2.5rem;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+    
+    .tos-title {
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+        text-align: center;
+        color: #2c3e50;
+    }
+
+    .tos-content {
+        max-height: 400px;
+        overflow-y: auto;
+        padding: 1.5rem;
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+        color: #495057;
+    }
+
+    .tos-content h4 {
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: #212529;
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+
+    .tos-content strong {
+        color: #343a40;
+    }
+
+    .tos-content ul {
+        padding-left: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .tos-content p {
+        margin-bottom: 0.8rem;
+    }
+
+    .tos-checkbox-container {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+        padding: 1rem 1.5rem;
+        background: #eef2f5;
+        border-radius: 8px;
+        border-left: 4px solid #0d6efd;
+    }
+
+    .tos-checkbox-container input[type="checkbox"] {
+        width: 1.25rem;
+        height: 1.25rem;
+        cursor: pointer;
+    }
+
+    .tos-checkbox-container label {
+        cursor: pointer;
+        font-weight: 500;
+        color: #2b3035;
+        margin: 0;
+        user-select: none;
+    }
+
+    .tos-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+    }
+
+    /* Custom scrollbar cho nội dung ToS */
+    .tos-content::-webkit-scrollbar {
+        width: 8px;
+    }
+    .tos-content::-webkit-scrollbar-track {
+        background: #f1f1f1; 
+        border-radius: 8px;
+    }
+    .tos-content::-webkit-scrollbar-thumb {
+        background: #c1c1c1; 
+        border-radius: 8px;
+    }
+    .tos-content::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8; 
+    }
+</style>
+
+<div class="tos-container">
+    <h1 class="tos-title">Điều khoản Dịch vụ dành cho Tác giả</h1>
+    
+    <div class="tos-content" id="tosContent">
+        <p><strong>Chào mừng bạn đến với SmartNovel!</strong></p>
+        <p>Bằng việc đăng ký tài khoản tác giả và đăng tải nội dung (tiểu thuyết/novel) lên nền tảng của chúng tôi, bạn đồng ý tuân thủ toàn bộ các điều khoản được quy định dưới đây. Vui lòng đọc kỹ trước khi sử dụng dịch vụ.</p>
+
+        <h4>1. Quyền Sở Hữu và Bản Quyền</h4>
+        <p><strong>1.1. Quyền sở hữu của Tác giả:</strong><br/>
+        Tất cả các tác phẩm do bạn sáng tác và đăng tải lên SmartNovel đều thuộc quyền sở hữu trí tuệ của chính bạn. Chúng tôi chỉ đóng vai trò là nền tảng trung gian lưu trữ và phân phối nội dung đến độc giả. Bạn chịu hoàn toàn trách nhiệm trước pháp luật về vấn đề bản quyền của tác phẩm mình đăng tải.</p>
+
+        <p><strong>1.2. Quyền của Admin và Moderator:</strong><br/>
+        Bạn cấp cho chúng tôi quyền lưu trữ, hiển thị, và phân phối tác phẩm của bạn trên hệ thống máy chủ và nền tảng của SmartNovel. Đội ngũ Admin/Moderator giữ toàn quyền thực hiện các hành động sau mà không cần thông báo trước nếu phát hiện vi phạm:</p>
+        <ul>
+            <li>Chỉnh sửa các yếu tố vi phạm quy định về hình thức (lỗi chính tả nghiêm trọng, định dạng lỗi...).</li>
+            <li>Ẩn, gỡ bỏ tạm thời hoặc xóa vĩnh viễn các tác phẩm vi phạm "Điều khoản Nội dung".</li>
+            <li>Từ chối đăng tải hoặc phân phối bất kỳ nội dung nào nếu nhận thấy không phù hợp với tiêu chí của nền tảng.</li>
+        </ul>
+
+        <p><strong>1.3. Trách nhiệm khôi phục dữ liệu:</strong><br/>
+        Nếu một tác phẩm bị bạn tự ý xóa hoặc bị Admin/Moderator xóa vĩnh viễn do vi phạm điều khoản, chúng tôi không có trách nhiệm khôi phục lại dữ liệu tác phẩm đó. Bạn tự chịu trách nhiệm sao lưu (backup) các tác phẩm của mình.</p>
+
+        <h4>2. Điều Khoản Nội Dung (Quy Định Cấm)</h4>
+        <p>Để đảm bảo một môi trường đọc tiểu thuyết lành mạnh và tuân thủ pháp luật, tác giả tuyệt đối không được đăng tải các nội dung vi phạm các điều sau:</p>
+
+        <p><strong>2.1. Vi phạm pháp luật và Chính trị:</strong></p>
+        <ul>
+            <li>Nội dung có tính chất phản động, chống phá Nhà nước.</li>
+            <li>Xuyên tạc lịch sử, phủ nhận thành tựu cách mạng.</li>
+            <li>Tuyên truyền kích động chiến tranh, chia rẽ khối đại đoàn kết dân tộc.</li>
+            <li>Vi phạm các quy định pháp luật hiện hành về an ninh mạng và thông tin truyền thông.</li>
+        </ul>
+
+        <p><strong>2.2. Vi phạm Chủ quyền Lãnh thổ:</strong></p>
+        <ul>
+            <li>Không tôn trọng, xuyên tạc hoặc phủ nhận chủ quyền lãnh thổ quốc gia, biên giới, hải đảo của Việt Nam.</li>
+            <li>Sử dụng bản đồ hoặc thông tin có hình ảnh không đúng với chủ quyền của Việt Nam (ví dụ: đường lưỡi bò).</li>
+        </ul>
+
+        <p><strong>2.3. Phân biệt vùng miền và Xúc phạm:</strong></p>
+        <ul>
+            <li>Nội dung có yếu tố phân biệt vùng miền, kỳ thị tôn giáo, sắc tộc, giới tính.</li>
+            <li>Xúc phạm danh dự, nhân phẩm, vu khống cá nhân hoặc tổ chức.</li>
+        </ul>
+
+        <p><strong>2.4. Thuần phong mỹ tục và Đồi trụy:</strong></p>
+        <ul>
+            <li>Nội dung mang tính chất đồi trụy, khiêu dâm, vi phạm nghiêm trọng thuần phong mỹ tục của dân tộc Việt Nam.</li>
+            <li>Cổ xúy các hành vi vi phạm đạo đức, bạo lực, tệ nạn xã hội.</li>
+        </ul>
+
+        <p><strong>2.5. Vi phạm Bản quyền:</strong></p>
+        <ul>
+            <li>Sao chép, đạo văn, đăng tải tác phẩm tiểu thuyết của người khác khi chưa được sự đồng ý (bao gồm cả truyện dịch chưa xin phép tác giả/nhóm dịch gốc).</li>
+        </ul>
+
+        <h4>3. Hình Phạt Vi Phạm</h4>
+        <p><strong>3.1. Gỡ tiểu thuyết (Ẩn tác phẩm):</strong><br/>
+        Áp dụng đối với các trường hợp vi phạm lần đầu các quy định về hình thức hoặc nội dung ở mức độ nhẹ. Admin/Moderator sẽ gỡ tác phẩm để yêu cầu tác giả chỉnh sửa lại nội dung cho phù hợp.</p>
+
+        <p><strong>3.2. Xóa vĩnh viễn tiểu thuyết và/hoặc Khóa tài khoản:</strong><br/>
+        Áp dụng ngay lập tức, không cần báo trước đối với các trường hợp vi phạm nghiêm trọng (đồi trụy, chính trị, bản quyền nhiều lần...).</p>
+
+        <h4>4. Sửa Đổi Điều Khoản</h4>
+        <p>Đội ngũ quản trị SmartNovel giữ quyền thay đổi, chỉnh sửa các điều khoản này vào bất kỳ lúc nào. Mọi thay đổi sẽ được thông báo trên hệ thống và có hiệu lực ngay khi được đăng tải. Việc bạn tiếp tục sử dụng dịch vụ sau khi điều khoản được cập nhật đồng nghĩa với việc bạn chấp nhận các thay đổi đó.</p>
+
+        <p><em>Bằng việc nhấn "Đồng ý" và tiếp tục đăng tải nội dung, bạn xác nhận đã đọc, hiểu và cam kết tuân thủ toàn bộ các Điều khoản Dịch vụ dành cho Tác giả này.</em></p>
+    </div>
+
+    <form method="post" asp-controller="account" asp-action="DoChangeAuthor">
+        <div class="tos-checkbox-container">
+            <input type="checkbox" id="agreeTos" name="agreeTos" required />
+            <label for="agreeTos">Tôi đã đọc, hiểu và đồng ý với các Điều khoản Dịch vụ dành cho Tác giả</label>
+        </div>
+        
+        <div class="tos-actions">
+            <a href="/" class="btn btn-secondary px-4 fw-bold">Hủy</a>
+            <button type="submit" id="btnSubmit" class="btn btn-primary px-4 fw-bold" disabled>Chuyển sang tác giả</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const agreeCheckbox = document.getElementById('agreeTos');
+            const btnSubmit = document.getElementById('btnSubmit');
+
+            // Xử lý enable/disable nút submit khi checkbox thay đổi
+            agreeCheckbox.addEventListener('change', function () {
+                btnSubmit.disabled = !this.checked;
+            });
+        });
+    </script>
+}

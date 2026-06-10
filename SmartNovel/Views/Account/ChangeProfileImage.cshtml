@@ -1,0 +1,142 @@
+@model SmartNovel.Models.ViewModel.ChangeProfileViewModel;
+@{
+    ViewData["Title"] = "Đổi ảnh đại diện";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/account/form-layout.css" asp-append-version="true" />
+}
+
+@if (ViewBag.Msg != null)
+{
+    if (ViewBag.Success == true)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Thành công!</strong> @ViewBag.Msg
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Lỗi!</strong> @ViewBag.Msg
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+}
+
+<div class="account-container">
+    <h1 class="page-title fs-1">ĐỔI ẢNH ĐẠI DIỆN</h1>
+
+    <div class="profile-wrapper justify-content-center">
+        <div class="content-form">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header py-3 rounded-top-3">
+                    <h5 class="mb-0"><i class="bi bi-person-bounding-box me-2"></i> Cập nhật ảnh đại diện</h5>
+                </div>
+                <div class="card-body p-4 text-center">
+                    
+                    <form asp-action="ChangeProfileImage" method="post" enctype="multipart/form-data">
+                        
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <input type="hidden" asp-for="CurrentImage" />
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold color-dark-custom mb-3">Ảnh hiện tại / Xem trước</label>
+                            <div class="d-flex justify-content-center">
+                                @if (!string.IsNullOrEmpty(Model?.CurrentImage))
+                                {
+                                    <img id="imagePreview" src="@Model.CurrentImage" alt="Profile Image" class="rounded-circle border border-2 border-secondary object-fit-cover shadow-sm" style="width: 150px; height: 150px;" />
+                                    <div id="defaultIcon" class="rounded-circle border border-2 border-secondary d-flex align-items-center justify-content-center bg-light text-secondary d-none shadow-sm" style="width: 150px; height: 150px;">
+                                        <i class="bi bi-person" style="font-size: 80px;"></i>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <img id="imagePreview" src="" alt="Profile Image" class="rounded-circle border border-2 border-secondary object-fit-cover d-none shadow-sm" style="width: 150px; height: 150px;" />
+                                    <div id="defaultIcon" class="rounded-circle border border-2 border-secondary d-flex align-items-center justify-content-center bg-light text-secondary shadow-sm" style="width: 150px; height: 150px;">
+                                        <i class="bi bi-person" style="font-size: 80px;"></i>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="mb-4 text-start">
+                            <label asp-for="NewImage" class="form-label fw-bold color-dark-custom"></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-upload text-muted"></i></span>
+                                <input asp-for="NewImage" type="file" class="form-control focus-custom" accept=".jpg,.jpeg,.png" onchange="previewImage(event)" />
+                            </div>
+                            <span asp-validation-for="NewImage" class="text-danger small mt-1 d-block"></span>
+                            <small class="text-muted mt-2 d-block"><i class="bi bi-info-circle"></i> Chỉ hỗ trợ định dạng .jpg, .jpeg, .png</small>
+                        </div>
+
+                        <div class="d-flex gap-2 justify-content-end border-top pt-3">
+                            <a asp-action="Index" class="btn btn-outline-secondary px-4 py-2 rounded-2">
+                                <i class="bi bi-x-circle me-2"></i> Hủy bỏ
+                            </a>
+                            <button type="submit" class="btn btn-dark-custom px-4 py-2 rounded-2 shadow-sm">
+                                <i class="bi bi-save me-2"></i> Lưu thay đổi
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function previewImage(event) {
+            var input = event.target;
+            var output = document.getElementById('imagePreview');
+            var defaultIcon = document.getElementById('defaultIcon');
+            var currentImage = "@(Model?.CurrentImage ?? "")";
+
+            if (input.files && input.files[0]) {
+                var file = input.files[0];
+                var fileType = file.type;
+                var validImageTypes = ["image/jpeg", "image/png", "image/jpg"];
+                
+                if (validImageTypes.includes(fileType)) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        output.src = e.target.result;
+                        output.classList.remove('d-none');
+                        defaultIcon.classList.add('d-none');
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    alert("Chỉ hỗ trợ file định dạng JPG, JPEG, PNG!");
+                    input.value = ""; // Clear input
+                    
+                    // Reset to original image or default icon
+                    if (currentImage) {
+                        output.src = currentImage;
+                        output.classList.remove('d-none');
+                        defaultIcon.classList.add('d-none');
+                    } else {
+                        output.src = "";
+                        output.classList.add('d-none');
+                        defaultIcon.classList.remove('d-none');
+                    }
+                }
+            } else {
+                // User clicked cancel in file dialog
+                if (currentImage) {
+                    output.src = currentImage;
+                    output.classList.remove('d-none');
+                    defaultIcon.classList.add('d-none');
+                } else {
+                    output.src = "";
+                    output.classList.add('d-none');
+                    defaultIcon.classList.remove('d-none');
+                }
+            }
+        }
+    </script>
+}

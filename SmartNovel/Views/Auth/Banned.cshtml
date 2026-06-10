@@ -1,0 +1,58 @@
+<style>
+    .banned-container {
+        min-height: 75vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .banned-image {
+        width: 100%;
+        max-width: 350px;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        margin-bottom: 2rem;
+        transition: transform 0.3s ease;
+    }
+
+    .banned-image:hover {
+        transform: scale(1.02);
+    }
+
+    .banned-alert {
+        max-width: 600px;
+        border-left: 5px solid #dc3545;
+        background-color: #f8d7da;
+        color: #842029;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.1);
+    }
+
+    .banned-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+</style>
+
+<div class="banned-container">
+    <img src="https://pub-20056e4912f440f08b3d40eea545f95f.r2.dev/smart-novel/res/images.jpg" alt="Banned" class="banned-image" />
+    
+    <div class="alert banned-alert">
+        <div class="banned-title">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            Tài khoản của bạn đã bị khóa
+        </div>
+        <div class="mt-2 text-start text-md-center">
+            Hiện tại bạn không thể truy cập tài khoản và sử dụng dịch vụ của chúng tôi, vui lòng liên hệ quản trị viên nếu cho rằng đây là nhầm lẫn!
+        </div>
+    </div>
+</div>

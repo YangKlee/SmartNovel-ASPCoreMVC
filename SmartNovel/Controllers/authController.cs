@@ -42,7 +42,7 @@ namespace SmartNovel.Controllers
                 return View();
             }
             var hasher = new PasswordHasher<User>();
-            var userTmp = await _context.Users.FirstOrDefaultAsync(e => e.Username == txtUsername);
+            var userTmp = await _context.Users.FirstOrDefaultAsync(e => e.Username == txtUsername || e.Email == txtUsername);
             if (userTmp == null)
             {
                 ViewBag.ErrorMessage = "Tài khoản hoặc mật khẩu không đúng, vui lòng thử lại!";
@@ -51,6 +51,10 @@ namespace SmartNovel.Controllers
             var result = hasher.VerifyHashedPassword(userTmp, userTmp.Password, txtPassword);
             if(result == PasswordVerificationResult.Success)
             {
+                if(userTmp.Status.ToLower() == "banned")
+                {
+                    return View("/Views/auth/Banned.cshtml");
+                }
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.NameIdentifier, userTmp.Uid),
