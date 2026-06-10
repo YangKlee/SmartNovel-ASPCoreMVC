@@ -139,6 +139,75 @@ namespace SmartNovel.Controllers
         }
 
         [HttpGet]
+        public IActionResult LoginFacebook()
+        {
+            var properties = new AuthenticationProperties { RedirectUri = Url.Action("FacebookResponse") };
+            return Challenge(properties, Microsoft.AspNetCore.Authentication.Facebook.FacebookDefaults.AuthenticationScheme);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> FacebookResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            if (!result.Succeeded) return RedirectToAction("Login");
+
+            var claims = result.Principal.Identities.FirstOrDefault()?.Claims;
+            if (claims == null) return RedirectToAction("Login");
+
+            var nameIdentifier = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+            var name = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value ?? "Người dùng Facebook";
+
+            if (string.IsNullOrEmpty(email))
+            {
+                if (string.IsNullOrEmpty(nameIdentifier)) return RedirectToAction("Login");
+                email = $"{nameIdentifier}@facebook.user";
+            }
+
+            var userTmp = await _context.Users.FirstOrDefaultAsync(e => e.Email == email || e.Username == email);
+            
+            if (userTmp == null)
+            {
+                userTmp = new User
+                {
+                    Uid = Guid.NewGuid().ToString(),
+                    Username = email,
+                    Email = email,
+                    DisplayName = name,
+                    Status = "Active",
+                    RoleId = "4", 
+                    Password = new PasswordHasher<object>().HashPassword(null, Guid.NewGuid().ToString())
+                };
+                _context.Users.Add(userTmp);
+                await _context.SaveChangesAsync();
+            }
+
+            var userClaims = new List<Claim>
+    {
+        new Claim(ClaimTypes.NameIdentifier, userTmp.Uid),
+        new Claim(ClaimTypes.Name, userTmp.Username),
+        new Claim(ClaimTypes.Role, userTmp.RoleId)
+    };
+
+            var claimsIdentity = new ClaimsIdentity(userClaims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = true,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(1)
+            };
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity),
+                authProperties
+            );
+
+            return RedirectToAction("Index", "Home");
+        }
+
+
+
+        [HttpGet]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
