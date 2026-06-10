@@ -1,5 +1,32 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+@model List<SmartNovel.Models.ViewModel.QuickToolItemViewModel>
+
+<div class="quick-tool-dashboard mt-4 mb-4">
+    <h5 class="mb-4 fw-bold" style="color: #4b4b4b;">
+        <i class="bi bi-lightning-fill me-2" style="color: #4b4b4b;"></i>Truy cập nhanh
+    </h5>
+    <div class="row g-3">
+        @foreach (var item in Model)
+        {
+            <div class="col-6 col-sm-4 col-md-3 col-lg-auto" style="min-width: 150px;">
+                <a href="@item.Link" class="text-decoration-none text-dark">
+                    <div class="card h-100 border-0 text-center quick-tool-card" style="background-color: #e2e2e5; border-radius: 12px;">
+                        <div class="card-body d-flex flex-column justify-content-center align-items-center py-4">
+                            <i class="bi @item.IconBootstrap mb-2" style="font-size: 2.5rem; color: #44454b;"></i>
+                            <span class="small fw-bold mt-1" style="color: #44454b;">@item.Content</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .quick-tool-card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+    .quick-tool-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1)!important;
+    }
+</style>

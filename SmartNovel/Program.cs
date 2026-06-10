@@ -70,6 +70,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         builder.Services.AddTransient<SmartNovel.Services.MailServices>();
         builder.Services.AddSingleton<FileStorageServices>();
         builder.Services.AddScoped<SmartNovel.Services.MenuDashboardServices>();
+        builder.Services.AddScoped<SmartNovel.Services.QuickToolService>();
         builder.Services.AddMemoryCache();
         builder.Services.AddHttpClient();
         var app = builder.Build();
