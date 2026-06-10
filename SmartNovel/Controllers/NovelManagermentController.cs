@@ -18,11 +18,28 @@ namespace SmartNovel.Controllers
             _context = context;
             _fileServicesUpload = fileServicesUpload;
         }
-        [Authorize(Roles = "3")]
-        public async Task<IActionResult>  Index(NovelManagermentViewModel req)
+        [Authorize(Roles = "1,2,3")]
+        public async Task<IActionResult> Index(NovelManagermentViewModel req)
         {
             var uid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var query = _context.Novels.AsNoTracking().Where(n => n.Uid == uid);
+            var roleId = User.FindFirstValue(ClaimTypes.Role);
+
+            var query = _context.Novels.AsNoTracking().AsQueryable();
+
+            if (roleId == "3")
+            {
+                query = query.Where(n => n.Uid == uid);
+            }
+            else
+            {
+                // Admin or Mod: có thể lọc theo tác giả
+                ViewBag.Authors = await _context.Users.Where(u => u.RoleId == "3").Select(u => new { u.Uid, u.DisplayName }).ToListAsync();
+                if (!string.IsNullOrEmpty(req.SelectedAuthor))
+                {
+                    query = query.Where(n => n.Uid == req.SelectedAuthor);
+                }
+            }
+
             if (!string.IsNullOrWhiteSpace(req.Keyword))
             {
                 query = query.Where(n => n.Title.Contains(req.Keyword));
@@ -50,9 +67,9 @@ namespace SmartNovel.Controllers
                 UpdateTime = n.UpdateTime,
                 categories = n.Categories,
                 countChapter = n.Chapters.Count(),
-                countChapterPublic = n.Chapters.Count(c => c.Status == "Public"),
-                countChapterDraft = n.Chapters.Count(c => c.Status == "Draft"),
-                countChapterRemove = n.Chapters.Count(c => c.Status == "Cancel"),
+                countChapterPublic = n.Chapters.Count(c => c.Status.ToLower() == "Public"),
+                countChapterDraft = n.Chapters.Count(c => c.Status.ToLower() == "Draft"),
+                countChapterRemove = n.Chapters.Count(c => c.Status.ToLower() == "Reject"),
                 novelRating = n.Ratings
                         .Select(r => (double?)r.RatingPoint)
                         .Average() ?? 0
@@ -71,7 +88,7 @@ namespace SmartNovel.Controllers
             return View(models);
         }
         [HttpGet]
-        [Authorize(Roles = "3")]
+        [Authorize(Roles = "1,2,3")]
         public async Task<IActionResult> Add()
         {
             var cate = await _context.Categories.Where(c => c.Status == "active").ToListAsync();
@@ -218,15 +235,18 @@ namespace SmartNovel.Controllers
             }
         }
         [HttpGet]
-        [Authorize(Roles = "3")]
+        [Authorize(Roles = "1,2,3")]
         public async Task<IActionResult> Modify(string id)
         {
+            var uid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var roleId = User.FindFirstValue(ClaimTypes.Role);
+
             var cate = await _context.Categories.Where(c => c.Status == "active").ToListAsync();
             ViewBag.AvailableGenres = cate;
             ViewBag.IsModify = true;
             
             var novel = await _context.Novels.Include(n => n.Categories).FirstOrDefaultAsync(c => c.NovelId == id);
-            if (novel == null) return NotFound();
+            if (novel == null || (roleId == "3" && novel.Uid != uid)) return NotFound();
 
             ViewBag.FileCoverUrl = novel.ImageNovelUrl;
             ViewBag.FileBannerUrl = novel.ImageBanerNovelUrl;
@@ -245,15 +265,18 @@ namespace SmartNovel.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "3")]
+        [Authorize(Roles = "1,2,3")]
         public async Task<IActionResult> Modify(string id, CreateNovelViewModel req)
         {
+            var uid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var roleId = User.FindFirstValue(ClaimTypes.Role);
+
             var cate = await _context.Categories.Where(c => c.Status == "active").ToListAsync();
             ViewBag.AvailableGenres = cate;
             ViewBag.IsModify = true;
 
             var novel = await _context.Novels.Include(n => n.Categories).FirstOrDefaultAsync(c => c.NovelId == id);
-            if (novel == null) return NotFound();
+            if (novel == null || (roleId == "3" && novel.Uid != uid)) return NotFound();
 
             ViewBag.FileCoverUrl = novel.ImageNovelUrl;
             ViewBag.FileBannerUrl = novel.ImageBanerNovelUrl;
@@ -387,15 +410,16 @@ namespace SmartNovel.Controllers
             }
         }
         [HttpPost]
-        [Authorize(Roles = "3")]
+        [Authorize(Roles = "1,2,3")]
         public async Task<IActionResult> Delete(string id)
         {
             var uid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var roleId = User.FindFirstValue(ClaimTypes.Role);
             if (uid == null)
                 return Redirect("/auth/Login");
 
-            var deleteNovel = await _context.Novels.Include(x => x.Chapters).FirstOrDefaultAsync(x => x.NovelId == id && x.Uid == uid);
-            if (deleteNovel == null)
+            var deleteNovel = await _context.Novels.Include(x => x.Chapters).FirstOrDefaultAsync(x => x.NovelId == id);
+            if (deleteNovel == null || (roleId == "3" && deleteNovel.Uid != uid))
             {
                 TempData["Success"] = false;
                 TempData["Msg"] = "Truyện không tồn tại hoặc bạn không có quyền xóa.";
@@ -436,9 +460,29 @@ namespace SmartNovel.Controllers
             catch
             {
                 TempData["Success"] = false;
-                TempData["Msg"] = "Lỗi khi xóa truyện.";
+                TempData["Msg"] = "Đã xảy ra lỗi hệ thống khi xóa truyện.";
                 return RedirectToAction("Index");
             }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "1,2")]
+        public async Task<IActionResult> TakeDown(string id)
+        {
+            var novel = await _context.Novels.FirstOrDefaultAsync(n => n.NovelId == id);
+            if (novel == null)
+            {
+                TempData["Success"] = false;
+                TempData["Msg"] = "Truyện không tồn tại.";
+                return RedirectToAction("Index");
+            }
+
+            novel.Status = "Reject"; // Or "Reject"
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = true;
+            TempData["Msg"] = "Đã gỡ truyện thành công.";
+            return RedirectToAction("Index");
         }
     }
 }

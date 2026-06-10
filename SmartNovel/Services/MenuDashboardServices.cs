@@ -67,12 +67,13 @@ namespace SmartNovel.Services
                 case "1": // Admin
                     items.Add(new MenuDashboardItem { slot = 1, icon = "bi bi-house", content = "Trang chính", controllerLink = "Dashboard", actionLink = "Index" });
                     items.Add(new MenuDashboardItem { slot = 1, icon = "bi bi-people", content = "Quản lý User", controllerLink = "AdminUser", actionLink = "Index" });
-                    items.Add(new MenuDashboardItem { slot = 2, icon = "bi bi-book", content = "Quản lý Truyện", controllerLink = "AdminNovel", actionLink = "Index" });
+                    items.Add(new MenuDashboardItem { slot = 2, icon = "bi bi-list-task", content = "Quản lý truyện", controllerLink = "NovelManagerment", actionLink = "Index" });
                     items.Add(new MenuDashboardItem { slot = 3, icon = "bi bi-gear", content = "Cài đặt hệ thống", controllerLink = "AdminSettings", actionLink = "Index" });
                     break;
                 case "2": // Moderator
                     items.Add(new MenuDashboardItem { slot = 1, icon = "bi bi-house", content = "Trang chính", controllerLink = "Dashboard", actionLink = "Index" });
-
+                    items.Add(new MenuDashboardItem { slot = 2, icon = "bi bi-list-task", content = "Quản lý truyện", controllerLink = "NovelManagerment", actionLink = "Index" });
+                    items.Add(new MenuDashboardItem { slot = 3, icon = "bi bi-chat", content = "Quản lý bình luận", controllerLink = "CommentReader", actionLink = "Index" });
                     break;
                 case "3": // Author
                     items.Add(new MenuDashboardItem { slot = 1, icon = "bi bi-house", content = "Trang chính", controllerLink = "Dashboard", actionLink = "Index" });

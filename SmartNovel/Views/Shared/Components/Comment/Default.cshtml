@@ -60,9 +60,36 @@
         line-height: 1.5;
         white-space: pre-wrap;
     }
+
+    .comment-item.bg-admin {
+        background-color: rgba(255, 99, 71, 0.1);
+    }
+    .comment-item.bg-admin:hover {
+        background-color: rgba(255, 99, 71, 0.2);
+    }
+
+    .comment-item.bg-author {
+        background-color: rgba(255, 215, 0, 0.15);
+    }
+    .comment-item.bg-author:hover {
+        background-color: rgba(255, 215, 0, 0.25);
+    }
 </style>
 
-<div class="comment-item">
+@{
+    string roleId = Model.UidNavigation?.RoleId;
+    string bgClass = "";
+    if (roleId == "1" || roleId == "2")
+    {
+        bgClass = "bg-admin";
+    }
+    else if (roleId == "3")
+    {
+        bgClass = "bg-author";
+    }
+}
+
+<div class="comment-item @bgClass">
     @if (!string.IsNullOrEmpty(Model.UidNavigation?.AvartarUrl))
     {
         <img src="@Model.UidNavigation.AvartarUrl" class="comment-avatar" alt="Avatar" />

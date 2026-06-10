@@ -1,4 +1,4 @@
-﻿namespace SmartNovel.Models.ViewModel
+namespace SmartNovel.Models.ViewModel
 {
     public class NovelManagermentViewModel
     {
@@ -16,6 +16,6 @@
                 return (int)Math.Ceiling((double)TotalItem / PageSize);
             }
         }
-
+        public string SelectedAuthor { get; set; }
     }
 }
