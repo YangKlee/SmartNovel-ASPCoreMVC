@@ -40,7 +40,7 @@
                 </p>
 
                 <div class="hero-actions">
-                    <a href="/Novel/@Model.Slug" class="hero-btn">
+                    <a href="/truyen/@Model.NovelId" class="hero-btn">
                         <i class="bi bi-book-half"></i> Đọc ngay
                     </a>
 
@@ -48,7 +48,7 @@
                         var lastChapter = Model.Chapters.OrderByDescending(c => c.CreateTime).FirstOrDefault();
                         if (lastChapter != null)
                         {
-                            <a href="/Read/@Model.Slug/@lastChapter.ChapterId" class="hero-btn hero-btn-secondary">
+                            <a href="/truyen/@Model.NovelId/@lastChapter.ChapterId" class="hero-btn hero-btn-secondary">
                                 <i class="bi bi-lightning-charge-fill text-warning"></i> Chương mới
                             </a>
                         }
