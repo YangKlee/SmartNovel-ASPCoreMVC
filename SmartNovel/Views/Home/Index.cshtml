@@ -4,7 +4,8 @@
         <div class="col-lg-9 col-md-12">
             @await Component.InvokeAsync("FeaturedNovel")
             @await Component.InvokeAsync("RecommendedNovels")
-          @await Component.InvokeAsync("SidebarNewUpdate") 
+            @await Component.InvokeAsync("SidebarNewUpdate", new { viewName = "SideMain" })
+
             @await Component.InvokeAsync("HotNovels")
 
         </div> 
@@ -12,8 +13,8 @@
         <div class="col-lg-3 col-md-12">
 
             @await Component.InvokeAsync("SidebarTopAuthors")
-
             @await Component.InvokeAsync("SidebarNewUpdate")
+
 
             @await Component.InvokeAsync("SidebarAdminRecommend")
 
