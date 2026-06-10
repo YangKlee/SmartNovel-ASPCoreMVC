@@ -387,7 +387,7 @@ namespace SmartNovel.Controllers
             };
             _context.Comments.Add(newComment);
             await _context.SaveChangesAsync();
-            return Redirect($"/truyen/{NovelID}/{ChapterID}");
+            return Redirect($"/truyen/{NovelID}/{ChapterID}#{newComment.CommentId}");
         }
 
         [HttpPost]
@@ -413,7 +413,7 @@ namespace SmartNovel.Controllers
             }
             _context.Comments.Remove(comment);
             await _context.SaveChangesAsync();
-            return Redirect($"/truyen/{chapter.NovelId}/{chapterId}");
+            return Redirect($"/truyen/{chapter.NovelId}/{chapterId}#comment-container");
         }
     }
 }
