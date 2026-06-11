@@ -103,7 +103,26 @@ namespace SmartNovel.Controllers
 
                 TotalRatings = ratings.Count
             };
+            var currentNovel = novel;
 
+            // Lấy danh sách thể loại của truyện hiện tại
+            var categoryIds = currentNovel.Categories
+                .Select(x => x.CategoryId)
+                .ToList();
+
+            // Truyện đề xuất
+            var recommendedNovels = _context.Novels
+                .Include(x => x.UidNavigation)
+                .Include(x => x.Categories)
+                .Where(x =>
+                    x.NovelId != currentNovel.NovelId &&
+                    x.Status.ToLower() == "public" && 
+                    x.Categories.Any(c => categoryIds.Contains(c.CategoryId)))
+                .OrderByDescending(x => x.ViewCount)
+                .Take(5)
+                .ToList();
+
+            vm.RecommendedNovels = recommendedNovels;
             return View(vm);
         }
 
