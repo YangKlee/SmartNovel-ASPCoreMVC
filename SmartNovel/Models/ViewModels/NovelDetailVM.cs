@@ -13,6 +13,7 @@ namespace SmartNovel.Models.ViewModels
         public List<string> Categories { get; set; } = new();
 
         public bool IsFollowing { get; set; }
+        public bool IsFollowingAuthor { set; get; }
 
         public int FollowCount { get; set; }
 

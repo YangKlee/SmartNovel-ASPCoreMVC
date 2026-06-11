@@ -28,6 +28,7 @@ namespace SmartNovel.Controllers
             var novel = _context.Novels
                 .Include(x => x.UidNavigation)
                 .Include(x => x.Categories)
+                .Include(x => x.Uids)
                 .FirstOrDefault(x => x.NovelId == novelId);
 
             if (novel == null)
@@ -37,6 +38,9 @@ namespace SmartNovel.Controllers
 
             bool isFollowing = false;
             bool isAuthorBlocked = false;
+            bool isFollowingAuthor = false;
+            // xác định xem đã follow author hay chưa
+            
             // Đanh giá trung bình và đánh giá của người dùng
             var ratings = _context.Ratings
             .Where(x => x.NovelId == novelId)
@@ -47,7 +51,7 @@ namespace SmartNovel.Controllers
                 : 0;
 
             double? userRating = null;
-
+           
             if (!string.IsNullOrEmpty(uid))
             {
                 userRating = ratings
@@ -59,11 +63,14 @@ namespace SmartNovel.Controllers
             {
                 var user = _context.Users
                     .Include(x => x.Authors)
+                    .Include(x => x.FollowerUs)
                     .FirstOrDefault(x => x.Uid == uid);
 
                 if (user != null)
                 {
                     isAuthorBlocked = user.Authors
+                        .Any(x => x.Uid == novel.Uid);
+                    isFollowingAuthor = user.FollowerUs
                         .Any(x => x.Uid == novel.Uid);
                 }
             }
@@ -93,6 +100,8 @@ namespace SmartNovel.Controllers
                 IsFollowing = isFollowing,
 
                 IsAuthorBlocked = isAuthorBlocked,
+
+                IsFollowingAuthor = isFollowingAuthor,
 
                 FollowCount = novel.Uids.Count,
 
@@ -159,32 +168,7 @@ namespace SmartNovel.Controllers
                     new { novelId = novel.NovelId });
             }
 
-            return RedirectToAction("Following");
-        }
-
-        [Authorize]
-        public IActionResult Following()
-        {
-            var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            var user = _context.Users
-                .Include(x => x.Novels)
-                    .ThenInclude(x => x.Categories)
-                .Include(x => x.Novels)
-                    .ThenInclude(x => x.UidNavigation)
-                .FirstOrDefault(x => x.Uid == uid);
-
-            if (user == null)
-                return NotFound();
-
-            var vm = new FollowingNovelVM
-            {
-                Novels = user.Novels
-                    .OrderBy(x => x.Title)
-                    .ToList()
-            };
-
-            return View(vm);
+            return RedirectToAction("Index", "Home");
         }
 
         [Route("truyen/{novelId}/{chapterId}")]
@@ -415,6 +399,36 @@ namespace SmartNovel.Controllers
             _context.Comments.Remove(comment);
             await _context.SaveChangesAsync();
             return Redirect($"/truyen/{chapter.NovelId}/{chapterId}#comment-container");
+        }
+        [HttpPost]
+        [Authorize(Roles ="3,4")]
+        public async Task<IActionResult> followAuthor([FromForm] string authorId, [FromForm] string novelID)
+        {
+            var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var author = await _context.Users.FirstOrDefaultAsync(u => u.Uid == authorId);
+            var user = await _context.Users.Include(u => u.FollowerUs).FirstOrDefaultAsync(u => u.Uid == uid);
+            
+            if (author == null || user == null)
+                return NotFound();
+            user.FollowerUs.Add(author);
+            await _context.SaveChangesAsync();
+            return Redirect($"/truyen/{novelID}");
+
+        }
+        [HttpPost]
+        [Authorize(Roles = "3,4")]  
+        public async Task<IActionResult> unFollowAuthor([FromForm] string authorId, [FromForm] string? novelID)
+        {
+            var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var author = await _context.Users.FirstOrDefaultAsync(u => u.Uid == authorId);
+            var user = await _context.Users.Include(u => u.FollowerUs).FirstOrDefaultAsync(u => u.Uid == uid);
+
+            if (author == null || user == null)
+                return NotFound();
+            user.FollowerUs.Remove(author);
+            await _context.SaveChangesAsync();
+            return Redirect($"/truyen/{novelID}");
+
         }
     }
 }

@@ -1,11 +1,12 @@
-﻿@model SmartNovel.Models.ViewModels.FollowingNovelVM
+@model SmartNovel.Models.ViewModels.FollowingNovelVM
 
 @{
-    ViewData["Title"] = "Truyện theo dõi";
+    ViewData["Title"] = "Truyện và Tác giả theo dõi";
 }
 
 <div class="container mt-4">
 
+    <!-- Truyện đang theo dõi -->
     <h2 class="mb-4">
         <i class="bi bi-bookmark-heart-fill"></i>
         Truyện đang theo dõi
@@ -20,40 +21,67 @@
     else
     {
         <div class="row">
-
             @foreach (var novel in Model.Novels)
             {
                 <div class="col-md-3 mb-4">
-
                     <div class="card h-100 shadow-sm">
-
                         <img src="@novel.ImageNovelUrl"
                              class="card-img-top"
                              style="height:350px;object-fit:cover;">
 
-                        <div class="card-body">
-
-                            <h5 class="card-title">
-                                @novel.Title
-                            </h5>
-
-                            <p class="text-muted small">
-                                @novel.UidNavigation.DisplayName
-                            </p>
-
-                            <a href="/truyen/@novel.NovelId"
-                                   class="btn btn-primary">
-
-                                Xem chi tiết
-
-                            </a>
-
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">@novel.Title</h5>
+                            <p class="text-muted small">@novel.UidNavigation.DisplayName</p>
+                            
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between mt-3">
+                                    <a href="/truyen/@novel.NovelId" class="btn btn-primary btn-sm">Xem chi tiết</a>
+                                    <form action="/Following/UnfollowNovel" method="post" class="d-inline">
+                                        <input type="hidden" name="novelId" value="@novel.NovelId" />
+                                        <button type="submit" class="btn btn-danger btn-sm">Hủy theo dõi</button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
                 </div>
             }
+        </div>
+    }
 
+    <!-- Tác giả đang theo dõi -->
+    <h2 class="mb-4 mt-5">
+        <i class="bi bi-people-fill"></i>
+        Tác giả đang theo dõi
+    </h2>
+
+    @if (!Model.author.Any())
+    {
+        <div class="alert alert-info">
+            Bạn chưa theo dõi tác giả nào.
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var tacGia in Model.author)
+            {
+                <div class="col-md-3 mb-4">
+                    <div class="card h-100 shadow-sm text-center">
+                        <div class="card-body d-flex flex-column justify-content-center">
+                            <i class="bi bi-person-circle display-1 text-secondary mb-3"></i>
+                            <h5 class="card-title">@tacGia.DisplayName</h5>
+                            <div class="d-flex justify-content-center gap-2 mt-3">
+                                <a href="/Author/@tacGia.Uid" class="btn btn-primary btn-sm">Xem hồ sơ</a>
+                                <form action="/Following/UnfollowAuthor" method="post" class="d-inline">
+                                    <input type="hidden" name="authorId" value="@tacGia.Uid" />
+                                    <button type="submit" class="btn btn-danger btn-sm">Hủy theo dõi</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     }
 
