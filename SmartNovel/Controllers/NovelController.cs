@@ -174,6 +174,7 @@ namespace SmartNovel.Controllers
         [Route("truyen/{novelId}/{chapterId}")]
         public async Task<IActionResult> Read(string novelId, string chapterId)
         {
+            var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var chapter = await _context.Chapters
                 .Include(c => c.Novel)
                 .FirstOrDefaultAsync(x =>
@@ -235,7 +236,20 @@ namespace SmartNovel.Controllers
                 .OrderBy(x => x.ChaperOrder)
                 .ToListAsync()
             };
+            // ghi nhận lượt xem
+            var view = new HistoryReader
+            {
+                ChapterId = chapterId,
+                NovelId = novelId,
+                ReadSessionId = Guid.NewGuid().ToString(),
+                TimeReader = DateTime.Now,
+                Uid = uid
+            };
+            var history = _context.HistoryReaders.Add(view);
+            var novel = await _context.Novels.FirstOrDefaultAsync(n => n.NovelId == novelId);
+            novel.ViewCount += 1;
 
+            await _context.SaveChangesAsync();
             return View(vm);
         }
 
