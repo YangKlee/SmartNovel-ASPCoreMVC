@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SmartNovel.Models.Novel>
+@model IEnumerable<SmartNovel.Models.Novel>
 
 <div class="admin-recommend-sidebar card shadow-sm border-0 bg-white mb-4 mt-4">
     <div class="card-header bg-dark text-white py-2">
@@ -14,7 +14,7 @@
             {
                 @foreach (var truyen in Model)
                 {
-                    <a href="/Novel/@truyen.Slug" class="sidebar-item d-flex justify-content-between align-items-center py-2 text-decoration-none">
+                    <a href="/truyen/@truyen.NovelId" class="sidebar-item d-flex justify-content-between align-items-center py-2 text-decoration-none">
                         <span class="novel-title-sidebar text-danger text-truncate pe-3">
                             @truyen.Title
                         </span>

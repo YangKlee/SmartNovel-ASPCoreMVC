@@ -45,8 +45,9 @@ namespace SmartNovel.Services
             {
                 case "1": // Admin
                     items.Add(new MenuDashboardItem { slot = 1, icon = "bi bi-people", content = "Quản lý User", controllerLink = "AdminUser", actionLink = "Index" });
-                    items.Add(new MenuDashboardItem { slot = 2, icon = "bi bi-book", content = "Quản lý Truyện", controllerLink = "AdminNovel", actionLink = "Index" });
-                    items.Add(new MenuDashboardItem { slot = 3, icon = "bi bi-gear", content = "Cài đặt hệ thống", controllerLink = "AdminSettings", actionLink = "Index" });
+                    items.Add(new MenuDashboardItem { slot = 2, icon = "bi bi-tags", content = "Quản lý Thể loại", controllerLink = "AdminCategory", actionLink = "Index" });
+                    items.Add(new MenuDashboardItem { slot = 3, icon = "bi bi-book", content = "Quản lý Truyện", controllerLink = "AdminNovel", actionLink = "Index" });
+                    items.Add(new MenuDashboardItem { slot = 4, icon = "bi bi-gear", content = "Cài đặt hệ thống", controllerLink = "AdminSettings", actionLink = "Index" });
                     break;
                 case "2": // Moderator
                     items.Add(new MenuDashboardItem { slot = 1, icon = "bi bi-shield-check", content = "Duyệt Truyện", controllerLink = "ModNovel", actionLink = "Review" });

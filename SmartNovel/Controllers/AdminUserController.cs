@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Crypto.Generators;
 using SmartNovel.Models;
-using SmartNovel.ViewModels;
-using BCrypt.Net; 
 using SmartNovel.ViewModels.AdminUser;
+using X.PagedList;
+using X.PagedList.Extensions;
 
 namespace SmartNovel.Controllers
 {
@@ -17,7 +16,7 @@ namespace SmartNovel.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(string keyword, string role, string status, int page = 1)
+        public IActionResult Index(string keyword, string role, string status, int page = 1)
         {
             int pageSize = 10; 
 
@@ -40,13 +39,7 @@ namespace SmartNovel.Controllers
                 query = query.Where(u => u.Status == status);
             }
 
-            int totalUsers = await query.CountAsync();
-            int totalPages = (int)Math.Ceiling(totalUsers / (double)pageSize);
-
-            var users = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
-
-            ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = totalPages;
+            var users = query.ToPagedList(page, pageSize);
 
             return View(users);
         }

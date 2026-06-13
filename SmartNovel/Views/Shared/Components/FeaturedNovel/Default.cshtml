@@ -11,7 +11,7 @@
                 <div class="hero-badge"><i class="bi bi-star-fill me-1"></i> Truyện Đề Cử</div>
                 
                 <h2 class="hero-title">
-                    <a href="/Novel/@Model.Slug" class="text-decoration-none">@Model.Title</a>
+                    <a href="/truyen/@Model.NovelId" class="text-decoration-none">@Model.Title</a>
                 </h2>
                 
                 <div class="hero-author">
@@ -40,7 +40,7 @@
                 </p>
 
                 <div class="hero-actions">
-                    <a href="/Novel/@Model.Slug" class="hero-btn">
+                    <a href="/truyen/@Model.NovelId" class="hero-btn">
                         <i class="bi bi-book-half"></i> Đọc ngay
                     </a>
 
@@ -48,7 +48,7 @@
                         var lastChapter = Model.Chapters.OrderByDescending(c => c.CreateTime).FirstOrDefault();
                         if (lastChapter != null)
                         {
-                            <a href="/Read/@Model.Slug/@lastChapter.ChapterId" class="hero-btn hero-btn-secondary">
+                            <a href="/truyen/@Model.NovelId/@lastChapter.ChapterId" class="hero-btn hero-btn-secondary">
                                 <i class="bi bi-lightning-charge-fill text-warning"></i> Chương mới
                             </a>
                         }
