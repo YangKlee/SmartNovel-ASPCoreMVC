@@ -19,7 +19,7 @@ namespace SmartNovel.ViewComponents.NewFolder
                 .Include(n=>n.Ratings)
                 .Include(n => n.Chapters)
                 .Include(n => n.UidNavigation) 
-                .Where(n => n.Status != "Deleted")
+                .Where(n => n.Status.ToLower() == "public")
                 .OrderBy(x => Guid.NewGuid()) 
                 .FirstOrDefaultAsync();
 

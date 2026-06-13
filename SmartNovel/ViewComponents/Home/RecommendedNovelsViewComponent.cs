@@ -68,7 +68,7 @@ namespace SmartNovel.ViewComponents.NewFolder
                 .Include(u => u.Categories)
                 .Include(u => u.Chapters)
                 .Include(u => u.Ratings)
-                .Where(u => u.Status == "Public" || u.Status == "Completed");
+                .Where(u => u.Status.ToLower() == "Public" || u.Status.ToLower() == "Completed");
 
             if (userPreferences.BlockedAuthors.Any())
                 query = query.Where(n => !userPreferences.BlockedAuthors.Contains(n.Uid));

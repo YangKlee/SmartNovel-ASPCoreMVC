@@ -29,7 +29,7 @@ namespace SmartNovel.ViewComponents.NewFolder
             var hotNovels = _context.Novels
                 .Include(u => u.Categories)
                 .Include(u => u.Ratings)
-                .Where(n => n.Status == "Public" )
+                .Where(n => n.Status.ToLower() == "Public" )
                 .Where(n => !blockAuthorIds.Contains(n.Uid))
                 .Where(n => !n.Categories.Any(c => blockCategoryIds.Contains(c.CategoryId)))
                 .OrderByDescending(u => u.ViewCount)
