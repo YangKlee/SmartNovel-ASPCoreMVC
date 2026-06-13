@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmartNovel.Models;
@@ -38,6 +38,9 @@ namespace SmartNovel.Controllers
 
             bool isFollowing = false;
             bool isAuthorBlocked = false;
+            bool isFollowingAuthor = false;
+            // xác định xem đã follow author hay chưa
+            
             // Đanh giá trung bình và đánh giá của người dùng
             var ratings = _context.Ratings
             .Where(x => x.NovelId == novelId)
@@ -48,7 +51,7 @@ namespace SmartNovel.Controllers
                 : 0;
 
             double? userRating = null;
-
+           
             if (!string.IsNullOrEmpty(uid))
             {
                 userRating = ratings
@@ -60,11 +63,14 @@ namespace SmartNovel.Controllers
             {
                 var user = _context.Users
                     .Include(x => x.Authors)
+                    .Include(x => x.FollowerUs)
                     .FirstOrDefault(x => x.Uid == uid);
 
                 if (user != null)
                 {
                     isAuthorBlocked = user.Authors
+                        .Any(x => x.Uid == novel.Uid);
+                    isFollowingAuthor = user.FollowerUs
                         .Any(x => x.Uid == novel.Uid);
                 }
             }
@@ -94,6 +100,8 @@ namespace SmartNovel.Controllers
                 IsFollowing = isFollowing,
 
                 IsAuthorBlocked = isAuthorBlocked,
+
+                IsFollowingAuthor = isFollowingAuthor,
 
                 FollowCount = novel.Uids.Count,
 
@@ -179,47 +187,23 @@ namespace SmartNovel.Controllers
                     new { novelId = novel.NovelId });
             }
 
-            return RedirectToAction("Following");
-        }
-
-        [Authorize]
-        public IActionResult Following()
-        {
-            var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            var user = _context.Users
-                .Include(x => x.Novels)
-                    .ThenInclude(x => x.Categories)
-                .Include(x => x.Novels)
-                    .ThenInclude(x => x.UidNavigation)
-                .FirstOrDefault(x => x.Uid == uid);
-
-            if (user == null)
-                return NotFound();
-
-            var vm = new FollowingNovelVM
-            {
-                Novels = user.Novels
-                    .OrderBy(x => x.Title)
-                    .ToList()
-            };
-
-            return View(vm);
+            return RedirectToAction("Index", "Home");
         }
 
         [Route("truyen/{novelId}/{chapterId}")]
         public async Task<IActionResult> Read(string novelId, string chapterId)
         {
+            var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var chapter = await _context.Chapters
                 .Include(c => c.Novel)
                 .FirstOrDefaultAsync(x =>
                     x.NovelId == novelId &&
                     x.ChapterId == chapterId);
-
+            var comment = await _context.Comments.Include(c=> c.UidNavigation).Where(c => c.ChapterId == chapter.ChapterId).ToListAsync();
             if (chapter == null)
                 return NotFound();
-
-            if (chapter.Status.ToLower() != "public")
+            var role = User.FindFirstValue(ClaimTypes.Role); // mài định chặn hem cho tác giả coi truyện hay gì.đã sửa
+            if (chapter.Status.ToLower() != "public" && role == "4")
                 return NotFound();
 
             string htmlContent =
@@ -263,7 +247,7 @@ namespace SmartNovel.Controllers
                 NextChapterId = nextChapter?.ChapterId,
 
                 NextChapterTitle = nextChapter?.ChapterTitle,
-
+                Comments = comment,
                 AllChapters = await _context.Chapters
                 .Where(x =>
                     x.NovelId == novelId &&
@@ -271,7 +255,20 @@ namespace SmartNovel.Controllers
                 .OrderBy(x => x.ChaperOrder)
                 .ToListAsync()
             };
+            // ghi nhận lượt xem
+            var view = new HistoryReader
+            {
+                ChapterId = chapterId,
+                NovelId = novelId,
+                ReadSessionId = Guid.NewGuid().ToString(),
+                TimeReader = DateTime.Now,
+                Uid = uid
+            };
+            var history = _context.HistoryReaders.Add(view);
+            var novel = await _context.Novels.FirstOrDefaultAsync(n => n.NovelId == novelId);
+            novel.ViewCount += 1;
 
+            await _context.SaveChangesAsync();
             return View(vm);
         }
 
@@ -388,6 +385,83 @@ namespace SmartNovel.Controllers
             };
 
             return View(vm);
+        }
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> AddComment([FromForm] string ChapterID, [FromForm] string NovelID, [FromForm] string Content)
+        {
+            var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var newComment = new Comment
+            {
+                ChapterId = ChapterID,
+                CommentId = Guid.NewGuid().ToString(),
+                Content = Content,
+                TimeCommeny = DateTime.Now,
+                Uid = uid,
+                Status = "Active",
+              
+
+            };
+            _context.Comments.Add(newComment);
+            await _context.SaveChangesAsync();
+            return Redirect($"/truyen/{NovelID}/{ChapterID}#{newComment.CommentId}");
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> DeleteComment([FromForm] string commentId, [FromForm] string chapterId)
+        {
+            var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            
+            var comment = await _context.Comments.FirstOrDefaultAsync(c => c.CommentId == commentId && c.ChapterId == chapterId);
+            if (comment == null)
+            {
+                return NotFound();
+            }
+            // Chỉ chủ ở hữu comment mới được xoá (trừ khi là Admin hoặc Mod)
+            var role = User.FindFirstValue(ClaimTypes.Role);
+            if (comment.Uid != uid && role != "1" && role != "2")
+            {
+                return Forbid();
+            }
+            var chapter = await _context.Chapters.FirstOrDefaultAsync(c => c.ChapterId == chapterId);
+            if (chapter == null)
+            {
+                return NotFound();
+            }
+            _context.Comments.Remove(comment);
+            await _context.SaveChangesAsync();
+            return Redirect($"/truyen/{chapter.NovelId}/{chapterId}#comment-container");
+        }
+        [HttpPost]
+        [Authorize(Roles ="3,4")]
+        public async Task<IActionResult> followAuthor([FromForm] string authorId, [FromForm] string novelID)
+        {
+            var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var author = await _context.Users.FirstOrDefaultAsync(u => u.Uid == authorId);
+            var user = await _context.Users.Include(u => u.FollowerUs).FirstOrDefaultAsync(u => u.Uid == uid);
+            
+            if (author == null || user == null)
+                return NotFound();
+            user.FollowerUs.Add(author);
+            await _context.SaveChangesAsync();
+            return Redirect($"/truyen/{novelID}");
+
+        }
+        [HttpPost]
+        [Authorize(Roles = "3,4")]  
+        public async Task<IActionResult> unFollowAuthor([FromForm] string authorId, [FromForm] string? novelID)
+        {
+            var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var author = await _context.Users.FirstOrDefaultAsync(u => u.Uid == authorId);
+            var user = await _context.Users.Include(u => u.FollowerUs).FirstOrDefaultAsync(u => u.Uid == uid);
+
+            if (author == null || user == null)
+                return NotFound();
+            user.FollowerUs.Remove(author);
+            await _context.SaveChangesAsync();
+            return Redirect($"/truyen/{novelID}");
+
         }
     }
 }

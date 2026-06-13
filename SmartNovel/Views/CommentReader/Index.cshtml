@@ -1,0 +1,65 @@
+@{
+    ViewData["Title"] = "Độc giả bình luận";
+    Layout = "_LayoutAdmin";
+}
+@model SmartNovel.Models.ViewModel.CommentReaderViewModel
+<head>
+    <link rel="stylesheet" href="~/css/CommentReader.css" />
+</head>
+<div class="comment-reader-wrapper">
+    <div class="comment-header">
+        <h1 class="comment-title">Độc giả bình luận</h1>
+    </div>
+
+    <form method="get" asp-action="Index" id="filterForm">
+        <div class="comment-controls">
+            <!-- Dropdown chọn Truyện -->
+            <select class="status-dropdown" asp-for="SelectedNovel" onchange="document.getElementById('SelectedChapter').value=''; this.form.submit()">
+                <option value="">-- Tất cả truyện --</option>
+                @if (ViewBag.Novels != null)
+                {
+                    foreach (var novel in ViewBag.Novels)
+                    {
+                        <option value="@novel.NovelId">@novel.Title</option>
+                    }
+                }
+            </select>
+
+            <!-- Dropdown chọn Chương (chỉ hiện khi có chọn Truyện) -->
+            @if (!string.IsNullOrEmpty(Model.SelectedNovel) && ViewBag.Chapters != null)
+            {
+                <select class="status-dropdown" asp-for="SelectedChapter" onchange="this.form.submit()">
+                    <option value="">-- Tất cả chương --</option>
+                    @foreach (var chapter in ViewBag.Chapters)
+                    {
+                        <option value="@chapter.ChapterId">@chapter.ChapterTitle</option>
+                    }
+                </select>
+            }
+            else
+            {
+                <input type="hidden" asp-for="SelectedChapter" id="SelectedChapter" />
+            }
+
+            <input type="text" class="search-input" asp-for="Keyword" placeholder="Tìm kiếm bình luận hoặc tên độc giả...">
+            <button type="submit" style="display: none;"></button>
+        </div>
+    </form>
+
+    <div class="comment-list">
+        @if (Model.Comments != null && Model.Comments.Any())
+        {
+            foreach (var comment in Model.Comments)
+            {
+                <div class="comment-item-wrapper">
+                    @await Component.InvokeAsync("CommentItemDashboard", new { model = comment })
+                </div>
+            }
+        }
+        else
+        {
+            <span class="empty-noti">Chưa có bình luận nào.</span>
+        }
+    </div>
+</div>
+@await Html.PartialAsync("/Views/Shared/PartialView/_PaginationComment.cshtml", Model)

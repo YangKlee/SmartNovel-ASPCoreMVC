@@ -1,0 +1,88 @@
+﻿@model SmartNovel.ViewModels.CategoryHeaderVM
+
+@{
+    ViewData["Title"] = Model.CategoryName;
+}
+
+<link rel="stylesheet" href="~/css/category-header.css" />
+
+<div class="category-container">
+
+    <div class="category-header">
+
+        <h1>@Model.CategoryName</h1>
+
+        <p class="stats-label">
+            <span class="count-badge">
+                @Model.TotalItems
+            </span>
+            Truyện được tìm thấy
+        </p>
+
+    </div>
+
+    @if (!Model.Novels.Any())
+    {
+        <div class="empty">
+            Không có truyện nào thuộc thể loại này
+        </div>
+    }
+    else
+    {
+        <div class="novel-grid">
+
+            @foreach (var novel in Model.Novels)
+            {
+                <a class="novel-card"
+                   href="/truyen/@novel.NovelId">
+
+                    <img src="@novel.ImageNovelUrl"
+                         alt="@novel.Title" />
+
+                    <div class="novel-info">
+                        <h3>@novel.Title</h3>
+
+                        <div class="novel-stats">
+                            <span>👁 @novel.ViewCount</span>
+                            <span>❤️ @novel.LikeCount</span>
+                        </div>
+                    </div>
+
+                </a>
+            }
+
+        </div>
+    }
+
+    @if (Model.TotalPages > 1)
+    {
+        <div class="pagination">
+
+            @if (Model.CurrentPage > 1)
+            {
+                <a class="page-btn"
+                   href="?currentPage=@(Model.CurrentPage - 1)">
+                    ‹
+                </a>
+            }
+
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <a class="page-btn @(i == Model.CurrentPage ? "active" : "")"
+                   href="?currentPage=@i">
+                    @i
+                </a>
+            }
+
+            @if (Model.CurrentPage < Model.TotalPages)
+            {
+                <a class="page-btn"
+                   href="?currentPage=@(Model.CurrentPage + 1)">
+                    ›
+                </a>
+            }
+
+        </div>
+    }
+
+</div>

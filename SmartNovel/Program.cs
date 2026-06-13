@@ -33,16 +33,59 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
         // Thời gian cookie có hiệu lực 
         options.ExpireTimeSpan = TimeSpan.FromDays(30);
+    })
+    .AddGoogle(options =>
+    {
+        options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+        options.SaveTokens = true;
+        options.Events = new Microsoft.AspNetCore.Authentication.OAuth.OAuthEvents
+        {
+            OnRemoteFailure = context =>
+            {
+                context.Response.Redirect("/Auth/Login");
+                context.HandleResponse();
+                return Task.CompletedTask;
+            }
+        };
+    })
+    .AddFacebook(options =>
+    {
+        options.AppId = builder.Configuration["Authentication:Facebook:AppId"];
+        options.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"];
+        options.SaveTokens = true;
+        options.Events = new Microsoft.AspNetCore.Authentication.OAuth.OAuthEvents
+        {
+            OnRemoteFailure = context =>
+            {
+                context.Response.Redirect("/Auth/Login");
+                context.HandleResponse();
+                return Task.CompletedTask;
+            }
+        };
     });
 
-builder.Services.AddControllersWithViews();
-builder.Services.AddTransient<SmartNovel.Services.MailServices>();
-builder.Services.AddSingleton<FileStorageServices>();
-builder.Services.AddScoped<SmartNovel.Services.MenuDashboardServices>();
-builder.Services.AddMemoryCache();
-builder.Services.AddHttpClient();
-var app = builder.Build();
 
+        builder.Services.AddControllersWithViews();
+        builder.Services.AddTransient<SmartNovel.Services.MailServices>();
+        builder.Services.AddSingleton<FileStorageServices>();
+        builder.Services.AddScoped<SmartNovel.Services.MenuDashboardServices>();
+        builder.Services.AddScoped<SmartNovel.Services.QuickToolService>();
+        builder.Services.AddMemoryCache();
+        builder.Services.AddHttpClient();
+        var app = builder.Build();
+
+        // Configure the HTTP request pipeline.
+        if (!app.Environment.IsDevelopment())
+        {
+            app.UseExceptionHandler("/Home/Error");
+            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            app.UseHsts();
+        }
+
+        app.UseHttpsRedirection();
+        app.UseStaticFiles();
+        app.UseRouting();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -50,22 +93,23 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
+app.UseStatusCodePagesWithReExecute("/Error/{0}");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
-app.UseAuthentication();
-app.UseAuthorization();
+        app.UseAuthentication();
+        app.UseAuthorization();
 
-app.MapStaticAssets();
+        app.MapStaticAssets();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+        app.MapControllerRoute(
+            name: "default",
+            pattern: "{controller=Home}/{action=Index}/{id?}")
+            .WithStaticAssets();
+        app.MapControllerRoute(
+            name: "default",
+            pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.Run();
+        app.Run();
+    

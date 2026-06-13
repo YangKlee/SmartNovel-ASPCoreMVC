@@ -16,6 +16,7 @@ namespace SmartNovel.ViewComponents.NewFolder
         {
             var featuredNovel = await _context.Novels
                 .Include(n => n.Categories)
+                .Include(n=>n.Ratings)
                 .Include(n => n.Chapters)
                 .Include(n => n.UidNavigation) 
                 .Where(n => n.Status != "Deleted")

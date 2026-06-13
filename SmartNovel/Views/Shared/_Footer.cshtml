@@ -1,93 +1,61 @@
-﻿@using Microsoft.AspNetCore.Html
 @{
     var currentYear = DateTime.Now.Year;
     var companyName = "NovelSphere Global";
 }
 
-<footer class="custom-footer text-dark py-5">
-    <div class="container-fluid px-5">
-        <div class="row align-items-start mb-4">
-            <div class="col-md-6">
+<footer class="custom-footer">
+    <div class="container-fluid px-4 px-md-5">
+        <!-- Main Footer Row -->
+        <div class="row align-items-start py-4">
+            <!-- Brand -->
+            <div class="col-lg-3 col-md-6 mb-3 mb-lg-0">
                 <div class="d-flex align-items-center mb-2">
-                    <div class="logo-placeholder me-3 d-flex align-items-center justify-content-center">
-                        <span class="text-muted small">logo</span>
+                    <div class="footer-logo me-2">
+                        <i class="bi bi-book-half"></i>
                     </div>
-                    <h2 class="fs-4 fw-bold mb-0 text-uppercase">Smart Truyện</h2>
+                    <h5 class="footer-brand mb-0">SMART TRUYỆN</h5>
                 </div>
-                <p class="text-muted small italic-slogan">Chữ chạm tim, tìm bình yên nhỏ</p>
+                <p class="footer-slogan mb-1">Chữ chạm tim, tìm bình yên nhỏ</p>
+                <p class="footer-copyright mb-0">&copy; @currentYear @companyName.</p>
             </div>
 
-            <div class="col-md-6 text-md-end text-start privacy-links">
-                <p class="mb-2 text-muted small">&copy; @currentYear @companyName. All Rights Reserved</p>
-                <p class="small mb-0">
-                    <a asp-controller="Info" asp-action="PrivacyPolicy" class="text-decoration-none text-dark">Quyền riêng tư</a> |
-                    <a asp-controller="Info" asp-action="TermsOfService" class="text-decoration-none text-dark">Điều khoản sử dụng</a> |
-                    <a asp-controller="Info" asp-action="PrivacyPolicy" class="text-decoration-none text-dark">Chính sách DMCA</a>
-                </p>
+            <!-- Liên kết nhanh -->
+            <div class="col-lg-3 col-md-6 mb-3 mb-lg-0">
+                <h6 class="footer-heading">LIÊN KẾT NHANH</h6>
+                <ul class="list-unstyled footer-links">
+                    <li><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+                    <li><a asp-controller="FillNovel" asp-action="Search">Thể loại</a></li>
+                    <li><a asp-controller="FillNovel" asp-action="Search">Tìm kiếm</a></li>
+                    <li><a asp-controller="FillNovel" asp-action="Search">Tác giả</a></li>
+                </ul>
             </div>
-        </div>
 
-        <hr class="border-secondary my-4" />
+            <!-- Thông tin chung -->
+            <div class="col-lg-3 col-md-6 mb-3 mb-lg-0">
+                <h6 class="footer-heading">THÔNG TIN CHUNG</h6>
+                <ul class="list-unstyled footer-links">
+                    <li><a asp-controller="Info" asp-action="AboutUs">Về Chúng tôi</a></li>
+                    <li><a asp-controller="Info" asp-action="Contact">Thông tin liên hệ</a></li>
+                    <li><a asp-controller="Info" asp-action="TermsOfService">Điều khoản Dịch vụ</a></li>
+                    <li><a asp-controller="Info" asp-action="PressRoom">Phòng Báo chí</a></li>
+                </ul>
+            </div>
 
-        <div class="row g-4">
+            <!-- Social + Policy -->
             <div class="col-lg-3 col-md-6">
-                <h5 class="text-uppercase fs-6 fw-bold mb-3">
-                    <i class="bi bi-telephone-fill me-2"></i>Connect With Us
-                </h5>
-                <div class="d-flex gap-3 fs-4 mb-4 social-icons">
-                    <a href="https://x.com" target="_blank" class="text-dark"><i class="bi bi-twitter-x"></i></a>
-                    <a href="https://reddit.com" target="_blank" class="text-orange"><i class="bi bi-reddit"></i></a>
-                    <a href="https://instagram.com" target="_blank" class="text-dark"><i class="bi bi-instagram"></i></a>
-                    <a href="https://youtube.com" target="_blank" class="text-danger"><i class="bi bi-youtube"></i></a>
-                    <a href="https://facebook.com" target="_blank" class="text-primary"><i class="bi bi-facebook"></i></a>
+                <div class="social-icons d-flex gap-3 mb-3">
+                    <a href="https://facebook.com" target="_blank" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                    <a href="https://discord.com" target="_blank" aria-label="Discord"><i class="bi bi-discord"></i></a>
+                    <a href="https://instagram.com" target="_blank" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                    <a href="https://youtube.com" target="_blank" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
                 </div>
-
-                <h5 class="text-uppercase fs-6 fw-bold mb-3">Stay Updated</h5>
-                <form asp-controller="Home" asp-action="Subscribe" method="post" class="subscribe-form">
-                    <div class="mb-2">
-                        <input type="email" name="subscriberEmail" class="form-control input-custom" placeholder="Email" required />
-                    </div>
-                    <button type="submit" class="btn btn-danger-custom w-50">Subscribe</button>
-                </form>
-            </div>
-
-            <div class="col-lg-3 col-md-6 Skinner ps-lg-5">
-                <h5 class="text-uppercase fs-6 fw-bold mb-3">
-                    <i class="bi bi-compass me-2"></i>Explore
-                </h5>
-                <ul class="list-unstyled footer-links">
-                    <li><a asp-controller="Novel" asp-action="NewReleases">New Releases</a></li>
-                    <li><a asp-controller="Novel" asp-action="TopRated">Top Rated</a></li>
-                    <li><a asp-controller="Novel" asp-action="Popular">Popular Series</a></li>
-                    <li><a asp-controller="Novel" asp-action="LatestUpdates">Latest Updates</a></li>
-                    <li><a asp-controller="Novel" asp-action="Completed">Completed Series</a></li>
-                </ul>
-            </div>
-
-            <div class="col-lg-3 col-md-6">
-                <h5 class="text-uppercase fs-6 fw-bold mb-3">
-                    <i class="bi bi-info-square me-2"></i>Information
-                </h5>
-                <ul class="list-unstyled footer-links">
-                    <li><a asp-controller="Info" asp-action="AboutUs">About Us</a></li>
-                    <li><a asp-controller="Info" asp-action="Careers">Careers</a></li>
-                    <li><a asp-controller="Info" asp-action="TermsOfService">Terms of Service</a></li>
-                    <li><a asp-controller="Info" asp-action="PressRoom">Press Room</a></li>
-                    <li><a asp-controller="Info" asp-action="PrivacyPolicy">Privacy Policy</a></li>
-                </ul>
-            </div>
-
-            <div class="col-lg-3 col-md-6">
-                <h5 class="text-uppercase fs-6 fw-bold mb-3">
-                    <i class="bi bi-heart-fill me-2"></i>Support
-                </h5>
-                <ul class="list-unstyled footer-links">
-                    <li><a asp-controller="Support" asp-action="HelpCenter">Help Center</a></li>
-                    <li><a asp-controller="Support" asp-action="AuthorHub">Author Hub</a></li>
-                    <li><a asp-controller="Support" asp-action="SubmitNovel">Submit Your Novel</a></li>
-                    <li><a asp-controller="Support" asp-action="Donate">Donate</a></li>
-                    <li><a asp-controller="Support" asp-action="Merch">Merch</a></li>
-                </ul>
+                <div class="footer-policy">
+                    <a asp-controller="Info" asp-action="PrivacyPolicy">Quyền riêng tư</a>
+                    <span class="separator">|</span>
+                    <a asp-controller="Info" asp-action="TermsOfService">Điều khoản</a>
+                    <span class="separator">|</span>
+                    <a asp-controller="Info" asp-action="PrivacyPolicy">Chính sách</a>
+                </div>
             </div>
         </div>
     </div>

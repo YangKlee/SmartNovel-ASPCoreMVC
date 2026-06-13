@@ -2,59 +2,57 @@
 
 @if (Model != null)
 {
-    <div class="featured-novel-container mb-5 shadow-sm rounded-4 overflow-hidden">
-        <div class="row g-0 bg-white">
-            <div class="col-md-4 col-lg-3">
-                <div class="featured-cover-wrapper h-100">
-                    <img src="@Model.ImageNovelUrl" alt="@Model.Title" class="featured-cover img-fluid w-100 h-100 object-fit-cover">
-                    <div class="featured-overlay"></div>
+    <div class="hero-featured">
+        <div class="hero-bg" style="background-image: url('@(string.IsNullOrEmpty(Model.ImageBanerNovelUrl) ? Model.ImageNovelUrl : Model.ImageBanerNovelUrl)');"></div>
+        <div class="hero-overlay"></div>
+        
+        <div class="hero-content-wrapper">
+            <div class="hero-text">
+                <div class="hero-badge"><i class="bi bi-star-fill me-1"></i> Truyện Đề Cử</div>
+                
+                <h2 class="hero-title">
+                    <a href="/Novel/@Model.Slug" class="text-decoration-none">@Model.Title</a>
+                </h2>
+                
+                <div class="hero-author">
+                    <i class="bi bi-pen"></i> Tác giả: <span class="text-info">@(Model.UidNavigation?.DisplayName ?? "Ẩn danh")</span>
                 </div>
-            </div>
 
-            <div class="col-md-8 col-lg-9 p-4 p-lg-5 d-flex flex-column justify-content-center">
-                <div class="featured-content">
-                    <h2 class="featured-title fw-bold mb-2">
-                        <a href="/Novel/@Model.Slug" class="text-decoration-none text-dark">@Model.Title</a>
-                    </h2>
+                <div class="hero-meta">
+                    <span><i class="bi bi-eye-fill"></i> @(Model.ViewCount ?? 0) lượt đọc</span>
+                    <span><i class="bi bi-list-ol"></i> @Model.Chapters.Count chương</span>
+                    <span class="d-flex align-items-center"><i class="bi bi-star-fill text-warning me-1"></i> @Model.AverageRating/5</span>
+                </div>
 
-                    <p class="featured-author mb-3">
-                        <i class="bi bi-person-fill text-secondary"></i>
-                        <span class="text-muted">Tác giả:</span>
-                        <span class="fw-bold text-primary">@(Model.UidNavigation?.DisplayName ?? "Ẩn danh")</span>
-                    </p>
+                <div class="hero-genres">
+                    @foreach (var cat in Model.Categories.Take(4))
+                    {
+                        <span class="badge">@cat.Name</span>
+                    }
+                    @if (!Model.Categories.Any())
+                    {
+                         <span class="badge">Chưa rõ</span>
+                    }
+                </div>
 
-                    <div class="featured-stats d-flex gap-4 mb-3 text-muted">
-                        <span><i class="bi bi-eye-fill text-info"></i> @(Model.ViewCount ?? 0) lượt xem</span>
-                        <span><i class="bi bi-list-stars text-success"></i> @Model.Chapters.Count chương</span>
-                        <span><i class="bi bi-star-fill text-warning"></i> 4.5/5</span>
-                    </div>
+                <p class="hero-desc">
+                    @(Model.Description?.Length > 280 ? Model.Description.Substring(0, 280) + "..." : (Model.Description ?? "Chưa có mô tả."))
+                </p>
 
-                    <div class="featured-genres mb-3">
-                        @foreach (var cat in Model.Categories.Take(3))
+                <div class="hero-actions">
+                    <a href="/truyen/@Model.NovelId" class="hero-btn">
+                        <i class="bi bi-book-half"></i> Đọc ngay
+                    </a>
+
+                    @{
+                        var lastChapter = Model.Chapters.OrderByDescending(c => c.CreateTime).FirstOrDefault();
+                        if (lastChapter != null)
                         {
-                            <span class="badge rounded-pill bg-light text-primary border me-1">@cat.Name</span>
+                            <a href="/truyen/@Model.NovelId/@lastChapter.ChapterId" class="hero-btn hero-btn-secondary">
+                                <i class="bi bi-lightning-charge-fill text-warning"></i> Chương mới
+                            </a>
                         }
-                    </div>
-
-                    <p class="featured-description text-muted mb-4">
-                        @(Model.Description?.Length > 250 ? Model.Description.Substring(0, 250) + "..." : Model.Description)
-                    </p>
-
-                    <div class="featured-actions d-flex gap-3">
-                        <a href="/truyen/@Model.NovelId" class="btn btn-primary btn-lg px-4 rounded-pill shadow-sm">
-                            <i class="bi bi-book-half me-2"></i>Đọc ngay
-                        </a>
-
-                        @{
-                            var lastChapter = Model.Chapters.OrderByDescending(c => c.CreateTime).FirstOrDefault();
-                            if (lastChapter != null)
-                            {
-                                <a href="/Read/@Model.Slug/@lastChapter.ChapterId" class="btn btn-outline-secondary btn-lg px-4 rounded-pill">
-                                    Chương mới nhất
-                                </a>
-                            }
-                        }
-                    </div>
+                    }
                 </div>
             </div>
         </div>
