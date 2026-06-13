@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -65,6 +67,10 @@ namespace SmartNovel.Controllers
                 ViewBag.FollowAuthorCount =
                     model.UidsNavigation.Count;
             }
+            
+            ViewBag.FollowingAuthors = model.UidsNavigation.ToList();
+            ViewBag.Followers = model.FollowerUs.ToList();
+
             return View(model);
         }
         [HttpGet]
@@ -277,6 +283,7 @@ namespace SmartNovel.Controllers
             }
 
             return Redirect(Request.Headers["Referer"].ToString());
+        }
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> changeProfileImage()

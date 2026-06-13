@@ -63,14 +63,14 @@ namespace SmartNovel.Controllers
             {
                 var user = _context.Users
                     .Include(x => x.Authors)
-                    .Include(x => x.FollowerUs)
+                    .Include(x => x.UidsNavigation)
                     .FirstOrDefault(x => x.Uid == uid);
 
                 if (user != null)
                 {
                     isAuthorBlocked = user.Authors
                         .Any(x => x.Uid == novel.Uid);
-                    isFollowingAuthor = user.FollowerUs
+                    isFollowingAuthor = user.UidsNavigation
                         .Any(x => x.Uid == novel.Uid);
                 }
             }
@@ -196,7 +196,7 @@ namespace SmartNovel.Controllers
             var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var user = _context.Users
-                .Include(x => x.FollowerUs)
+                .Include(x => x.UidsNavigation)
                 .Include(x => x.Novels)
                     .ThenInclude(x => x.Categories)
                 .Include(x => x.Novels)
@@ -211,7 +211,7 @@ namespace SmartNovel.Controllers
                 Novels = user.Novels
                     .OrderBy(x => x.Title)
                     .ToList(),
-                author = user.FollowerUs.ToList()
+                author = user.UidsNavigation.ToList()
             };
 
             return View(vm);
@@ -281,7 +281,23 @@ namespace SmartNovel.Controllers
                 .OrderBy(x => x.ChaperOrder)
                 .ToListAsync()
             };
-
+            // khứa nào nhai mất cái ghi nhận lịch sử xem của tao thế =:_)
+            var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var history = new HistoryReader
+            {
+                ChapterId = chapter.ChapterId,
+                NovelId = novelId,
+                Uid = uid,
+                TimeReader = DateTime.Now,
+                ReadSessionId = Guid.NewGuid().ToString(),
+            };
+            _context.HistoryReaders.Add(history);
+            var novelUpdate = await _context.Novels.FirstOrDefaultAsync(n => n.NovelId == novelId);
+            if(novelUpdate != null)
+            {
+                novelUpdate.ViewCount += 1;
+            }
+            await _context.SaveChangesAsync();
             return View(vm);
         }
 
@@ -452,12 +468,15 @@ namespace SmartNovel.Controllers
         {
             var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var author = await _context.Users.FirstOrDefaultAsync(u => u.Uid == authorId);
-            var user = await _context.Users.Include(u => u.FollowerUs).FirstOrDefaultAsync(u => u.Uid == uid);
+            var user = await _context.Users.Include(u => u.UidsNavigation).FirstOrDefaultAsync(u => u.Uid == uid);
             
             if (author == null || user == null)
                 return NotFound();
-            user.FollowerUs.Add(author);
-            await _context.SaveChangesAsync();
+            if (!user.UidsNavigation.Any(u => u.Uid == authorId))
+            {
+                user.UidsNavigation.Add(author);
+                await _context.SaveChangesAsync();
+            }
             return Redirect($"/truyen/{novelID}");
 
         }
@@ -467,11 +486,11 @@ namespace SmartNovel.Controllers
         {
             var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var author = await _context.Users.FirstOrDefaultAsync(u => u.Uid == authorId);
-            var user = await _context.Users.Include(u => u.FollowerUs).FirstOrDefaultAsync(u => u.Uid == uid);
+            var user = await _context.Users.Include(u => u.UidsNavigation).FirstOrDefaultAsync(u => u.Uid == uid);
 
             if (author == null || user == null)
                 return NotFound();
-            user.FollowerUs.Remove(author);
+            user.UidsNavigation.Remove(author);
             await _context.SaveChangesAsync();
             return Redirect($"/truyen/{novelID}");
 

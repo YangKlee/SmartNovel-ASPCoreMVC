@@ -5,11 +5,12 @@ using SmartNovel.Models.ViewModel;
 
 namespace SmartNovel.Controllers
 {
-    public class AdminController : Controller
+    // wtf ní ơi
+    public class AuthorListController : Controller
     {
         private readonly SmartTruyenDbContext _context;
 
-        public AdminController(SmartTruyenDbContext context)
+        public AuthorListController(SmartTruyenDbContext context)
         {
             _context = context;
         }

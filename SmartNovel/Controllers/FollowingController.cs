@@ -22,7 +22,7 @@ namespace SmartNovel.Controllers
             var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var user = _context.Users
-                .Include(x => x.FollowerUs)
+                .Include(x => x.UidsNavigation)
                 .Include(x => x.Novels)
                     .ThenInclude(x => x.Categories)
                 .Include(x => x.Novels)
@@ -37,7 +37,7 @@ namespace SmartNovel.Controllers
                 Novels = user.Novels
                     .OrderBy(x => x.Title)
                     .ToList(),
-                author = user.FollowerUs.ToList()
+                author = user.UidsNavigation.ToList()
             };
 
             return View("~/Views/Novel/Following.cshtml", vm);
@@ -72,12 +72,12 @@ namespace SmartNovel.Controllers
         {
             var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var author = await _context.Users.FirstOrDefaultAsync(u => u.Uid == authorId);
-            var user = await _context.Users.Include(u => u.FollowerUs).FirstOrDefaultAsync(u => u.Uid == uid);
+            var user = await _context.Users.Include(u => u.UidsNavigation).FirstOrDefaultAsync(u => u.Uid == uid);
 
             if (author == null || user == null)
                 return NotFound();
 
-            user.FollowerUs.Remove(author);
+            user.UidsNavigation.Remove(author);
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
