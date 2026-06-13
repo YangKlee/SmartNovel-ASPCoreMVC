@@ -1,0 +1,61 @@
+@{
+    ViewData["Title"] = "Unauthorized";
+}
+<style>
+    .error-container {
+        min-height: 75vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
+    }
+    .error-image {
+        width: 100%;
+        max-width: 350px;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        margin-bottom: 2rem;
+        transition: transform 0.3s ease;
+    }
+    .error-image:hover {
+        transform: scale(1.02);
+    }
+    .error-alert {
+        max-width: 600px;
+        border-left: 5px solid #ffc107;
+        background-color: #fff3cd;
+        color: #664d03;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 12px rgba(255, 193, 7, 0.15);
+    }
+    .error-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+</style>
+
+<div class="error-container">
+    <img src="https://pub-20056e4912f440f08b3d40eea545f95f.r2.dev/smart-novel/res/images.jpg" alt="Error Image" class="error-image" />
+    
+    <div class="alert error-alert">
+        <div class="error-title">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            401 - Yêu cầu đăng nhập
+        </div>
+        <div class="mt-2 text-start text-md-center">
+            Bạn chưa đăng nhập hoặc không có quyền xem.
+        </div>
+        <div class="mt-4 text-center">
+            <a href="/Auth/Login" class="btn btn-warning px-4 py-2 rounded-3 fw-bold">Đăng nhập ngay</a>
+            <a href="/" class="btn btn-outline-secondary px-4 py-2 rounded-3 fw-bold ms-2">Về trang chủ</a>
+        </div>
+    </div>
+</div>
