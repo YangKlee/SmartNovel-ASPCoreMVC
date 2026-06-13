@@ -297,7 +297,10 @@ namespace SmartNovel.Controllers
             {
                 novelUpdate.ViewCount += 1;
             }
-            await _context.SaveChangesAsync();
+            if(uid != null)
+            {
+                await _context.SaveChangesAsync();
+            }
             return View(vm);
         }
 
