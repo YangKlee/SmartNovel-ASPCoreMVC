@@ -13,7 +13,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 namespace SmartNovel.Controllers
 {
-    [Authorize(Roles = "3")]
+    
     public class ChapterManagermentController : Controller
     {
         private readonly SmartTruyenDbContext _context;
@@ -25,6 +25,7 @@ namespace SmartNovel.Controllers
             _fileServicesUpload = fileServicesUpload;
             _httpClient = httpClient;
         }
+        [Authorize(Roles = "1,2,3")]
         [HttpGet("ChapterManagerment/Index/{novelId}")]
         public async Task<IActionResult> Index(ChapterManagermentViewModel req, string? novelId)
         {
@@ -47,9 +48,9 @@ namespace SmartNovel.Controllers
                     NovelId = n.NovelId,
                     Title = n.Title,
                     countChapter = n.Chapters.Count(),
-                    countChapterPublic = n.Chapters.Count(c => c.Status == "Public"),
-                    countChapterDraft = n.Chapters.Count(c => c.Status == "Draft"),
-                    countChapterRemove = n.Chapters.Count(c => c.Status == "Cancel")
+                    countChapterPublic = n.Chapters.Count(c => c.Status.ToLower() == "Public"),
+                    countChapterDraft = n.Chapters.Count(c => c.Status.ToLower() == "Draft"),
+                    countChapterRemove = n.Chapters.Count(c => c.Status.ToLower() == "Reject")
                 })
                 .ToListAsync();
 
@@ -116,8 +117,9 @@ namespace SmartNovel.Controllers
             }
 
             var uid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var role = User.FindFirst(ClaimTypes.Role)?.Value;
             var ehe = await _context.Novels.AnyAsync(n => n.NovelId == novelId && n.Uid == uid);
-            if (!ehe)
+            if (!ehe && role == "3")
             {
                 ViewBag.Success = false;
                 ViewBag.Msg = "Cưng tính copy id truyện người ta rồi gửi request đăng chương à, đâu có dễ dị";
@@ -171,18 +173,19 @@ namespace SmartNovel.Controllers
             return await _context.Chapters.AnyAsync(c => c.NovelId == novelID && c.ChaperOrder == order);
         }
         [HttpGet("ChapterManagerment/Modify/{chapterId}")]
-        [Authorize(Roles = "3")]
+        [Authorize(Roles = "1,2,3")]
         public async Task<IActionResult> modify(string? chapterId)
         {
             if (chapterId == null)
                 return NotFound();
             var uid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var role = User.FindFirst(ClaimTypes.Role)?.Value;
             var chapter = await _context.Chapters.FirstOrDefaultAsync(c => c.ChapterId == chapterId);
             if (chapter == null)
                 return NotFound();
 
             var ehe = await _context.Novels.AnyAsync(n => n.NovelId == chapter.NovelId && n.Uid == uid);
-            if (!ehe)
+            if (!ehe && role == "3")
             {
                 ViewBag.Success = false;
                 ViewBag.Msg = "Cưng tính copy id truyện người ta rồi sửa chương à, t rào trước r";
@@ -214,10 +217,11 @@ namespace SmartNovel.Controllers
         }
 
         [HttpPost("ChapterManagerment/Modify/{chapterId}")]
-        [Authorize(Roles = "3")]
+        [Authorize(Roles = "1,2,3")]
         public async Task<IActionResult> Modify(string chapterId, CreateChapterViewModel req)
         {
             var uid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var role = User.FindFirst(ClaimTypes.Role)?.Value;
             var chapterModify = await _context.Chapters.FirstOrDefaultAsync(c => c.ChapterId == chapterId);
             if (chapterModify == null)
             {
@@ -228,7 +232,7 @@ namespace SmartNovel.Controllers
             }
 
             var checkAuthor = await _context.Novels.AnyAsync(n => n.Uid == uid && n.NovelId == chapterModify.NovelId);
-            if (!checkAuthor)
+            if (!checkAuthor && role == "3")
             {
                 ViewBag.Success = false;
                 ViewBag.Msg = "Bạn không có quyền chỉnh sửa chương này.";
@@ -295,10 +299,11 @@ namespace SmartNovel.Controllers
         }
 
         [HttpPost("ChapterManagerment/Delete/{chapterId}")]
-        [Authorize(Roles = "3")]
+        [Authorize(Roles = "1,2,3")]
         public async Task<IActionResult> Delete(string chapterId)
         {
             var uid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var role = User.FindFirst(ClaimTypes.Role)?.Value;
             var chapterDelete = await _context.Chapters.FirstOrDefaultAsync(c => c.ChapterId == chapterId);
             
             if (chapterDelete == null)
@@ -311,7 +316,7 @@ namespace SmartNovel.Controllers
             var novelId = chapterDelete.NovelId;
 
             var checkAuthor = await _context.Novels.AnyAsync(n => n.Uid == uid && n.NovelId == novelId);
-            if (!checkAuthor)
+            if (!checkAuthor && role == "3")
             {
                 TempData["Success"] = false;
                 TempData["Msg"] = "Bạn không có quyền xóa chương này.";
@@ -341,6 +346,27 @@ namespace SmartNovel.Controllers
                 TempData["Msg"] = "Đã xảy ra lỗi hệ thống khi xóa chương.";
                 return RedirectToAction("Index", new { novelId = novelId });
             }
+        }
+
+        [HttpPost("ChapterManagerment/TakeDown/{chapterId}")]
+        [Authorize(Roles = "1,2")]
+        public async Task<IActionResult> TakeDown(string chapterId)
+        {
+            var chapter = await _context.Chapters.FirstOrDefaultAsync(c => c.ChapterId == chapterId);
+            
+            if (chapter == null)
+            {
+                TempData["Success"] = false;
+                TempData["Msg"] = "Không tìm thấy chương này.";
+                return RedirectToAction("Index");
+            }
+
+            chapter.Status = "Reject"; // Hoặc trạng thái gỡ
+            await _context.SaveChangesAsync();
+            
+            TempData["Success"] = true;
+            TempData["Msg"] = "Đã gỡ chương thành công!";
+            return RedirectToAction("Index", new { novelId = chapter.NovelId });
         }
     }
 }

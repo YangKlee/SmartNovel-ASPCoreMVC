@@ -76,6 +76,14 @@
             <a asp-controller="NovelManagerment" asp-action="Modify" asp-route-id="@Model.NovelId" class="btn btn-flat btn-blue">
                 <i class="bi bi-pencil-square"></i> Chỉnh sửa
             </a>
+            @if (User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value == "1" || User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value == "2")
+            {
+                <form asp-controller="NovelManagerment" asp-action="TakeDown" asp-route-id="@Model.NovelId" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn gỡ truyện này?');">
+                    <button type="submit" class="btn btn-flat btn-warn" style="background-color: #ff9800; color: white;">
+                        <i class="bi bi-shield-x"></i> Gỡ
+                    </button>
+                </form>
+            }
             <form asp-controller="NovelManagerment" asp-action="Delete" asp-route-id="@Model.NovelId" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa truyện này? Hành động này không thể hoàn tác.');">
                 <button type="submit" class="btn btn-flat btn-warn">
                     <i class="bi bi-trash"></i> Xóa

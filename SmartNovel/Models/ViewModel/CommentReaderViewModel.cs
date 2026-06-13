@@ -1,9 +1,9 @@
 namespace SmartNovel.Models.ViewModel
 {
-    public class NovelManagermentViewModel
+    public class CommentReaderViewModel
     {
-        public List<NovelViewModel> novels { set; get; }
-        public string SelectedStatus { get; set; }
+        public string SelectedNovel { get; set; }
+        public string SelectedChapter { set; get; }
         public string Keyword { get; set; }
         public int CurrentPage { get; set; } = 1;
         public int PageSize { get; set; } = 5;
@@ -16,6 +16,6 @@ namespace SmartNovel.Models.ViewModel
                 return (int)Math.Ceiling((double)TotalItem / PageSize);
             }
         }
-        public string SelectedAuthor { get; set; }
+        public List<SmartNovel.Models.Comment> Comments { get; set; }
     }
 }

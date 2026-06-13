@@ -232,7 +232,58 @@
 
                         </a>
                     }
+          @*           Theo dõi tác giả *@
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        if (Model.IsFollowingAuthor)
+                        {
+                            <form asp-action="unFollowAuthor"
+                                  asp-controller="Novel"
+                                  method="post">
 
+                                <input type="hidden"
+                                       name="novelId"
+                                       value="@Model.Novel.NovelId" />
+                                <input type="hidden"
+                                       name="authorId"
+                                       value="@Model.Novel.Uid" />
+                                <button type="submit" class="btn-follow">
+                                    <i class="bi bi-bookmark-check-fill"></i>
+                                    Đã theo dõi tác giả
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-action="followAuthor"
+                                  asp-controller="Novel"
+                                  method="post">
+
+                                <input type="hidden"
+                                       name="novelId"
+                                       value="@Model.Novel.NovelId" />
+                                <input type="hidden"
+                                       name="authorId"
+                                       value="@Model.Novel.Uid" />
+
+                                <button type="submit" class="btn-follow">
+                                    <i class="bi bi-bookmark-heart-fill"></i>
+                                    Theo dõi tác giả
+                                </button>
+                            </form>
+                        }
+                    }
+                    else
+                    {
+                        <a asp-controller="Auth"
+                               asp-action="Login"
+                               class="btn-follow">
+
+                            <i class="bi bi-bookmark-heart-fill"></i>
+                            Theo dõi
+
+                        </a>
+                    }
                     <button class="btn-report">
                         <i class="bi bi-flag-fill"></i>
                         Báo cáo

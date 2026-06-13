@@ -60,9 +60,36 @@
         line-height: 1.5;
         white-space: pre-wrap;
     }
+
+    .comment-item.bg-admin {
+        background-color: rgba(255, 99, 71, 0.1);
+    }
+    .comment-item.bg-admin:hover {
+        background-color: rgba(255, 99, 71, 0.2);
+    }
+
+    .comment-item.bg-author {
+        background-color: rgba(255, 215, 0, 0.15);
+    }
+    .comment-item.bg-author:hover {
+        background-color: rgba(255, 215, 0, 0.25);
+    }
 </style>
 
-<div class="comment-item">
+@{
+    string roleId = Model.UidNavigation?.RoleId;
+    string bgClass = "";
+    if (roleId == "1" || roleId == "2")
+    {
+        bgClass = "bg-admin";
+    }
+    else if (roleId == "3")
+    {
+        bgClass = "bg-author";
+    }
+}
+
+<div class="comment-item @bgClass">
     @if (!string.IsNullOrEmpty(Model.UidNavigation?.AvartarUrl))
     {
         <img src="@Model.UidNavigation.AvartarUrl" class="comment-avatar" alt="Avatar" />
@@ -72,7 +99,7 @@
         <i class="bi bi-person-circle comment-avatar-icon"></i>
     }
 
-    <div class="comment-body">
+    <div class="comment-body" id="@Model.CommentId">
         <div class="comment-header">
             <div>
                 <span class="comment-author">@(Model.UidNavigation?.DisplayName ?? "Người dùng ẩn danh")</span>
@@ -81,17 +108,37 @@
                 </span>
             </div>
 
-            @if (User.Identity.IsAuthenticated && Model.Uid == User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
-            {
-                <form asp-controller="Novel" asp-action="DeleteComment" method="post" class="m-0" onsubmit="return confirm('Bạn có chắc chắn muốn xóa bình luận này?');">
-                    <input type="hidden" name="commentId" value="@Model.CommentId" />
-                    <input type="hidden" name="chapterId" value="@Model.ChapterId" />
-                    <button type="submit" class="btn btn-sm text-danger border-0 bg-transparent p-0" title="Xóa bình luận">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </form>
-            }
+            <div class="d-flex align-items-center">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    var isAuthor = Model.Uid == User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                    var isAdminOrMod = User.FindFirst(ClaimTypes.Role)?.Value == "1" || User.FindFirst(ClaimTypes.Role)?.Value == "2";
+                    
+                    if (isAuthor || isAdminOrMod)
+                    {
+                        <form asp-controller="Novel" asp-action="DeleteComment" method="post" class="m-0" onsubmit="return confirm('Bạn có chắc chắn muốn xóa bình luận này?');">
+                            <input type="hidden" name="commentId" value="@Model.CommentId" />
+                            <input type="hidden" name="chapterId" value="@Model.ChapterId" />
+                            <button type="submit" class="btn btn-sm text-danger border-0 bg-transparent p-0" title="Xóa bình luận">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    }
+                    
+                    if (!isAuthor)
+                    {
+                        <button type="button" class="btn btn-sm text-secondary border-0 bg-transparent p-0 ms-2" title="Báo cáo vi phạm" onclick="reportComment('@Model.CommentId')">
+                            <i class="bi bi-flag"></i>
+                        </button>
+                    }
+                }
+            </div>
         </div>
         <div class="comment-text">@Model.Content</div>
     </div>
 </div>
+<script>
+    function reportComment(commentId) {
+            // sau này thêm code sau
+    }
+</script>
