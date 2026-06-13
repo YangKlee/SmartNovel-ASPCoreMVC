@@ -1,7 +1,7 @@
-@model SmartNovel.Models.User
+﻿@model SmartNovel.Models.ViewModels.ProfileVM
 @using SmartNovel.Helpers
 @{
-     ViewData["Title"] = "Tài khoản";
+    ViewData["Title"] = "Hồ sơ cá nhân";
     Layout = "_Layout";
 }
 @section Styles {
@@ -9,21 +9,14 @@
 }
 <div class="account-container">
     <h1 class="page-title">TÀI KHOẢN NGƯỜI DÙNG</h1>
-    
-    @if (TempData["Msg"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-            <i class="fas fa-check-circle me-2"></i> @TempData["Msg"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
+
     <div class="profile-wrapper">
         <div class="sidebar">
             <div class="profile-card">
                 <div class="avatar-wrap d-inline-flex justify-content-center align-items-center">
-                    @if (!string.IsNullOrEmpty(Model.AvartarUrl))
+                    @if (!string.IsNullOrEmpty(Model.User.AvartarUrl))
                     {
-                        <img src="@Model.AvartarUrl" alt="Avatar">
+                        <img src="@Model.User.AvartarUrl" alt="Avatar">
                     }
                     else
                     {
@@ -32,9 +25,9 @@
                         </svg>
                     }
                 </div>
-                <h2 class="username">@Model.Username</h2>
+                <h2 class="username">@Model.User.Username</h2>
                 <p class="role">
-                    @(Model.RoleId switch
+                    @(Model.User.RoleId switch
                     {
                         "1" => "Admin",
                         "2" => "Moderator",
@@ -45,7 +38,7 @@
                 </p>
             </div>
 
-            @if (Model.RoleId == "3")
+            @if (Model.User.RoleId == "3")
             {
                 <div class="profile-stats">
                     <div class="stat-box">
@@ -69,7 +62,7 @@
                     </div>
                 </div>
             }
-            else if (Model.RoleId == "4")
+            else if (Model.User.RoleId == "4")
             {
                 <div class="profile-stats">
                     <div class="stat-box">
@@ -90,11 +83,89 @@
             }
 
             <div class="d-flex flex-column gap-2 mt-3">
-                <a asp-action="ChangeProfileImage" class="btn btn-dark-custom w-100 shadow-sm"><i class="fas fa-edit me-2"></i> Đổi ảnh đại diện</a>
-                <a asp-action="updateInfo" class="btn btn-dark-custom w-100 shadow-sm"><i class="fas fa-edit me-2"></i> Sửa thông tin</a>
-                <a asp-action="ChangePassword" class="btn btn-dark-custom w-100 shadow-sm"><i class="fas fa-unlock-alt me-2"></i> Đổi mật khẩu</a>
-                @if(Model.RoleId == "4"){
-                    <a asp-action="ChangeAuthor" class="btn btn-dark-custom w-100 shadow-sm"><i class="fas fa-envelope me-2"></i> Chuyển tài khoản tác giả</a>
+                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    <div class="d-flex flex-column gap-2 mt-3">
+
+                        @if (Model.IsFollowing)
+                        {
+                            <form asp-controller="account"
+                                  asp-action="UnFollowAuthor"
+                                  method="post">
+
+                                <input type="hidden"
+                                       name="authorId"
+                                       value="@Model.User.Uid" />
+
+                                <button type="submit"
+                                        class="btn btn-success w-100">
+
+                                    <i class="bi bi-person-check-fill"></i>
+                                    Đang theo dõi
+                                </button>
+
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-controller="account"
+                                  asp-action="FollowAuthor"
+                                  method="post">
+
+                                <input type="hidden"
+                                       name="authorId"
+                                       value="@Model.User.Uid" />
+
+                                <button type="submit"
+                                        class="btn btn-primary w-100">
+
+                                    <i class="bi bi-person-plus-fill"></i>
+                                    Theo dõi
+                                </button>
+
+                            </form>
+                        }
+
+                        @if (Model.IsAuthorBlocked)
+                        {
+                            <form asp-controller="Novel"
+                                  asp-action="UnBlockAuthor"
+                                  method="post">
+
+                                <input type="hidden"
+                                       name="authorId"
+                                       value="@Model.User.Uid" />
+
+                                <button type="submit"
+                                        class="btn btn-warning w-100">
+
+                                    <i class="bi bi-person-slash-fill"></i>
+                                    Bỏ chặn
+                                </button>
+
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-controller="Novel"
+                                  asp-action="BlockAuthor"
+                                  method="post">
+
+                                <input type="hidden"
+                                       name="authorId"
+                                       value="@Model.User.Uid" />
+
+                                <button type="submit"
+                                        class="btn btn-danger w-100">
+
+                                    <i class="bi bi-person-slash"></i>
+                                    Chặn tác giả
+                                </button>
+
+                            </form>
+                        }
+
+                    </div>
                 }
             </div>
         </div>
@@ -110,25 +181,25 @@
                             <tbody>
                                 <tr>
                                     <td class="col-label">UID</td>
-                                    <td class="text-secondary fw-medium">@Model.Uid</td>
+                                    <td class="text-secondary fw-medium">@Model.User.Uid</td>
                                 </tr>
                                 <tr>
                                     <td class="col-label">Tên hiển thị</td>
-                                    <td class="text-secondary fw-medium">@Model.DisplayName</td>
+                                    <td class="text-secondary fw-medium">@Model.User.DisplayName</td>
                                 </tr>
                                 <tr>
                                     <td class="col-label">Email</td>
-                                    <td class="text-secondary fw-medium">@Model.Email</td>
+                                    <td class="text-secondary fw-medium">@Model.User.Email</td>
                                 </tr>
                                 <tr>
                                     <td class="col-label">Ngày sinh</td>
                                     <td class="text-secondary fw-medium">
-                                        @(Model.Birthday.HasValue ? Model.Birthday.Value.ToString("dd/MM/yyyy") : "Chưa cập nhật")
+                                        @(Model.User.Birthday.HasValue ? Model.User.Birthday.Value.ToString("dd/MM/yyyy") : "Chưa cập nhật")
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="col-label border-bottom-0">Di động</td>
-                                    <td class="text-secondary fw-medium border-bottom-0">@Model.Phone</td>
+                                    <td class="text-secondary fw-medium border-bottom-0">@Model.User.Phone</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -137,7 +208,7 @@
             </div>
 
             <!-- Danh sách hiển thị của tác giả-->
-            @if (Model.RoleId == "3")
+            @if (Model.User.RoleId == "3")
             {
                 <!-- TÁC PHẨM CÔNG KHAI -->
                 <div class="card shadow-sm border-0 rounded-3 mt-4">
@@ -223,11 +294,11 @@
 
                     <div class="card-body">
 
-                        @if (Model.Novels != null && Model.Novels.Any())
+                        @if (Model.User.Novels != null && Model.User.Novels.Any())
                         {
                             <div class="row">
 
-                                @foreach (Novel novel in Model.Novels)
+                                @foreach (Novel novel in Model.User.Novels)
                                 {
                                     <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
 
@@ -378,7 +449,7 @@
                 </div>
             }
             <!-- Danh sách hiển thị của độc giả-->
-            @if (Model.RoleId == "4")
+            @if (Model.User.RoleId == "4")
             {
                 <!-- TRUYỆN ĐANG THEO DÕI -->
                 <div class="card shadow-sm border-0 rounded-3 mt-4">
@@ -392,11 +463,11 @@
 
                     <div class="card-body">
 
-                        @if (Model.Novels != null && Model.Novels.Any())
+                        @if (Model.User.Novels != null && Model.User.Novels.Any())
                         {
                             <div class="row">
 
-                                @foreach (Novel novel in Model.Novels)
+                                @foreach (Novel novel in Model.User.Novels)
                                 {
                                     <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
 

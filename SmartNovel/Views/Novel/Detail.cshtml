@@ -4,7 +4,9 @@
     ViewData["Title"] = Model.Novel.Title;
 }
 
-<link rel="stylesheet" href="~/css/novel-detail.css" />
+<link rel="stylesheet"
+      href="~/css/novel-detail.css"
+      asp-append-version="true" />
 
 <div class="novel-detail-page">
 
@@ -12,9 +14,7 @@
 
         <!-- Banner -->
         <div class="novel-banner">
-            <img src="@(string.IsNullOrEmpty(Model.Novel.ImageBanerNovelUrl)
-                                                     ? Model.Novel.ImageNovelUrl
-                                                     : Model.Novel.ImageBanerNovelUrl)"
+            <img src="@(string.IsNullOrEmpty(Model.Novel.ImageBanerNovelUrl) ? Model.Novel.ImageNovelUrl : Model.Novel.ImageBanerNovelUrl)"
                  alt="Banner">
         </div>
 
@@ -380,6 +380,57 @@
             }
 
         </div>
+
+        <!-- Truyện đề xuất -->
+        @if (Model.RecommendedNovels.Any())
+        {
+            <div class="recommend-section">
+
+                <div class="section-title">
+                    <i class="bi bi-stars"></i>
+                    Truyện đề xuất
+                </div>
+
+                <div class="p-3">
+
+                    <div class="row g-3">
+
+                        @foreach (var novel in Model.RecommendedNovels)
+                        {
+                            <div class="col-6 col-md-4 col-lg">
+
+                                <a asp-controller="Novel"
+                                       asp-action="Detail"
+                                       asp-route-novelId="@novel.NovelId"
+                                       class="recommend-card">
+
+                                    <img src="@novel.ImageNovelUrl"
+                                         alt="@novel.Title"
+                                         class="recommend-img">
+
+                                    <div class="recommend-info">
+
+                                        <h6 class="recommend-title">
+                                            @novel.Title
+                                        </h6>
+
+                                        <small class="recommend-author">
+                                            @(novel.UidNavigation?.DisplayName ?? "Ẩn danh")
+                                        </small>
+
+                                    </div>
+
+                                </a>
+
+                            </div>
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
 
     </div>
 
