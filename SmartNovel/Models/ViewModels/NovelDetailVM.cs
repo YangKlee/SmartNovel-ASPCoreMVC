@@ -25,6 +25,8 @@ namespace SmartNovel.Models.ViewModels
 
         public bool IsBlockedAuthor { get; set; }
 
-        public bool IsAuthorBlocked { get; set; } 
+        public bool IsAuthorBlocked { get; set; }
+
+        public List<Novel> RecommendedNovels { get; set; } = new();
     }
 }

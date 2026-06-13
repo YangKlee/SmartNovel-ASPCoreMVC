@@ -125,3 +125,49 @@
     font-weight: 600;
     color: var(--primary-dark);
 }
+.display-name {
+    font-size: 15px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.profile-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.profile-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.stat-box {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    transition: 0.2s;
+}
+
+    .stat-box:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0,0,0,.08);
+    }
+
+    .stat-box strong {
+        display: block;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--primary-dark);
+    }
+
+    .stat-box span {
+        display: block;
+        margin-top: 4px;
+        font-size: 12px;
+        color: #777;
+    }
