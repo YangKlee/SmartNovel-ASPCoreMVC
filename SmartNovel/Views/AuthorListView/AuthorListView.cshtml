@@ -1,0 +1,124 @@
+﻿@model SmartNovel.Models.ViewModel.AuthorListModel
+
+@{
+    ViewData["Title"] = "Danh sách tác giả";
+}
+
+<link rel="stylesheet" href="~/css/author-list.css" />
+
+<div class="author-page">
+
+    <div class="author-container">
+
+        <!-- HEADER -->
+        <div class="author-header">
+            <h1>
+                <i class="bi bi-people-fill"></i>
+                Danh sách tác giả
+            </h1>
+        </div>
+
+        <!-- SEARCH -->
+        <div class="author-search-card">
+
+            <form asp-action="ListAuthors"
+                  method="get"
+                  class="author-search-form">
+
+                <button type="button" class="search-toggle" id="searchToggle">
+                    <i class="bi bi-search"></i>
+                </button>
+
+                <input type="text"
+                       name="Keyword"
+                       value="@Model.Keyword"
+                       class="search-input"
+                       id="searchInput"
+                       placeholder="Tìm tác giả..." />
+
+            </form>
+
+        </div>
+
+        <!-- TABLE -->
+        <div class="author-table-wrapper">
+
+            <table class="author-table">
+
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Tên hiển thị</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @if (Model.Authors != null && Model.Authors.Any())
+                    {
+                        @foreach (var item in Model.Authors)
+                        {
+                            <tr>
+                                <td>@item.Username</td>
+                                <td>@item.DisplayName</td>
+                                <td>@item.Email</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="3" class="empty-row">
+                                Không tìm thấy tác giả nào
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <!-- PAGINATION -->
+        @if (Model.TotalPages > 1)
+        {
+            <div class="author-pagination">
+
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <a asp-action="ListAuthors"
+                       asp-route-CurrentPage="@i"
+                       asp-route-Keyword="@Model.Keyword"
+                       class="@(i == Model.CurrentPage ? "active" : "")">
+                        @i
+                    </a>
+                }
+
+            </div>
+        }
+
+        <script>
+                    const btn = document.getElementById("searchToggle");
+                    const input = document.getElementById("searchInput");
+
+                    btn.addEventListener("click", () => {
+
+                        input.classList.toggle("active");
+
+                        if (input.classList.contains("active")) {
+                            input.focus();
+                        }
+                    });
+
+                    input.addEventListener("keydown", function (e) {
+
+                        if (e.key === "Enter") {
+                            this.form.submit();
+                        }
+                    });
+        </script>
+    </div>
+
+</div>

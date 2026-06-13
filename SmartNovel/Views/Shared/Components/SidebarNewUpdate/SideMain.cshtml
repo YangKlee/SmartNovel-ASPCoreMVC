@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SmartNovel.Models.Novel>
+@model IEnumerable<SmartNovel.Models.Novel>
 
 <section id="new-updates-section" class="novel-section mb-5">
     <div class="section-header d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
@@ -26,11 +26,11 @@
                                     <span class="age-badge position-absolute bottom-0 end-0 m-2 bg-danger text-white rounded-circle fw-bold d-flex align-items-center justify-content-center">@truyen.AgeRating</span>
                                 </div>
                                 <div class="card-body px-1 py-2 text-center">
-                                    <h6 class="novel-title text-truncate fw-bold mb-1"><a href="/Novel/@truyen.Slug">@truyen.Title</a></h6>
-                                    <p class="novel-tags text-muted text-xs text-truncate mb-2">@(truyen.Categories.FirstOrDefault()?.Name ?? "Chưa rõ")</p>
+                                    <h6 class="novel-title text-truncate fw-bold mb-1"><a href="/truyen/@truyen.NovelId">@truyen.Title</a></h6>
+                                    <p class="novel-tags text-muted text-xs text-truncate mb-2">@truyen.CategoryName</p>
                                     <div class="novel-stats d-flex justify-content-center gap-2 text-muted text-xs">
-                                        <span><i class="bi bi-clock"></i> @(truyen.UpdateTime?.ToString("dd/MM") ?? "")</span>
-                                        <span><i class="bi bi-info-circle"></i> @truyen.Status</span>
+                                        <span><i class="bi bi-eye"></i> @(truyen.ViewCount ?? 0)</span>
+                                        <span><i class="bi bi-heart-fill"></i> @truyen.LikeCount</span>
                                     </div>
                                 </div>
                             </div>

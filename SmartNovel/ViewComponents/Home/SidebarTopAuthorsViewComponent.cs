@@ -18,9 +18,9 @@ namespace SmartNovel.ViewComponents.NewFolder
         public async Task<IViewComponentResult> InvokeAsync()
         {
             var topAuthor =await db.Users
-            .Where(u => u.RoleId == "ROLE-0002" && u.Status == "Active")
+            .Where(u => u.RoleId == "3" && u.Status == "Active")
             .OrderByDescending (u => u.CreatorPoint)
-            .Take(7)
+            .Take(10)
             .ToListAsync();
 
         return View(topAuthor);

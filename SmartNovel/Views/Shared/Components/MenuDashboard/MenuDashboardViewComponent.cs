@@ -17,7 +17,7 @@ namespace SmartNovel.Views.Shared.Components.MenuDashboard
         {
 
             var claimsPrincipal = User as System.Security.Claims.ClaimsPrincipal;
-            var model = _menuDashboardServices.GetMenuDashboard(claimsPrincipal);
+            var model = await _menuDashboardServices.GetMenuDashboardAsync(claimsPrincipal);
 
             return View(model); 
         }

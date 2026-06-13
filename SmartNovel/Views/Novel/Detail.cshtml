@@ -4,7 +4,9 @@
     ViewData["Title"] = Model.Novel.Title;
 }
 
-<link rel="stylesheet" href="~/css/novel-detail.css" />
+<link rel="stylesheet"
+      href="~/css/novel-detail.css"
+      asp-append-version="true" />
 
 <div class="novel-detail-page">
 
@@ -12,9 +14,7 @@
 
         <!-- Banner -->
         <div class="novel-banner">
-            <img src="@(string.IsNullOrEmpty(Model.Novel.ImageBanerNovelUrl)
-                                                     ? Model.Novel.ImageNovelUrl
-                                                     : Model.Novel.ImageBanerNovelUrl)"
+            <img src="@(string.IsNullOrEmpty(Model.Novel.ImageBanerNovelUrl) ? Model.Novel.ImageNovelUrl : Model.Novel.ImageBanerNovelUrl)"
                  alt="Banner">
         </div>
 
@@ -232,7 +232,58 @@
 
                         </a>
                     }
+          @*           Theo dõi tác giả *@
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        if (Model.IsFollowingAuthor)
+                        {
+                            <form asp-action="unFollowAuthor"
+                                  asp-controller="Novel"
+                                  method="post">
 
+                                <input type="hidden"
+                                       name="novelId"
+                                       value="@Model.Novel.NovelId" />
+                                <input type="hidden"
+                                       name="authorId"
+                                       value="@Model.Novel.Uid" />
+                                <button type="submit" class="btn-follow">
+                                    <i class="bi bi-bookmark-check-fill"></i>
+                                    Đã theo dõi tác giả
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-action="followAuthor"
+                                  asp-controller="Novel"
+                                  method="post">
+
+                                <input type="hidden"
+                                       name="novelId"
+                                       value="@Model.Novel.NovelId" />
+                                <input type="hidden"
+                                       name="authorId"
+                                       value="@Model.Novel.Uid" />
+
+                                <button type="submit" class="btn-follow">
+                                    <i class="bi bi-bookmark-heart-fill"></i>
+                                    Theo dõi tác giả
+                                </button>
+                            </form>
+                        }
+                    }
+                    else
+                    {
+                        <a asp-controller="Auth"
+                               asp-action="Login"
+                               class="btn-follow">
+
+                            <i class="bi bi-bookmark-heart-fill"></i>
+                            Theo dõi
+
+                        </a>
+                    }
                     <button class="btn-report">
                         <i class="bi bi-flag-fill"></i>
                         Báo cáo
@@ -329,6 +380,57 @@
             }
 
         </div>
+
+        <!-- Truyện đề xuất -->
+        @if (Model.RecommendedNovels.Any())
+        {
+            <div class="recommend-section">
+
+                <div class="section-title">
+                    <i class="bi bi-stars"></i>
+                    Truyện đề xuất
+                </div>
+
+                <div class="p-3">
+
+                    <div class="row g-3">
+
+                        @foreach (var novel in Model.RecommendedNovels)
+                        {
+                            <div class="col-6 col-md-4 col-lg">
+
+                                <a asp-controller="Novel"
+                                       asp-action="Detail"
+                                       asp-route-novelId="@novel.NovelId"
+                                       class="recommend-card">
+
+                                    <img src="@novel.ImageNovelUrl"
+                                         alt="@novel.Title"
+                                         class="recommend-img">
+
+                                    <div class="recommend-info">
+
+                                        <h6 class="recommend-title">
+                                            @novel.Title
+                                        </h6>
+
+                                        <small class="recommend-author">
+                                            @(novel.UidNavigation?.DisplayName ?? "Ẩn danh")
+                                        </small>
+
+                                    </div>
+
+                                </a>
+
+                            </div>
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
 
     </div>
 

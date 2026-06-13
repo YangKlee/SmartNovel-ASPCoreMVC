@@ -1,7 +1,16 @@
 @model SmartNovel.Models.ViewModel.MenuDashboardViewModel
 <div class="author-sidebar d-flex flex-column flex-shrink-0">
     <div class="sidebar-profile">
-        <div class="profile-avatar"></div>
+        <div class="profile-avatar d-flex justify-content-center align-items-center overflow-hidden">
+            @if(string.IsNullOrEmpty(Model.AvatarUrl))
+            {
+                <i class="bi bi-person-fill text-secondary" style="font-size: 5rem;"></i>
+            }
+            else
+            {
+                <img src="@Model.AvatarUrl" alt="Profile Avatar" style="width: 100%; height: 100%; object-fit: cover;" />
+            }
+        </div>
         <h5 class="profile-name">@Model.FullName</h5>
         <p class="profile-role">@Model.Role</p>
     </div>

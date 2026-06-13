@@ -1,0 +1,144 @@
+@using System.Security.Claims
+@model SmartNovel.Models.Comment
+
+<style>
+    .comment-item {
+        display: flex;
+        gap: 15px;
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        background: #fff;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        transition: background-color 0.2s ease;
+    }
+    
+    .comment-item:hover {
+        background: #fdfdfd;
+    }
+
+    .comment-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        flex-shrink: 0;
+    }
+
+    .comment-avatar-icon {
+        font-size: 48px;
+        color: #2d3142;
+        line-height: 1;
+    }
+
+    .comment-body {
+        flex-grow: 1;
+    }
+
+    .comment-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 5px;
+    }
+
+    .comment-author {
+        font-weight: 600;
+        color: #333;
+        font-size: 0.95rem;
+    }
+
+    .comment-time {
+        font-size: 0.8rem;
+        color: #888;
+    }
+
+    .comment-text {
+        color: #555;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        white-space: pre-wrap;
+    }
+
+    .comment-item.bg-admin {
+        background-color: rgba(255, 99, 71, 0.1);
+    }
+    .comment-item.bg-admin:hover {
+        background-color: rgba(255, 99, 71, 0.2);
+    }
+
+    .comment-item.bg-author {
+        background-color: rgba(255, 215, 0, 0.15);
+    }
+    .comment-item.bg-author:hover {
+        background-color: rgba(255, 215, 0, 0.25);
+    }
+</style>
+
+@{
+    string roleId = Model.UidNavigation?.RoleId;
+    string bgClass = "";
+    if (roleId == "1" || roleId == "2")
+    {
+        bgClass = "bg-admin";
+    }
+    else if (roleId == "3")
+    {
+        bgClass = "bg-author";
+    }
+}
+
+<div class="comment-item @bgClass">
+    @if (!string.IsNullOrEmpty(Model.UidNavigation?.AvartarUrl))
+    {
+        <img src="@Model.UidNavigation.AvartarUrl" class="comment-avatar" alt="Avatar" />
+    }
+    else
+    {
+        <i class="bi bi-person-circle comment-avatar-icon"></i>
+    }
+
+    <div class="comment-body" id="@Model.CommentId">
+        <div class="comment-header">
+            <div>
+                <span class="comment-author">@(Model.UidNavigation?.DisplayName ?? "Người dùng ẩn danh")</span>
+                <span class="comment-time ms-2">
+                    @(Model.TimeCommeny.HasValue ? Model.TimeCommeny.Value.ToString("dd/MM/yyyy HH:mm") : "Không rõ thời gian")
+                </span>
+            </div>
+
+            <div class="d-flex align-items-center">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    var isAuthor = Model.Uid == User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                    var isAdminOrMod = User.FindFirst(ClaimTypes.Role)?.Value == "1" || User.FindFirst(ClaimTypes.Role)?.Value == "2";
+                    
+                    if (isAuthor || isAdminOrMod)
+                    {
+                        <form asp-controller="Novel" asp-action="DeleteComment" method="post" class="m-0" onsubmit="return confirm('Bạn có chắc chắn muốn xóa bình luận này?');">
+                            <input type="hidden" name="commentId" value="@Model.CommentId" />
+                            <input type="hidden" name="chapterId" value="@Model.ChapterId" />
+                            <button type="submit" class="btn btn-sm text-danger border-0 bg-transparent p-0" title="Xóa bình luận">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    }
+                    
+                    if (!isAuthor)
+                    {
+                        <button type="button" class="btn btn-sm text-secondary border-0 bg-transparent p-0 ms-2" title="Báo cáo vi phạm" onclick="reportComment('@Model.CommentId')">
+                            <i class="bi bi-flag"></i>
+                        </button>
+                    }
+                }
+            </div>
+        </div>
+        <div class="comment-text">@Model.Content</div>
+    </div>
+</div>
+<script>
+    function reportComment(commentId) {
+            // sau này thêm code sau
+    }
+</script>

@@ -1,0 +1,62 @@
+@using System.Security.Claims
+@{
+    ViewData["Title"] = "Trang quản lý";
+    Layout = "_LayoutAdmin";
+    var roleId = User.FindFirst(ClaimTypes.Role)?.Value;
+    var username = User.FindFirst(ClaimTypes.Name)?.Value;
+}
+@model SmartNovel.Models.ViewModel.DashboardViewModel
+<style>
+    body {
+        background-color: #f4f6f8;
+    }
+    .dashboard-container {
+        padding: 30px;
+        min-height: 100vh;
+    }
+    .dashboard-title {
+        color: #3d3e42;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 1.8rem;
+    }
+</style>
+
+<div class="dashboard-container">
+    <h3 class="text-center dashboard-title mb-5">CHÀO MỪNG @username</h3>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            @{
+                if(roleId == "3")
+                {
+                    @await Component.InvokeAsync("DashboardAuthorStats", Model.authorStats)
+                }
+                else if(roleId  == "2" || roleId == "1")
+                {
+                    // chỗ này để in thống kê của admin, moderator
+                }
+            }
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            @await Component.InvokeAsync("QuickToolDashboard")
+        </div>
+        
+        <div class="col-lg-6">
+            @{
+                if (roleId == "3")
+                {
+                    @await Component.InvokeAsync("DashboardComment", Model.lastComment)
+                }
+                else if (roleId == "2" || roleId == "1")
+                {
+                    // chỗ này để hiển thị báo cáo mới nhất cho admin, moderator
+                }
+            }
+        </div>
+    </div>
+</div>

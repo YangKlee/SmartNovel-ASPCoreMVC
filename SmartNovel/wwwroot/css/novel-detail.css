@@ -326,3 +326,90 @@
     .star-btn:hover {
         transform: scale(1.2);
     }
+/* Truyện đề xuất */
+.recommend-section {
+    margin-top: 25px;
+    background: var(--bg-card);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 15px 40px rgba(0,0,0,.35);
+}
+
+.recommend-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    background: #2d2f36;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all .25s ease;
+}
+
+    .recommend-card:hover {
+        transform: translateY(-5px);
+        border-color: #d2d7d9;
+        text-decoration: none;
+    }
+
+.recommend-img {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    display: block;
+}
+
+.recommend-info {
+    padding: 12px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.recommend-title {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 42px;
+}
+
+.recommend-author {
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+    .recommend-author i {
+        margin-right: 4px;
+    }
+
+/* Tablet */
+
+@media (max-width: 992px) {
+
+    .recommend-img {
+        height: 280px;
+    }
+}
+
+/* Mobile */
+
+@media (max-width: 768px) {
+
+    .recommend-img {
+        height: 220px;
+    }
+
+    .recommend-title {
+        font-size: 14px;
+    }
+}: var(--text-secondary);
+}

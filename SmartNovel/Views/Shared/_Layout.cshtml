@@ -10,9 +10,18 @@
     <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SmartNovel.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/Header.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/footer.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Home/HeroBar.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Home/HotNovel.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Home/RecomendNovel.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Home/TopAuthorRecomend.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Home/TopAuthorSidebar.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Home/UpdateNovel.css" asp-append-version="true" />
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
     @await RenderSectionAsync("Styles", required: false)
 </head>
@@ -48,14 +57,12 @@
     </script>
     @await Component.InvokeAsync("Header")
     <div class="container">
-        <main role="main" class="pb-3">
+        <main role="main" class="pb-3" style="min-height: 100vh">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        @await Html.PartialAsync("_Footer")
-    </footer>
+    @await Html.PartialAsync("_Footer")
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
