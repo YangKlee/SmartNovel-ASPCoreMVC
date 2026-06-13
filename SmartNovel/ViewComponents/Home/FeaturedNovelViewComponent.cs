@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmartNovel.Models;
 using System;
@@ -14,13 +14,38 @@ namespace SmartNovel.ViewComponents.NewFolder
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var featuredNovel = await _context.Novels
+            var uid = HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var blockedAuthorIds = new System.Collections.Generic.List<string>();
+
+            // Lấy danh sách ID tác giả bị chặn nếu đã đăng nhập
+            if (!string.IsNullOrEmpty(uid))
+            {
+                var currentUser = await _context.Users
+                    .Include(u => u.Authors)
+                    .FirstOrDefaultAsync(u => u.Uid == uid);
+
+                if (currentUser != null)
+                {
+                    blockedAuthorIds = currentUser.Authors.Select(a => a.Uid).ToList();
+                }
+            }
+
+            // Tạo truy vấn lấy truyện
+            var query = _context.Novels
                 .Include(n => n.Categories)
-                .Include(n=>n.Ratings)
+                .Include(n => n.Ratings)
                 .Include(n => n.Chapters)
-                .Include(n => n.UidNavigation) 
-                .Where(n => n.Status.ToLower() == "public")
-                .OrderBy(x => Guid.NewGuid()) 
+                .Include(n => n.UidNavigation)
+                .Where(n => n.Status.ToLower() == "public");
+
+            // Nếu có danh sách chặn, loại bỏ truyện của những tác giả đó
+            if (blockedAuthorIds.Any())
+            {
+                query = query.Where(n => !blockedAuthorIds.Contains(n.Uid));
+            }
+
+            var featuredNovel = await query
+                .OrderBy(x => Guid.NewGuid())
                 .FirstOrDefaultAsync();
 
             return View(featuredNovel);
