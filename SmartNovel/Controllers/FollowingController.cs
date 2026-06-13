@@ -17,7 +17,6 @@ namespace SmartNovel.Controllers
             _context = context;
         }
 
-        [Route("Novel/Following")]
         public IActionResult Index()
         {
             var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -65,7 +64,7 @@ namespace SmartNovel.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return Redirect("Index");
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
@@ -81,7 +80,7 @@ namespace SmartNovel.Controllers
             user.FollowerUs.Remove(author);
             await _context.SaveChangesAsync();
 
-            return Redirect("Index");
+            return RedirectToAction(nameof(Index));
         }
     }
 }

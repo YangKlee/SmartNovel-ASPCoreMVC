@@ -168,13 +168,39 @@ namespace SmartNovel.Controllers
                     new { novelId = novel.NovelId });
             }
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Following");
+        }
+
+        [Authorize]
+        public IActionResult Following()
+        {
+            var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var user = _context.Users
+                .Include(x => x.FollowerUs)
+                .Include(x => x.Novels)
+                    .ThenInclude(x => x.Categories)
+                .Include(x => x.Novels)
+                    .ThenInclude(x => x.UidNavigation)
+                .FirstOrDefault(x => x.Uid == uid);
+
+            if (user == null)
+                return NotFound();
+
+            var vm = new FollowingNovelVM
+            {
+                Novels = user.Novels
+                    .OrderBy(x => x.Title)
+                    .ToList(),
+                author = user.FollowerUs.ToList()
+            };
+
+            return View(vm);
         }
 
         [Route("truyen/{novelId}/{chapterId}")]
         public async Task<IActionResult> Read(string novelId, string chapterId)
         {
-            var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var chapter = await _context.Chapters
                 .Include(c => c.Novel)
                 .FirstOrDefaultAsync(x =>
@@ -236,20 +262,7 @@ namespace SmartNovel.Controllers
                 .OrderBy(x => x.ChaperOrder)
                 .ToListAsync()
             };
-            // ghi nhận lượt xem
-            var view = new HistoryReader
-            {
-                ChapterId = chapterId,
-                NovelId = novelId,
-                ReadSessionId = Guid.NewGuid().ToString(),
-                TimeReader = DateTime.Now,
-                Uid = uid
-            };
-            var history = _context.HistoryReaders.Add(view);
-            var novel = await _context.Novels.FirstOrDefaultAsync(n => n.NovelId == novelId);
-            novel.ViewCount += 1;
 
-            await _context.SaveChangesAsync();
             return View(vm);
         }
 
@@ -430,7 +443,7 @@ namespace SmartNovel.Controllers
 
         }
         [HttpPost]
-        [Authorize(Roles = "3,4")]  
+        [Authorize(Roles = "3,4")]
         public async Task<IActionResult> unFollowAuthor([FromForm] string authorId, [FromForm] string? novelID)
         {
             var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -444,5 +457,6 @@ namespace SmartNovel.Controllers
             return Redirect($"/truyen/{novelID}");
 
         }
+
     }
 }
