@@ -46,7 +46,7 @@
                 <div class="meta-item">
                     <i class="bi bi-person-fill"></i>
                     <strong>Tác giả:</strong>
-                    @(Model.Author?.DisplayName ?? "Đang cập nhật")
+                    <a href="/profile/@Model.Author?.Uid">@(Model.Author?.DisplayName ?? "Đang cập nhật")</a>
                 </div>
 
                 <div class="meta-item">

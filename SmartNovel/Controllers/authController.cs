@@ -48,7 +48,7 @@ namespace SmartNovel.Controllers
                 ViewBag.ErrorMessage = "Tài khoản hoặc mật khẩu không đúng, vui lòng thử lại!";
                 return View();
             }
-            var result = hasher.VerifyHashedPassword(userTmp, userTmp.Password, txtPassword);
+            var result = hasher.VerifyHashedPassword(null, userTmp.Password, txtPassword);
             if(result == PasswordVerificationResult.Success)
             {
                 if(userTmp.Status.ToLower() == "banned")
@@ -298,10 +298,13 @@ namespace SmartNovel.Controllers
                     ViewBag.Success = false;
                     ViewBag.Msg = "Người dùng không tồn tại";
                 }
-                user.Password = obj.txtNewPassword;
+                var passHash = new PasswordHasher<object>();
+
+                user.Password = passHash.HashPassword(null, obj.txtNewPassword);
                 await _context.SaveChangesAsync();
                 ViewBag.Success = true;
                 ViewBag.Msg = "Đổi mật khẩu thành công";
+                _cache.Remove(obj.Token);
             }
             else
             {

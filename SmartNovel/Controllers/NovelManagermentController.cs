@@ -100,7 +100,7 @@ namespace SmartNovel.Controllers
         [Authorize(Roles = "3")]
         public async Task<IActionResult> Add(CreateNovelViewModel req)
         {
-            var cate = await _context.Categories.Where(c => c.Status == "active").ToListAsync();
+            var cate = await _context.Categories.Where(c => c.Status == "active").OrderBy(c => c.Name).ToListAsync();
             ViewBag.AvailableGenres = cate;
 
             if (!ModelState.IsValid)
