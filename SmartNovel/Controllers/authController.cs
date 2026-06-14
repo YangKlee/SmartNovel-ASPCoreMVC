@@ -304,6 +304,7 @@ namespace SmartNovel.Controllers
                 await _context.SaveChangesAsync();
                 ViewBag.Success = true;
                 ViewBag.Msg = "Đổi mật khẩu thành công";
+                _cache.Remove(obj.Token);
             }
             else
             {
