@@ -1,0 +1,53 @@
+@model SmartNovel.ViewModels.AdminCategory.CategoryViewModel
+
+@{
+    ViewData["Title"] = "Thêm mới thể loại";
+    Layout = "_LayoutAdmin";
+}
+
+<h3 class="mb-4">Thêm mới thể loại</h3>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">Tên thể loại <span class="text-danger">*</span></label>
+                <input asp-for="Name" class="form-control" placeholder="Nhập tên thể loại" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Slug" class="form-label">Slug (tùy chọn)</label>
+                <input asp-for="Slug" class="form-control" placeholder="Để trống sẽ tự động tạo" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">Mô tả</label>
+                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Nhập mô tả thể loại"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Status" class="form-label">Trạng thái <span class="text-danger">*</span></label>
+                <select asp-for="Status" class="form-select">
+                    <option value="ACTIVE">Hoạt động</option>
+                    <option value="inactive">Ẩn</option>
+                </select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+                <button type="submit" class="btn btn-success">Thêm mới</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
