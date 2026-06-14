@@ -1,0 +1,96 @@
+@model X.PagedList.IPagedList<SmartNovel.Models.Category>
+@using X.PagedList.Mvc.Core
+
+@{
+    ViewData["Title"] = "Quản lý thể loại";
+    Layout = "_LayoutAdmin";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<h3 class="mb-4">Quản lý thể loại</h3>
+
+<div class="d-flex justify-content-between mb-3">
+    <form asp-controller="AdminCategory" asp-action="Index" method="get" class="d-flex gap-2">
+        <input type="text" name="keyword" class="form-control" placeholder="Tìm tên thể loại..." value="@Context.Request.Query["keyword"]">
+
+        <select name="status" class="form-select">
+            <option value="">-- Tất cả trạng thái --</option>
+            <option value="active" selected="@(Context.Request.Query["status"] == "active")">Hoạt động</option>
+            <option value="inactive" selected="@(Context.Request.Query["status"] == "inactive")">Ẩn</option>
+        </select>
+
+        <button type="submit" class="btn btn-primary">Lọc</button>
+        <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+    </form>
+
+    <a asp-controller="AdminCategory" asp-action="Create" class="btn btn-success">
+        Thêm mới
+    </a>
+</div>
+
+<table class="table table-bordered table-striped align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>STT</th>
+            <th>Tên thể loại</th>
+            <th>Mô tả</th>
+            <th>Trạng thái</th>
+            <th>Số lượng truyện</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            int stt = 1;
+            foreach (var category in Model)
+            {
+                <tr>
+                    <td>@(stt++)</td>
+                    <td>@category.Name</td>
+                    <td>@(string.IsNullOrEmpty(category.Description) ? "Không có" : category.Description)</td>
+                    <td>
+                        @if(category.Status == "ACTIVE") {
+                            <span class="badge bg-success">Hoạt động</span>
+                        } else {
+                            <span class="badge bg-danger">Ẩn</span>
+                        }
+                    </td>
+                    <td>@(category.Novels?.Count ?? 0)</td>
+                    <td>
+                        <a asp-controller="AdminCategory" asp-action="Edit" asp-route-id="@category.CategoryId" class="btn btn-sm btn-warning">Sửa</a>
+
+                        <form asp-action="DeleteCategory" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa thể loại này?');">
+                            <input type="hidden" name="id" value="@category.CategoryId" />
+                            <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr><td colspan="6" class="text-center">Chưa có dữ liệu</td></tr>
+        }
+    </tbody>
+</table>
+
+@if (Model.PageCount > 1)
+{
+    <div class="d-flex justify-content-end mt-3">
+        @Html.PagedListPager(Model, page => Url.Action("Index", new { page, keyword = Context.Request.Query["keyword"], status = Context.Request.Query["status"] }), 
+            new PagedListRenderOptions {
+                LiElementClasses = new string[] { "page-item" },
+                PageClasses = new string[] { "page-link" },
+                ActiveLiElementClass = "active"
+            })
+    </div>
+}
