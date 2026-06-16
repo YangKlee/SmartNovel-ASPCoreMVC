@@ -8,7 +8,7 @@ using X.PagedList.Extensions;
 
 namespace SmartNovel.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "1")]
     public class AdminCategoryController : Controller
     {
         private readonly SmartTruyenDbContext _context;

@@ -423,11 +423,15 @@ namespace SmartNovel.Controllers
         public async Task<IActionResult> AddComment([FromForm] string ChapterID, [FromForm] string NovelID, [FromForm] string Content)
         {
             var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(string.IsNullOrEmpty(Content))
+            {
+                return Redirect($"/truyen/{NovelID}/{ChapterID}");
+            }
             var newComment = new Comment
             {
                 ChapterId = ChapterID,
                 CommentId = Guid.NewGuid().ToString(),
-                Content = Content,
+                Content = Content.Trim(),
                 TimeCommeny = DateTime.Now,
                 Uid = uid,
                 Status = "Active",

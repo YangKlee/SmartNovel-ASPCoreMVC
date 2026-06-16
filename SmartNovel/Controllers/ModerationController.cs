@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmartNovel.Models;
 
 namespace SmartNovel.Controllers
 {
+    [Authorize(Roles ="1,2")]
     public class ModerationController : Controller
     {
         private readonly SmartTruyenDbContext _context;

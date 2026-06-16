@@ -32,7 +32,7 @@ namespace SmartNovel.ViewComponents.NewFolder
                 .Include( u => u.Chapters)
                 .Include( u => u.Categories)
                 .Include( u => u.Ratings)
-                .Where (u => u.Status =="Public")
+                .Where (u => u.Status.ToLower() =="Public")
                 .Where(u => !u.Categories.Any(c =>blockedCategoryIds.Contains(c.CategoryId)))
                 .Where(u => !blockedAuthorIds.Contains(u.Uid))
                 .OrderByDescending(u => u.Chapters.Max(c => c.CreateTime))  

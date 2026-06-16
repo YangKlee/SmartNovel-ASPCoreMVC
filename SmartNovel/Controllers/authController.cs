@@ -231,7 +231,7 @@ namespace SmartNovel.Controllers
         [HttpPost]
         public async Task<IActionResult> SendEmailRecoveryPassword(ForgotPasswordViewModel obj)
         {
-            var checkEmail = _context.Users.FirstOrDefaultAsync(x => x.Email == obj.txtEmail);
+            var checkEmail = await _context.Users.FirstOrDefaultAsync(x => x.Email == obj.txtEmail);
             if (checkEmail == null)
             {
                 ViewBag.Success = false;
@@ -249,12 +249,12 @@ namespace SmartNovel.Controllers
                     string domain = $"{scheme}://{host}";
 
                     string linkRecovery = $"{domain}/Auth/RecoveryPassword?token={token.ToString()}";
-                    string body = $"Liên kết khôi phục mật khẩu cho tài khoản{checkEmail.Result.Username} là :" +
+                    string body = $"Liên kết khôi phục mật khẩu cho tài khoản{checkEmail.Username} là :" +
                         $" <a href='{linkRecovery}'>NHẤN VÀO ĐÂY ĐỂ KHÔI PHỤC</a>";
                     var result = await _mailServices.SendEmailAsync(obj.txtEmail, "Khôi phục mật khẩu", body);
                     if(result)
                     {
-                        _cache.Set(token.ToString(), checkEmail.Result.Email, cacheOptions);
+                        _cache.Set(token.ToString(), checkEmail.Email, cacheOptions);
                         ViewBag.Success = true;
                         ViewBag.Msg = "Mail gửi thành công, liên kết chỉ có hiệu lực trong 10 phút";
                     }

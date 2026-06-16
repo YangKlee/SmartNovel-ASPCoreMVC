@@ -37,11 +37,13 @@ namespace SmartNovel.Controllers
             }
             var model = await _context.Users
             .Include(x => x.Novels)
+            // lấy danh sách người mình theo dõi
             .Include(x => x.UidsNavigation)
+            // lấy danh sách người theo dõi mình
             .Include(x => x.FollowerUs)
             .Include(x => x.NovelsNavigation)
             .FirstOrDefaultAsync(x => x.Uid == uid);
-            if (model.RoleId == "3")
+            if (model.RoleId == "3") //author
             {
                 var publicNovels = model.NovelsNavigation
                     .Where(x => x.Status != null && x.Status.ToLower() == "public")
@@ -59,7 +61,7 @@ namespace SmartNovel.Controllers
 
                 ViewBag.FollowAuthorCount = model.UidsNavigation.Count;
             }
-            if (model.RoleId == "4")
+            if (model.RoleId == "4") //reader
             {
                 ViewBag.FollowNovelCount =
                     model.Novels.Count;
